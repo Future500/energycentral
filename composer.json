@@ -1,0 +1,76 @@
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "jquery/jquery",
+                "version": "1.9.0",
+                "dist": {
+                    "url": "http://code.jquery.com/jquery-1.9.0.min.js",
+                    "type": "file"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "version": "2.3.0",
+                "name": "twitter/bootstrap",
+                "dist": {
+                    "url": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "version": "1.8.0",
+                "name": "sma-bluetooth",
+                "dist": {
+                    "url": "http://sma-bluetooth.googlecode.com/files/sma-bluetooth-18.tar.gz",
+                    "type": "zip"
+                }
+            }
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.3",
+        "silex/silex": "1.0.*",
+        "silex/web-profiler": "1.0.*",
+        "symfony/browser-kit": "~2.2",
+        "symfony/class-loader": "~2.2",
+        "symfony/config": "~2.2",
+        "symfony/console": "~2.2",
+        "symfony/css-selector": "~2.2",
+        "symfony/finder": "~2.2",
+        "symfony/form": "~2.2",
+        "symfony/monolog-bridge": "~2.2",
+        "symfony/process": "~2.2",
+        "symfony/security": "~2.2",
+        "symfony/translation": "~2.2",
+        "symfony/twig-bridge": "~2.2",
+        "symfony/validator": "~2.2",
+        "symfony/yaml": "~2.2",
+        "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
+        "jquery/jquery": "1.9.0",
+        "twitter/bootstrap": "2.3.0",
+        "sma-bluetooth": "1.8.0"
+    },
+
+    "scripts": {
+        "post-update-cmd": "Composerscript::postUpdate",
+        "post-install-cmd": "Composerscript::postInstall"
+    },
+
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
