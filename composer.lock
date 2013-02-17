@@ -1,5 +1,5 @@
 {
-    "hash": "b8ff002e36f465bd8c4cd5cf743d3451",
+    "hash": "2e362ffab4621dd61919636053de6866",
     "packages": [
         {
             "name": "doctrine/common",
@@ -132,6 +132,17 @@
                 "persistence",
                 "queryobject"
             ]
+        },
+        {
+            "name": "highstock",
+            "version": "1.2.5",
+            "dist": {
+                "type": "zip",
+                "url": "http://www.highcharts.com/downloads/zips/Highstock-1.2.5.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
         },
         {
             "name": "jquery/jquery",
@@ -414,6 +425,17 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/"
+        },
+        {
+            "name": "sma-bluetooth",
+            "version": "1.8.0",
+            "dist": {
+                "type": "tar",
+                "url": "http://sma-bluetooth.googlecode.com/files/sma-bluetooth-18.tar.gz",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
         },
         {
             "name": "symfony/browser-kit",

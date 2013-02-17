@@ -29,6 +29,17 @@
                 "name": "sma-bluetooth",
                 "dist": {
                     "url": "http://sma-bluetooth.googlecode.com/files/sma-bluetooth-18.tar.gz",
+                    "type": "tar"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "version": "1.2.5",
+                "name": "highstock",
+                "dist": {
+                    "url": "http://www.highcharts.com/downloads/zips/Highstock-1.2.5.zip",
                     "type": "zip"
                 }
             }
@@ -55,6 +66,7 @@
         "symfony/yaml": "~2.2",
         "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
         "jquery/jquery": "1.9.0",
+        "highstock": "1.2.5",
         "twitter/bootstrap": "2.3.0",
         "sma-bluetooth": "1.8.0"
     },
