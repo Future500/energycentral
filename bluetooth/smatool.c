@@ -15,7 +15,7 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-/* compile gcc -lbluetooth -lcurl -lmysqlclient -g -o smatool smatool.c */
+/* compile gcc -lbluetooth -g -o smatool smatool.c */
 
 #define _XOPEN_SOURCE /* glibc needs this */
 #include <stdio.h>
@@ -1287,9 +1287,6 @@ int main(int argc, char **argv)
    } *archdatalist;
 
     char sunrise_time[6],sunset_time[6];
-
-    CURL *curl;
-    CURLcode result;
 
     memset(received,0,1024);
     last_sent = (unsigned  char *)malloc( sizeof( unsigned char ));
