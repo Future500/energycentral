@@ -1815,7 +1815,6 @@ int main(int argc, char **argv)
 				   {
 				       printf("%d-%02d-%02d %02d:%02d:%02d %-20s = %.0f %-20s\n", year, month, day, hour, minute, second, returnkeylist[return_key].description, currentpower_total/returnkeylist[return_key].divisor, returnkeylist[return_key].units );
 				       inverter_serial=serial[3]*16777216+serial[2]*65536+serial[1]*256+serial[0];
-				       live_mysql( &conf, year, month, day, hour, minute, second, conf.Inverter, inverter_serial, returnkeylist[return_key].description, currentpower_total/returnkeylist[return_key].divisor, returnkeylist[return_key].units, debug );
                                    }
                                    else
 				       printf("%d-%02d-%02d %02d:%02d:%02d NO DATA for %02x %02x = %.0f NO UNITS\n", year, month, day, hour, minute, second, (data+i+1)[0], (data+i+1)[1], currentpower_total );
@@ -2056,10 +2055,6 @@ int main(int argc, char **argv)
       free( archdatalist );
   archdatalen=0;
   free(last_sent);
-}
-if ((repost ==1)&&(error==0)){
-    printf( "\nrepost\n" ); getchar();
-    sma_repost( &conf, debug, verbose );
 }
 
 return 0;
