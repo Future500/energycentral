@@ -613,6 +613,10 @@ unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
 int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom, char * dateto )
 /*  If there are no dates set - get last updated date and go from there to NOW */
 {
+    time_t  	curtime;
+    int 	day,month,year,hour,minute,second;
+    struct tm 	*loctime;
+
     if( strlen( datefrom ) == 0 )
         strcpy( datefrom, "2000-01-01 00:00:00" );
 
@@ -861,26 +865,14 @@ void  SetSwitches( ConfType *conf, char * datefrom, char * dateto, int *location
     else
         (*location)=0;
     //Check if all Mysql variables are set
-    if(( strlen(conf->MySqlUser) > 0 )
-	 &&( strlen(conf->MySqlPwd) > 0 )
-	 &&( strlen(conf->MySqlHost) > 0 )
-	 &&( strlen(conf->MySqlDatabase) > 0 )
-	 &&( (*test)==0 ))
-        (*mysql)=1;
-    else
-        (*mysql)=0;
+    (*mysql)=0;
     //Check if all File variables are set
     if( strlen(conf->File) > 0 )
         (*file)=1;
     else
         (*file)=0;
     //Check if all PVOutput variables are set
-    if(( strlen(conf->PVOutputURL) > 0 )
-	 &&( strlen(conf->PVOutputKey) > 0 )
-	 &&( strlen(conf->PVOutputSid) > 0 ))
-        (*post)=1;
-    else
-        (*post)=0;
+    (*post)=0;
     if(( strlen(datefrom) > 0 )
 	 &&( strlen(dateto) > 0 ))
         (*daterange)=1;
@@ -948,13 +940,6 @@ void InitConfig( ConfType *conf, char * datefrom, char * dateto )
     strcpy( conf->File, "sma.in.new" );
     conf->latitude_f = 999 ;
     conf->longitude_f = 999 ;
-    strcpy( conf->MySqlHost, "localhost" );
-    strcpy( conf->MySqlDatabase, "smatool" );
-    strcpy( conf->MySqlUser, "" );
-    strcpy( conf->MySqlPwd, "" );
-    strcpy( conf->PVOutputURL, "http://pvoutput.org/service/r2/addstatus.jsp" );
-    strcpy( conf->PVOutputKey, "" );
-    strcpy( conf->PVOutputSid, "" );
     conf->InverterCode[0]=0;
     conf->InverterCode[1]=0;
     conf->InverterCode[2]=0;
@@ -1011,20 +996,6 @@ int GetConfig( ConfType *conf )
                        conf->latitude_f = atof(value) ;
                     if( strcmp( variable, "Longitude" ) == 0 )
                        conf->longitude_f = atof(value) ;
-                    if( strcmp( variable, "MySqlHost" ) == 0 )
-                       strcpy( conf->MySqlHost, value );
-                    if( strcmp( variable, "MySqlDatabase" ) == 0 )
-                       strcpy( conf->MySqlDatabase, value );
-                    if( strcmp( variable, "MySqlUser" ) == 0 )
-                       strcpy( conf->MySqlUser, value );
-                    if( strcmp( variable, "MySqlPwd" ) == 0 )
-                       strcpy( conf->MySqlPwd, value );
-                    if( strcmp( variable, "PVOutputURL" ) == 0 )
-                       strcpy( conf->PVOutputURL, value );
-                    if( strcmp( variable, "PVOutputKey" ) == 0 )
-                       strcpy( conf->PVOutputKey, value );
-                    if( strcmp( variable, "PVOutputSid" ) == 0 )
-                       strcpy( conf->PVOutputSid, value );
                 }
             }
         }
@@ -1128,19 +1099,6 @@ void PrintHelp()
     printf( "queried in the dark\n" );
     printf( "  -lat,  --latitude LATITUDE               location latitude -180 to 180 deg\n" );
     printf( "  -lon,  --longitude LONGITUDE             location longitude -90 to 90 deg\n" );
-    printf( "Mysql database information\n" );
-    printf( "  -H,  --mysqlhost MYSQLHOST               mysql host default localhost\n");
-    printf( "  -D,  --mysqldb MYSQLDATBASE              mysql database default smatool\n");
-    printf( "  -U,  --mysqluser MYSQLUSER               mysql user\n");
-    printf( "  -P,  --mysqlpwd MYSQLPASSWORD            mysql password\n");
-    printf( "Mysql tables can be installed using INSTALL you may have to use a higher \n" );
-    printf( "privelege user to allow the creation of databases and tables, use command line \n" );
-    printf( "       --INSTALL                           install mysql data tables\n");
-    printf( "       --UPDATE                            update mysql data tables\n");
-    printf( "PVOutput.org (A free solar information system) Configs\n" );
-    printf( "  -url,  --pvouturl PVOUTURL               pvoutput.org live url\n");
-    printf( "  -key,  --pvoutkey PVOUTKEY               pvoutput.org key\n");
-    printf( "  -sid,  --pvoutsid PVOUTSID               pvoutput.org sid\n");
     printf( "  -repost                                  verify and repost data if different\n");
     printf( "\n\n" );
 }
@@ -1218,48 +1176,6 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
 	    i++;
 	    if(i<argc){
 		conf->longitude_f=atof(argv[i]);
-	    }
-	}
-	else if ((strcmp(argv[i],"-H")==0)||(strcmp(argv[i],"--mysqlhost")==0)){
-            i++;
-            if (i<argc){
-		strcpy(conf->MySqlHost,argv[i]);
-            }
-        }
-	else if ((strcmp(argv[i],"-D")==0)||(strcmp(argv[i],"--mysqlcwdb")==0)){
-            i++;
-            if (i<argc){
-		strcpy(conf->MySqlDatabase,argv[i]);
-            }
-        }
-	else if ((strcmp(argv[i],"-U")==0)||(strcmp(argv[i],"--mysqluser")==0)){
-            i++;
-            if (i<argc){
-		strcpy(conf->MySqlUser,argv[i]);
-            }
-        }
-	else if ((strcmp(argv[i],"-P")==0)||(strcmp(argv[i],"--mysqlpwd")==0)){
-            i++;
-            if (i<argc){
-		strcpy(conf->MySqlPwd,argv[i]);
-            }
-	}
-	else if ((strcmp(argv[i],"-url")==0)||(strcmp(argv[i],"--pvouturl")==0)){
-	    i++;
-	    if(i<argc){
-		strcpy(conf->PVOutputURL,argv[i]);
-	    }
-	}
-	else if ((strcmp(argv[i],"-key")==0)||(strcmp(argv[i],"--pvoutkey")==0)){
-	    i++;
-	    if(i<argc){
-		strcpy(conf->PVOutputKey,argv[i]);
-	    }
-	}
-	else if ((strcmp(argv[i],"-sid")==0)||(strcmp(argv[i],"--pvoutsid")==0)){
-	    i++;
-	    if(i<argc){
-		strcpy(conf->PVOutputSid,argv[i]);
 	    }
 	}
 	else if ((strcmp(argv[i],"-h")==0) || (strcmp(argv[i],"--help") == 0 ))
@@ -1396,16 +1312,6 @@ int main(int argc, char **argv)
         exit(-1);
     // set switches used through the program
     SetSwitches( &conf, datefrom, dateto, &location, &mysql, &post, &file, &daterange, &test );
-    if(( install==1 )&&( mysql==1 ))
-    {
-        install_mysql_tables( &conf, SCHEMA, debug );
-        exit(0);
-    }
-    if(( update==1 )&&( mysql==1 ))
-    {
-        update_mysql_tables( &conf, debug );
-        exit(0);
-    }
     // Set value for inverter type
     //SetInverterType( &conf );
     // Get Return Value lookup from file
@@ -2179,6 +2085,68 @@ int main(int argc, char **argv)
         char batch_string[400];
         int	batch_count = 0;
 
+        /* Connect to database */
+        OpenMySqlDatabase( conf.MySqlHost, conf.MySqlUser, conf.MySqlPwd, conf.MySqlDatabase );
+        /*
+        //Get Start of day value
+        sprintf(SQLQUERY,"SELECT EtotalToday FROM DayData WHERE DateTime=DATE_FORMAT( NOW(), \"%%Y%%m%%d000000\" ) " );
+        if (debug == 1) printf("%s\n",SQLQUERY);
+        DoQuery(SQLQUERY);
+        if (row = mysql_fetch_row(res))  //if there is a result, update the row
+        {
+            starttotal = atof( (char *)row[0] );
+
+           /* if( archdatalen < 3 ) //Use Batch mode if greater
+           if ( 1 = 2 ) //Always use batch mode, r2 api is better and r1 may go away one day
+
+            {
+                for( i=1; i<archdatalen; i++ ) { //Start at 1 as the first record is a dummy
+                   if((archdatalist+i)->current_value > 0 )
+                   {
+	              dtotal = (archdatalist+i)->accum_value*1000 - (starttotal*1000);
+                      idate = (archdatalist+i)->date;
+	              loctime = localtime(&(archdatalist+i)->date);
+                      day = loctime->tm_mday;
+                      month = loctime->tm_mon +1;
+                      year = loctime->tm_year + 1900;
+                      hour = loctime->tm_hour;
+                      minute = loctime->tm_min;
+                      second = loctime->tm_sec;
+	              ret=sprintf(compurl,"%s?d=%04i%02i%02i&t=%02i:%02i&v1=%f&v2=%f&key=%s&sid=%s",conf.PVOutputURL,year,month,day,hour,minute,dtotal,(archdatalist+i)->current_value,conf.PVOutputKey,conf.PVOutputSid);
+                      sprintf(SQLQUERY,"SELECT PVOutput FROM DayData WHERE DateTime=\"%i%02i%02i%02i%02i%02i\"  and PVOutput IS NOT NULL", year, month, day, hour, minute, second );
+                      if (debug == 1) printf("%s\n",SQLQUERY);
+                      DoQuery(SQLQUERY);
+	              if (debug == 1) printf("url = %s\n",compurl);
+                      if (row = mysql_fetch_row(res))  //if there is a result, already done
+                      {
+	                 if (verbose == 1) printf("Already Updated\n");
+                      }
+                      else
+                      {
+
+	                curl = curl_easy_init();
+	                if (curl){
+		             curl_easy_setopt(curl, CURLOPT_URL, compurl);
+		             curl_easy_setopt(curl, CURLOPT_FAILONERROR, compurl);
+		             result = curl_easy_perform(curl);
+	                     if (debug == 1) printf("result = %d\n",result);
+		             curl_easy_cleanup(curl);
+                             if( result==0 )
+                             {
+                                sprintf(SQLQUERY,"UPDATE DayData  set PVOutput=NOW() WHERE DateTime=\"%i%02i%02i%02i%02i%02i\"  ", year, month, day, hour, minute, second );
+                                if (debug == 1) printf("%s\n",SQLQUERY);
+                                DoQuery(SQLQUERY);
+                             }
+                             else
+                                break;
+
+	                }
+                     }
+                   }
+                }
+            }
+            else  //Use batch mode 30 values at a time!
+            */
         /* Connect to database */
         OpenMySqlDatabase( conf.MySqlHost, conf.MySqlUser, conf.MySqlPwd, conf.MySqlDatabase );
         sprintf(SQLQUERY,"SELECT Value FROM LiveData WHERE Inverter = \'%s\' and Serial=\'%d\' and Description=\'Max Phase 1\' ORDER BY DateTime DESC LIMIT 1", conf.Inverter, inverter_serial  );
