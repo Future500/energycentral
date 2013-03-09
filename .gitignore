@@ -1,4 +1,5 @@
+/cache
 /vendor/
-/cache/
+/web/pma
 .tags*
 silex.log
