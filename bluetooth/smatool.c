@@ -1315,20 +1315,6 @@ int main(int argc, char **argv)
     returnkeylist = InitReturnKeys( &conf, returnkeylist, &num_return_keys );
     // Get Local Timezone offset in seconds
     get_timezone_in_seconds( tzhex );
-    // Location based information to avoid quering Inverter in the dark
-    if((location==1)&&(mysql==1)) {
-        if( debug == 1 ) printf( "Before todays Almanac\n" );
-        if( ! todays_almanac( &conf, debug ) ) {
-           sprintf( sunrise_time, "%s", sunrise(&conf, debug ));
-           sprintf( sunset_time, "%s", sunset(&conf, debug ));
-           if( verbose==1) printf( "sunrise=%s sunset=%s\n", sunrise_time, sunset_time );
-           update_almanac(  &conf, sunrise_time, sunset_time );
-        }
-    }
-    if( mysql==1 )
-        if( debug == 1 ) printf( "Before Check Schema\n" );
-       	if( check_schema( &conf, SCHEMA, debug ) != 1 )
-            exit(-1);
     if(daterange==0 ) { //auto set the dates
         if( debug == 1 ) printf( "auto_set_dates\n" );
         auto_set_dates( &conf, &daterange, mysql, datefrom, dateto );
