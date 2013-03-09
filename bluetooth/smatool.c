@@ -26,12 +26,11 @@
 #include <bluetooth/rfcomm.h>
 #include <string.h>
 #include <math.h>
-#include <time.h>
 #include <assert.h>
 #include <sys/types.h>
-#include <curl/curl.h>
-#include "repost.h"
-#include "sma_mysql.h"
+#include <time.h>
+#include <sys/time.h>
+#include "sma_struct.h"
 
 
 /*
