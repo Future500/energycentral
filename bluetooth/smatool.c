@@ -613,26 +613,6 @@ unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
 int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom, char * dateto )
 /*  If there are no dates set - get last updated date and go from there to NOW */
 {
-    MYSQL_ROW 	row;
-    char 	SQLQUERY[200];
-    time_t  	curtime;
-    int 	day,month,year,hour,minute,second;
-    struct tm 	*loctime;
-
-    if( mysql == 1 )
-    {
-        OpenMySqlDatabase( conf->MySqlHost, conf->MySqlUser, conf->MySqlPwd, conf->MySqlDatabase);
-        //Get last updated value
-        sprintf(SQLQUERY,"SELECT DATE_FORMAT( DateTime, \"%%Y-%%m-%%d %%H:%%i:%%S\" ) FROM DayData ORDER BY DateTime DESC LIMIT 1" );
-        if (debug == 1) printf("%s\n",SQLQUERY);
-        DoQuery(SQLQUERY);
-        if ((row = mysql_fetch_row(res)))  //if there is a result, update the row
-        {
-           strcpy( datefrom, row[0] );
-        }
-        mysql_free_result( res );
-        mysql_close(conn);
-    }
     if( strlen( datefrom ) == 0 )
         strcpy( datefrom, "2000-01-01 00:00:00" );
 
@@ -654,30 +634,6 @@ int is_light( ConfType * conf )
 /*  Check if all data done and past sunset or before sunrise */
 {
     int	        light=1;
-    MYSQL_ROW 	row;
-    char 	SQLQUERY[200];
-
-    OpenMySqlDatabase( conf->MySqlHost, conf->MySqlUser, conf->MySqlPwd, conf->MySqlDatabase);
-    //Get Start of day value
-    sprintf(SQLQUERY,"SELECT if(sunrise < NOW(),1,0) FROM Almanac WHERE date= DATE_FORMAT( NOW(), \"%%Y-%%m-%%d\" ) " );
-    if (debug == 1) printf("%s\n",SQLQUERY);
-    DoQuery(SQLQUERY);
-    if ((row = mysql_fetch_row(res)))  //if there is a result, update the row
-    {
-       if( atoi( (char *)row[0] ) == 0 ) light=0;
-    }
-    if( light ) {
-       sprintf(SQLQUERY,"SELECT if( dd.datetime > al.sunset,1,0) FROM DayData as dd left join Almanac as al on al.date=DATE(dd.datetime) and al.date=DATE(NOW()) WHERE 1 ORDER BY dd.datetime DESC LIMIT 1" );
-       if (debug == 1) printf("%s\n",SQLQUERY);
-       DoQuery(SQLQUERY);
-       if ((row = mysql_fetch_row(res)))  //if there is a result, update the row
-       {
-          if( atoi( (char *)row[0] ) == 1 ) light=0;
-       }
-    }
-    if (debug == 1) printf("Before close\n",SQLQUERY);
-
-    mysql_close(conn);
     return light;
 }
 
@@ -1405,8 +1361,6 @@ int main(int argc, char **argv)
 	float gtotal;
 	float ptotal;
 	float strength;
-	MYSQL_ROW row, row1;
-	char SQLQUERY[200];
    struct archdata_type
    {
       time_t date;
@@ -2225,68 +2179,6 @@ int main(int argc, char **argv)
         char batch_string[400];
         int	batch_count = 0;
 
-        /* Connect to database */
-        OpenMySqlDatabase( conf.MySqlHost, conf.MySqlUser, conf.MySqlPwd, conf.MySqlDatabase );
-        /*
-        //Get Start of day value
-        sprintf(SQLQUERY,"SELECT EtotalToday FROM DayData WHERE DateTime=DATE_FORMAT( NOW(), \"%%Y%%m%%d000000\" ) " );
-        if (debug == 1) printf("%s\n",SQLQUERY);
-        DoQuery(SQLQUERY);
-        if (row = mysql_fetch_row(res))  //if there is a result, update the row
-        {
-            starttotal = atof( (char *)row[0] );
-
-           /* if( archdatalen < 3 ) //Use Batch mode if greater
-           if ( 1 = 2 ) //Always use batch mode, r2 api is better and r1 may go away one day
-
-            {
-                for( i=1; i<archdatalen; i++ ) { //Start at 1 as the first record is a dummy
-                   if((archdatalist+i)->current_value > 0 )
-                   {
-	              dtotal = (archdatalist+i)->accum_value*1000 - (starttotal*1000);
-                      idate = (archdatalist+i)->date;
-	              loctime = localtime(&(archdatalist+i)->date);
-                      day = loctime->tm_mday;
-                      month = loctime->tm_mon +1;
-                      year = loctime->tm_year + 1900;
-                      hour = loctime->tm_hour;
-                      minute = loctime->tm_min;
-                      second = loctime->tm_sec;
-	              ret=sprintf(compurl,"%s?d=%04i%02i%02i&t=%02i:%02i&v1=%f&v2=%f&key=%s&sid=%s",conf.PVOutputURL,year,month,day,hour,minute,dtotal,(archdatalist+i)->current_value,conf.PVOutputKey,conf.PVOutputSid);
-                      sprintf(SQLQUERY,"SELECT PVOutput FROM DayData WHERE DateTime=\"%i%02i%02i%02i%02i%02i\"  and PVOutput IS NOT NULL", year, month, day, hour, minute, second );
-                      if (debug == 1) printf("%s\n",SQLQUERY);
-                      DoQuery(SQLQUERY);
-	              if (debug == 1) printf("url = %s\n",compurl);
-                      if (row = mysql_fetch_row(res))  //if there is a result, already done
-                      {
-	                 if (verbose == 1) printf("Already Updated\n");
-                      }
-                      else
-                      {
-
-	                curl = curl_easy_init();
-	                if (curl){
-		             curl_easy_setopt(curl, CURLOPT_URL, compurl);
-		             curl_easy_setopt(curl, CURLOPT_FAILONERROR, compurl);
-		             result = curl_easy_perform(curl);
-	                     if (debug == 1) printf("result = %d\n",result);
-		             curl_easy_cleanup(curl);
-                             if( result==0 )
-                             {
-                                sprintf(SQLQUERY,"UPDATE DayData  set PVOutput=NOW() WHERE DateTime=\"%i%02i%02i%02i%02i%02i\"  ", year, month, day, hour, minute, second );
-                                if (debug == 1) printf("%s\n",SQLQUERY);
-                                DoQuery(SQLQUERY);
-                             }
-                             else
-                                break;
-
-	                }
-                     }
-                   }
-                }
-            }
-            else  //Use batch mode 30 values at a time!
-            */
         /* Connect to database */
         OpenMySqlDatabase( conf.MySqlHost, conf.MySqlUser, conf.MySqlPwd, conf.MySqlDatabase );
         sprintf(SQLQUERY,"SELECT Value FROM LiveData WHERE Inverter = \'%s\' and Serial=\'%d\' and Description=\'Max Phase 1\' ORDER BY DateTime DESC LIMIT 1", conf.Inverter, inverter_serial  );
