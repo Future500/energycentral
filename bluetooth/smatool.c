@@ -22,15 +22,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 #include <stdlib.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <assert.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
+#include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
-#include <sys/socket.h>
-#include <sys/time.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
 #include <sys/types.h>
+#include <time.h>
+#include <sys/time.h>
 #include "sma_struct.h"
 
 
@@ -179,12 +179,12 @@ strip_escapes(unsigned char *cp, int *len)
     int i,j;
 
     for( i=0; i<(*len); i++ ) {
-if( cp[i] == 0x7d ) { /*Found escape character. Need to convert*/
+    if( cp[i] == 0x7d ) { /*Found escape character. Need to convert*/
         cp[i] = cp[i+1]^0x20;
         for( j=i+1; j<(*len)-1; j++ ) cp[j] = cp[j+1];
             (*len)--;
+        }
     }
-}
 }
 
 /*
@@ -1203,7 +1203,7 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
         if ((strcmp(argv[i],"-v")==0)||(strcmp(argv[i],"--verbose")==0)) {
             i++;
             if(i<argc){
-                strcpy(verbose,argv[i]);
+                verbose=atoi(argv[i]);
             }
         } else if ((strcmp(argv[i],"-c")==0)||(strcmp(argv[i],"--config")==0)) {
             i++;
