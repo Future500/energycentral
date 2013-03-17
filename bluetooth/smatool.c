@@ -20,16 +20,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 #define _XOPEN_SOURCE /* glibc needs this */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <unistd.h>
-#include <sys/socket.h>
+#include <assert.h>
+#include <math.h>
+#include <string.h>
+#include <time.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>
-#include <sys/types.h>
-#include <time.h>
+#include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include "sma_struct.h"
 
 
@@ -138,6 +139,35 @@ ASSERT(((u16) -1) > 0);
 while (len--)
     fcs = (fcs >> 8) ^ fcstab[(fcs ^ *cp++) & 0xff];
 return (fcs);
+}
+
+/*
+* Log function, supports levels.
+* Any log message of equal or lower level than
+* the current verbosity level is printed.
+*
+*  0       Emergency: system is unusable
+*  1       Alert: action must be taken immediately
+*  2       Critical: critical conditions
+*  3       Error: error conditions
+*  4       Warning: warning conditions
+*  5       Notice: normal but significant condition
+*  6       Informational: informational messages
+*  7       Debug: debug-level messages
+*/
+void
+d( char *format, int const lvl, int verbosity, ...)
+{
+    va_list l;
+    char str[256];
+
+    va_start(l, verbosity);
+    vsprintf(str, format, l);
+    va_end(l);
+
+    if (lvl <= verbosity) {
+        printf("%s\n",str);
+    }
 }
 
 /*
@@ -273,18 +303,20 @@ tryfcs16(unsigned char *cp, int len)
     unsigned char stripped[1024] = { 0 };
 
     memcpy( stripped, cp, len );
-/* add on output */
-    if (debug ==2){
+    /* add on output */
+    if (debug ==2) {
         printf("String to calculate FCS\n");
-        for (i=0;i<len;i++) printf("%02x ",cp[i]);
-            printf("\n\n");
+        for (i=0;i<len;i++) {
+            printf("%02x ",cp[i]);
+        }
+        printf("\n\n");
     }
     trialfcs = pppfcs16( PPPINITFCS16, stripped, len );
-trialfcs ^= 0xffff;               /* complement */
-fl[cc] = (trialfcs & 0x00ff);    /* least significant byte first */
+    trialfcs ^= 0xffff;               /* complement */
+    fl[cc] = (trialfcs & 0x00ff);     /* least significant byte first */
     fl[cc+1] = ((trialfcs >> 8) & 0x00ff);
     cc+=2;
-    if (debug == 2 ){
+    if (debug == 2 ) {
         printf("FCS = %x%x %x\n",(trialfcs & 0x00ff),((trialfcs >> 8) & 0x00ff), trialfcs);
     }
 }
@@ -1138,8 +1170,7 @@ int GetInverterSetting( ConfType *conf )
 void PrintHelp()
 {
     printf( "Usage: smatool [OPTION]\n" );
-    printf( "  -v,  --verbose                           Give more verbose output\n" );
-    printf( "  -d,  --debug                             Show debug\n" );
+    printf( "  -v,  --verbose                           Give more verbose output (lvl 0=critical through 7=debug)\n" );
     printf( "  -c,  --config CONFIGFILE                 Set config file default smatool.conf\n" );
     printf( "       --test                              Run in test mode - don't update data\n" );
     printf( "\n" );
@@ -1170,9 +1201,10 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
     // these need validation checking at some stage TODO
     for (i=1;i<argc;i++) {			//Read through passed arguments
         if ((strcmp(argv[i],"-v")==0)||(strcmp(argv[i],"--verbose")==0)) {
-            (*verbose) = 1;
-        } else if ((strcmp(argv[i],"-d")==0)||(strcmp(argv[i],"--debug")==0)) {
-            (*debug) = 1;
+            i++;
+            if(i<argc){
+                strcpy(verbose,argv[i]);
+            }
         } else if ((strcmp(argv[i],"-c")==0)||(strcmp(argv[i],"--config")==0)) {
             i++;
             if(i<argc){
@@ -1369,14 +1401,10 @@ int main(int argc, char **argv)
     // Get Local Timezone offset in seconds
     get_timezone_in_seconds( tzhex );
     if(daterange==0 ) { //auto set the dates
-        if( debug == 1 ) {
-            printf( "auto_set_dates\n" );
-        }
+        d( "auto_set_dates\n", 6, verbose );
         auto_set_dates( &conf, &daterange, mysql, datefrom, dateto );
     } else {
-        if( verbose == 1 ) {
-            printf( "QUERY RANGE    from %s to %s\n", datefrom, dateto );
-        }
+        d( sprintf( "QUERY RANGE    from %s to %s\n", datefrom, dateto ), 6, verbose );
     }
     if(( daterange==1 )&&((location=0)||(mysql==0)||is_light( &conf ))) {
         if (debug ==1) {

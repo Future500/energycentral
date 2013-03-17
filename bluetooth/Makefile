@@ -6,4 +6,8 @@ smatool: smatool.o
 	gcc smatool.o $(C_FLAGS_$(ARCH)) -lbluetooth -lm -o smatool
 smatool.o: smatool.c
 	gcc -c smatool.c
+test: test.o
+	gcc test.o -lm -o test
+test.o: test.c
+	gcc -c test.c
 
