@@ -214,14 +214,14 @@ add_escapes(unsigned char *cp, int *len)
 * Recalculate and update length to correct for escapes
 */
 void
-fix_length_send(unsigned char *cp, int *len)
+fix_length_send(unsigned char *cp, int *len, int *verbose)
 {
     int	    delta=0;
 
     d( "sum=%x\n", 7, verbose, cp[1]+cp[3] );
     if(( cp[1] != (*len)+1 )) {
         delta = (*len)+1 - cp[1];
-        d("length change from %x to %x diff=%x \n", 7,verbose, cp[1],(*len)+1,cp[1]+cp[3] );
+        d("length change from %x to %x diff=%x \n", 7,(*verbose), cp[1],(*len)+1,cp[1]+cp[3] );
         cp[3] = (cp[1]+cp[3])-((*len)+1);
         cp[1] =(*len)+1;
 
@@ -252,9 +252,9 @@ fix_length_send(unsigned char *cp, int *len)
             case 0x60: cp[3]=0x1e; break;
             case 0x61: cp[3]=0x1f; break;
             case 0x62: cp[3]=0x1e; break;
-            default: d( "NO CONVERSION!", 3, verbose );getchar();break;
+            default: d( "NO CONVERSION!", 3, (*verbose) );getchar();break;
         }
-        d( "new sum=%x\n", 7, verbose, cp[1]+cp[3] );
+        d( "new sum=%x\n", 7, (*verbose), cp[1]+cp[3] );
     }
 }
 
@@ -262,16 +262,16 @@ fix_length_send(unsigned char *cp, int *len)
 * Recalculate and update length to correct for escapes
 */
 void
-fix_length_received(unsigned char *received, int *len)
+fix_length_received(unsigned char *received, int *len, int *verbose)
 {
     int	    delta=0;
     int	    sum;
 
     if( received[1] != (*len) ) {
         sum = received[1]+received[3];
-        d( "sum=%x", 7, verbose, sum );
+        d( "sum=%x", 7, (*verbose), sum );
         delta = (*len) - received[1];
-        d( "length change from %x to %x\n", 7, verbose, received[1], (*len) );
+        d( "length change from %x to %x\n", 7, (*verbose), received[1], (*len) );
         if(( received[3] != 0x13 )&&( received[3] != 0x14 )) {
             received[1] = (*len);
             switch( received[1] ) {
@@ -351,7 +351,7 @@ unsigned char conv(char *nn)
     return res;
 }
 
-int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received, int cc, unsigned char *last_sent, int *terminated, int *already_read )
+int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received, int cc, unsigned char *last_sent, int *terminated, int *already_read, int *verbose )
 {
     int bytes_read,i,j;
     unsigned char buf[1024]; /*read buffer*/
@@ -375,11 +375,11 @@ int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received,
         (*rr) = 0;
         for( i=0; i<sizeof(header); i++ ) {
             received[(*rr)] = header[i];
-            d("%02x ", 7, verbose, received[(*rr)]);
+            d("%02x ", 7, (*verbose), received[(*rr)]);
             (*rr)++;
         }
     } else {
-        d("Timeout reading bluetooth socket\n", 3, verbose);
+        d("Timeout reading bluetooth socket\n", 3, (*verbose));
         (*rr) = 0;
         memset(received,0,1024);
         return -1;
@@ -388,7 +388,7 @@ int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received,
     if (FD_ISSET((*s), &readfds)){	// did we receive anything within 5 seconds
         bytes_read = recv((*s), buf, header[1]-3, 0); //Read the length specified by header
     } else {
-        d("Timeout reading bluetooth socket\n", 3, verbose);
+        d("Timeout reading bluetooth socket\n", 3, (*verbose));
         (*rr) = 0;
         memset(received,0,1024);
         return -1;
@@ -398,7 +398,7 @@ int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received,
         d("\nReceiving\n", 6, vebose);
 
         if ((cc==bytes_read)&&(memcmp(received,last_sent,cc) == 0)) {
-            d( "ERROR received what we sent!", 3, verbose ); getchar();
+            d( "ERROR received what we sent!", 3, (*verbose) ); getchar();
             //Need to do something
         }
 
@@ -438,7 +438,7 @@ int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received,
 }
 
 int
-read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int cc, unsigned char *last_sent, int *terminated )
+read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int cc, unsigned char *last_sent, int *terminated, int *verbose )
 {
     int bytes_read,i,j;
     unsigned char buf[1024]; /*read buffer*/
@@ -466,7 +466,7 @@ read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int c
             (*rr)++;
         }
     } else {
-        d("Timeout reading bluetooth socket\n", 3, vebose);
+        d("Timeout reading bluetooth socket\n", 3, (*verbose));
         (*rr) = 0;
         memset(received,0,1024);
         return -1;
@@ -475,17 +475,17 @@ read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int c
     if (FD_ISSET((*s), &readfds)){	// did we receive anything within 5 seconds
         bytes_read = recv((*s), buf, header[1]-3, 0); //Read the length specified by header
     } else {
-        d("Timeout reading bluetooth socket\n", 3, verbose);
+        d("Timeout reading bluetooth socket\n", 3, (*verbose));
         (*rr) = 0;
         memset(received,0,1024);
         return -1;
     }
 
     if ( bytes_read > 0) {
-        d("\nReceiving\n", 6, verbose);
+        d("\nReceiving\n", 6, (*verbose));
 
         if ((cc==bytes_read)&&(memcmp(received,last_sent,cc) == 0)) {
-            d( "ERROR received what we sent!", 3, verbose ); getchar();
+            d( "ERROR received what we sent!", 3, (*verbose) ); getchar();
             //Need to do something
         }
 
@@ -531,7 +531,7 @@ int select_str(char *s)
     return -1;
 }
 
-unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
+unsigned char *  get_timezone_in_seconds( unsigned char *tzhex, int *verbose )
 {
     time_t curtime;
     struct tm *loctime;
@@ -554,16 +554,16 @@ unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
     utctime = gmtime(&curtime);
 
 
-    d( "utc=%04d-%02d-%02d %02d:%02d local=%04d-%02d-%02d %02d:%02d diff %d hours\n", 7, verbose, utctime->tm_year+1900, utctime->tm_mon+1,utctime->tm_mday,utctime->tm_hour,utctime->tm_min, year, month, day, hour, minute, hour-utctime->tm_hour );
+    d( "utc=%04d-%02d-%02d %02d:%02d local=%04d-%02d-%02d %02d:%02d diff %d hours\n", 7, (*verbose), utctime->tm_year+1900, utctime->tm_mon+1,utctime->tm_mday,utctime->tm_hour,utctime->tm_min, year, month, day, hour, minute, hour-utctime->tm_hour );
     localOffset=(hour-utctime->tm_hour)+(minute-utctime->tm_min)/60;
-    d( "localOffset=%f\n", 7, verbose, localOffset );
+    d( "localOffset=%f\n", 7, (*verbose), localOffset );
     if(( year > utctime->tm_year+1900 )||( month > utctime->tm_mon+1 )||( day > utctime->tm_mday )) {
         localOffset+=24;
     }
     if(( year < utctime->tm_year+1900 )||( month < utctime->tm_mon+1 )||( day < utctime->tm_mday )) {
         localOffset-=24;
     }
-    d( "localOffset=%f isdst=%d\n", 7, verbose, localOffset, isdst );
+    d( "localOffset=%f isdst=%d\n", 7, (*verbose), localOffset, isdst );
     if( isdst > 0 ) {
         localOffset=localOffset-1;
     }
@@ -571,16 +571,16 @@ unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
     if( tzsecs < 0 ) {
         tzsecs=65536+tzsecs;
     }
-    d( "tzsecs=%x %d\n", 7, verbose, tzsecs, tzsecs );
+    d( "tzsecs=%x %d\n", 7, (*verbose), tzsecs, tzsecs );
     tzhex[1] = tzsecs/256;
     tzhex[0] = tzsecs -(tzsecs/256)*256;
-    d( "tzsecs=%02x %02x\n", 7, verbose, tzhex[1], tzhex[0] );
+    d( "tzsecs=%02x %02x\n", 7, (*verbose), tzhex[1], tzhex[0] );
 
     return tzhex;
 }
 
 /*  If there are no dates set - get last updated date and go from there to NOW */
-int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom, char * dateto )
+int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom, char * dateto, int *verbose )
 {
     time_t  	curtime;
     int 	day,month,year,hour,minute,second;
@@ -600,7 +600,7 @@ int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom
     second = loctime->tm_sec;
     sprintf( dateto, "%04d-%02d-%02d %02d:%02d:00", year, month, day, hour, minute );
     (*daterange)=1;
-    d( "Auto set dates from %s to %s\n", 6, verbose, datefrom, dateto );
+    d( "Auto set dates from %s to %s\n", 6, (*verbose), datefrom, dateto );
     return 1;
 }
 
@@ -864,14 +864,14 @@ void  SetSwitches( ConfType *conf, char * datefrom, char * dateto, int *location
 }
 
 unsigned char *
-ReadStream( ConfType * conf, int * s, unsigned char * stream, int * streamlen, unsigned char * datalist, int * datalen, unsigned char * last_sent, int cc, int * terminated, int * togo )
+ReadStream( ConfType * conf, int * s, unsigned char * stream, int * streamlen, unsigned char * datalist, int * datalen, unsigned char * last_sent, int cc, int * terminated, int * togo, int *verbose )
 {
     int	finished;
     int	finished_record;
     int  i, j=0;
 
     (*togo)=ConvertStreamtoInt( stream+43, 2, togo );
-    d( "togo=%d\n", 7, verbose, (*togo) );
+    d( "togo=%d\n", 7, (*verbose), (*togo) );
     i=59; //Initial position of data stream
     (*datalen)=0;
     datalist=(unsigned char *)malloc(sizeof(char));
@@ -929,7 +929,7 @@ void InitConfig( ConfType *conf, char * datefrom, char * dateto )
 }
 
 /* read Config from file */
-int GetConfig( ConfType *conf )
+int GetConfig( ConfType *conf, int *verbose )
 {
     FILE 	*fp;
     char	line[400];
@@ -938,12 +938,12 @@ int GetConfig( ConfType *conf )
 
     if (strlen(conf->Config) > 0 ) {
         if(( fp=fopen(conf->Config,"r")) == (FILE *)NULL ) {
-            d( "Error! Could not open file %s\n", 0, verbose, conf->Config );
+            d( "Error! Could not open file %s\n", 0, (*verbose), conf->Config );
             return( -1 ); //Could not open file
         }
     } else {
         if(( fp=fopen("./smatool.conf","r")) == (FILE *)NULL ) {
-            d( "Error! Could not open file ./smatool.conf\n", 0, verbose );
+            d( "Error! Could not open file ./smatool.conf\n", 0, (*verbose) );
             return( -1 ); //Could not open file
         }
     }
@@ -953,7 +953,7 @@ int GetConfig( ConfType *conf )
             if( line[0] != '#' ) {
                 strcpy( value, "" ); //Null out value
                 sscanf( line, "%s %s", variable, value );
-                d( "variable=%s value=%s\n", 7, verbose, variable, value );
+                d( "variable=%s value=%s\n", 7, (*verbose), variable, value );
                 if( value[0] != '\0' ) {
                     if( strcmp( variable, "Inverter" ) == 0 ) {
                         strcpy( conf->Inverter, value );
@@ -985,7 +985,7 @@ int GetConfig( ConfType *conf )
 }
 
 /* read  Inverter Settings from file */
-int GetInverterSetting( ConfType *conf )
+int GetInverterSetting( ConfType *conf, int *verbose )
 {
     FILE 	*fp;
     char	line[400];
@@ -995,12 +995,12 @@ int GetInverterSetting( ConfType *conf )
 
     if (strlen(conf->Setting) > 0 ) {
         if (( fp=fopen(conf->Setting,"r")) == (FILE *)NULL ) {
-            d( "Error! Could not open file %s\n", 0, verbose, conf->Setting );
+            d( "Error! Could not open file %s\n", 0, (*verbose), conf->Setting );
             return( -1 ); //Could not open file
         }
     } else {
         if(( fp=fopen("./invcode.in","r")) == (FILE *)NULL ) {
-            d( "Error! Could not open file ./invcode.in\n", 0, verbose );
+            d( "Error! Could not open file ./invcode.in\n", 0, (*verbose) );
             return( -1 ); //Could not open file
         }
     }
@@ -1009,7 +1009,7 @@ int GetInverterSetting( ConfType *conf )
                 if( line[0] != '#' ) {
                     strcpy( value, "" ); //Null out value
                     sscanf( line, "%s %s", variable, value );
-                    d( "variable=%s value=%s\n", 7, verbose, variable, value );
+                    d( "variable=%s value=%s\n", 7, (*verbose), variable, value );
                     if( value[0] != '\0' ) {
                         if( strcmp( variable, "Inverter" ) == 0 ) {
                             if( strcmp( value, conf->Inverter ) == 0 ) {
@@ -1045,7 +1045,7 @@ int GetInverterSetting( ConfType *conf )
         ( conf->InverterCode[3] == 0 ) ||
         ( conf->ArchiveCode == 0 )) {
 
-        d( "\n Error ! not all codes set\n", 1, verbose );
+        d( "\n Error ! not all codes set\n", 1, (*verbose) );
         fclose( fp );
         return( -1 );
     }
@@ -1155,11 +1155,11 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
         } else if (strcmp(argv[i],"--UPDATE")==0) {
             (*update)=1;
         } else {
-            d("Bad Syntax\n\n", 0, verbose );
+            d("Bad Syntax\n\n", 0, (*verbose) );
             for( i=0; i< argc; i++ ) {
-                d( "%s ", 0, verbose, argv[i] );
+                d( "%s ", 0, (*verbose), argv[i] );
             }
-            d( "\n\n", 0, verbose );
+            d( "\n\n", 0, (*verbose) );
             PrintHelp();
             return( -1 );
         }
@@ -1416,7 +1416,7 @@ int main(int argc, char **argv)
                 }
 
                 if(!strcmp(lineread,"S")) {		//See if line is something we need to send
-                    d("[%d] %s Sending\n", 6, verbose, linenum,debugdate());
+                    d("[%d] %s Sending\n", 6, verbose, linenum, debugdate());
                     cc = 0;
                     do {
                         lineread = strtok(NULL," ;");
