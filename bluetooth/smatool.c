@@ -1000,7 +1000,7 @@ int GetInverterSetting( ConfType *conf )
         }
     } else {
         if(( fp=fopen("./invcode.in","r")) == (FILE *)NULL ) {
-            d( "Error! Could not open file ./invcode.in\n", 0 verbose );
+            d( "Error! Could not open file ./invcode.in\n", 0, verbose );
             return( -1 ); //Could not open file
         }
     }
