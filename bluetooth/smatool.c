@@ -1703,8 +1703,6 @@ int main(int argc, char **argv)
                                 minute = loctime->tm_min;
                                 second = loctime->tm_sec;
                                 printf("Date power = %d/%d/%4d %02d:%02d:%02d\n",day, month, year, hour, minute,second);
-                                currentpower = (received[72] * 256) + received[71];
-                                printf("Current power = %i Watt\n",currentpower);
                                 break;
 
                             case 5: // extract current power $POW
