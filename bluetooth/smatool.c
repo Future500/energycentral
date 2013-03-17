@@ -1203,7 +1203,7 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
         if ((strcmp(argv[i],"-v")==0)||(strcmp(argv[i],"--verbose")==0)) {
             i++;
             if(i<argc){
-                verbose=atoi(argv[i]);
+                (*verbose)=atoi(argv[i]);
             }
         } else if ((strcmp(argv[i],"-c")==0)||(strcmp(argv[i],"--config")==0)) {
             i++;
@@ -1404,7 +1404,7 @@ int main(int argc, char **argv)
         d( "auto_set_dates\n", 6, verbose );
         auto_set_dates( &conf, &daterange, mysql, datefrom, dateto );
     } else {
-        d( sprintf( "QUERY RANGE    from %s to %s\n", datefrom, dateto ), 6, verbose );
+        d( "QUERY RANGE from %s to %s\n", 6, verbose, datefrom, dateto );
     }
     if(( daterange==1 )&&((location=0)||(mysql==0)||is_light( &conf ))) {
         if (debug ==1) {
