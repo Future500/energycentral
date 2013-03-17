@@ -482,7 +482,7 @@ read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int c
     }
 
     if ( bytes_read > 0) {
-        d("\nReceiving\n", 6, verbose); }
+        d("\nReceiving\n", 6, verbose);
 
         if ((cc==bytes_read)&&(memcmp(received,last_sent,cc) == 0)) {
             d( "ERROR received what we sent!", 3, verbose ); getchar();
