@@ -142,7 +142,7 @@ return (fcs);
 }
 
 /*
-* Log function, supports levels.
+* Log function, supports verbosity levels.
 * Any log message of equal or lower level than
 * the current verbosity level is printed.
 *
@@ -156,7 +156,7 @@ return (fcs);
 *  7       Debug: debug-level messages
 */
 void
-d( char *format, int const lvl, int verbosity, ...)
+d( char *format, int const priority, int verbosity, ...)
 {
     va_list l;
     char str[256];
@@ -165,8 +165,8 @@ d( char *format, int const lvl, int verbosity, ...)
     vsprintf(str, format, l);
     va_end(l);
 
-    if (lvl <= verbosity) {
-        printf("%s\n",str);
+    if (priority <= verbosity) {
+        printf("%i] %s", priority, str);
     }
 }
 
@@ -395,7 +395,7 @@ int check_send_error( ConfType * conf, int *s, int *rr, unsigned char *received,
     }
 
     if ( bytes_read > 0) {
-        d("\nReceiving\n", 6, verbose);
+        d(".", 6, verbose);
 
         if ((cc==bytes_read)&&(memcmp(received,last_sent,cc) == 0)) {
             d( "ERROR received what we sent!", 3, verbose ); getchar();
@@ -482,10 +482,10 @@ read_bluetooth( ConfType * conf, int *s, int *rr, unsigned char *received, int c
     }
 
     if ( bytes_read > 0) {
-        d("\nReceiving\n", 6, verbose);
+        d(".", 6, verbose);
 
         if ((cc==bytes_read)&&(memcmp(received,last_sent,cc) == 0)) {
-            d( "ERROR received what we sent!", 3, verbose ); getchar();
+            d( "ERROR received what we sent!\n", 3, verbose ); getchar();
             //Need to do something
         }
 
