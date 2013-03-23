@@ -820,7 +820,7 @@ int ConvertStreamtoInt( unsigned char * stream, int length, int * value )
 time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
 {
     int	i, nullvalue;
-    unsigned char teststring[1025];
+    unsigned char * teststring[1025];
 
     (*value) = 0;
     nullvalue = 1;
