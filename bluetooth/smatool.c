@@ -166,7 +166,7 @@ d( char *format, int const priority, int verbosity, ...)
     va_end(l);
 
     if (priority <= verbosity) {
-        printf("%i] %s", priority, str);
+        printf("%s", str);
     }
 }
 
