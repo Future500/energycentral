@@ -1839,6 +1839,7 @@ int main(int argc, char **argv)
                                                 if(archdatalen == 0 ) {
                                                     ptotal = gtotal;
                                                 }
+                                                printf("\n%4d-%2d-%2d %02d:%02d:%02d,%.3f,%.0f,%d,%d,%d", year, month, day, hour, minute,second, gtotal/1000, (gtotal-ptotal)*12, togo, i, crc_at_end);
                                                 printf("\n%d/%d/%4d %02d:%02d:%02d  total=%.3f Kwh current=%.0f Watts togo=%d i=%d crc=%d", day, month, year, hour, minute,second, gtotal/1000, (gtotal-ptotal)*12, togo, i, crc_at_end);
                                                 if( idate != prev_idate+300 ) {
                                                     d( "Date Error! prev=%d current=%d\n", 0, verbose, (int)prev_idate, (int)idate );
@@ -1875,6 +1876,7 @@ int main(int argc, char **argv)
                                                 sleep(10);
                                                 failedbluetooth++;
                                                 if( failedbluetooth > 3 ) {
+                                                    d("Bluetooth connection failed", 0, verbose);
                                                     exit(-1);
                                                 }
                                                 goto start;
