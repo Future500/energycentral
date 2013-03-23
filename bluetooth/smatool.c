@@ -819,8 +819,9 @@ int ConvertStreamtoInt( unsigned char * stream, int length, int * value )
 //Convert a recieved string to a value
 time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
 {
+    d("teststring: %s", 7, verbose, stream);
+
     int	i, nullvalue;
-    char teststring[1025];
 
     (*value) = 0;
     nullvalue = 1;
@@ -836,7 +837,6 @@ time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
         (*value) = 0; //Asigning null to 0 at this stage unless it breaks something
     }
 
-    d("teststring: %s", 7, verbose, teststring);
     return (*value);
 }
 
