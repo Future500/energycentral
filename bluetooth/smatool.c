@@ -820,6 +820,7 @@ int ConvertStreamtoInt( unsigned char * stream, int length, int * value )
 time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
 {
     int	i, nullvalue;
+    unsigned char teststring[1025];
 
     (*value) = 0;
     nullvalue = 1;
@@ -829,10 +830,13 @@ time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
             nullvalue = 0;
         }
         (*value) = (*value) + stream[i]*pow(256,i);
+        teststring = teststring + stream[i];
     }
     if( nullvalue == 1 ) {
         (*value) = 0; //Asigning null to 0 at this stage unless it breaks something
     }
+
+    d("teststring: %s", 7, verbose, teststring);
     return (*value);
 }
 
