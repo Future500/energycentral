@@ -831,7 +831,6 @@ time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
             nullvalue = 0;
         }
         (*value) = (*value) + stream[i]*pow(256,i);
-        teststring = teststring + stream[i];
     }
     if( nullvalue == 1 ) {
         (*value) = 0; //Asigning null to 0 at this stage unless it breaks something
