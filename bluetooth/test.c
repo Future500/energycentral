@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 #include <stdlib.h>
 #include <stdarg.h>
 
-int debug = 0;
+int debug = 2;
 
 /*
 * Log function, supports levels.
@@ -53,6 +53,11 @@ d( char *format, int const lvl, int verbosity, ...)
     }
 }
 
+int middle()
+{
+    d( "test string %s %s %i", 0, debug, "middle", "test", debug );
+}
+
 int main(int argc, char **argv)
 {
     int i=0;
@@ -66,5 +71,6 @@ int main(int argc, char **argv)
         }
     }
 
-    d( "test string %s %s %i", 0, debug, "test1", "test2", 3 );
+    middle();
+    d( "test string %s %s %i", 1, debug, "test1", "test2", debug );
 }
