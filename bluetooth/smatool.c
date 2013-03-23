@@ -580,7 +580,7 @@ unsigned char *  get_timezone_in_seconds( unsigned char *tzhex )
 }
 
 /*  If there are no dates set - get last updated date and go from there to NOW */
-int auto_set_dates( ConfType * conf, int * daterange, int mysql, char * datefrom, char * dateto)
+int auto_set_dates( ConfType * conf, int * daterange, char * datefrom, char * dateto)
 {
     time_t  	curtime;
     int 	day,month,year,hour,minute,second;
@@ -819,8 +819,6 @@ int ConvertStreamtoInt( unsigned char * stream, int length, int * value )
 //Convert a recieved string to a value
 time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
 {
-    d("teststring: %s", 7, verbose, stream);
-
     int	i, nullvalue;
 
     (*value) = 0;
@@ -840,7 +838,7 @@ time_t ConvertStreamtoTime( unsigned char * stream, int length, time_t * value )
 }
 
 // Set switches to save lots of strcmps
-void  SetSwitches( ConfType *conf, char * datefrom, char * dateto, int *location, int *mysql, int *post, int *file, int *daterange, int *test )
+void  SetSwitches( ConfType *conf, char * datefrom, char * dateto, int *location, int *file, int *daterange, int *test )
 {
     //Check if all location variables are set
     (*location)=0;
@@ -848,17 +846,11 @@ void  SetSwitches( ConfType *conf, char * datefrom, char * dateto, int *location
         (*location)=1;
     }
 
-    //Check if all Mysql variables are set
-    (*mysql)=0;
-
     //Check if all File variables are set
     (*file)=0;
     if( strlen(conf->File) > 0 ) {
         (*file)=1;
     }
-
-    //Check if all PVOutput variables are set
-    (*post)=0;
 
     (*daterange)=0;
     if(( strlen(datefrom) > 0 ) &&( strlen(dateto) > 0 )) {
@@ -1064,8 +1056,7 @@ void PrintHelp()
     printf( "  -c,  --config CONFIGFILE                 Set config file default smatool.conf\n" );
     printf( "       --test                              Run in test mode - don't update data\n" );
     printf( "\n" );
-    printf( "Dates are no longer required - defaults to last update if using mysql\n" );
-    printf( "or 2000 to now if not using mysql\n" );
+    printf( "Dates are no longer required - defaults to 2000-01-01 to now\n" );
     printf( "  -from  --datefrom YYYY-DD-MM HH:MM:00    Date range from date\n" );
     printf( "  -to  --dateto YYYY-DD-MM HH:MM:00        Date range to date\n" );
     printf( "\n" );
@@ -1079,12 +1070,11 @@ void PrintHelp()
     printf( "queried in the dark\n" );
     printf( "  -lat,  --latitude LATITUDE               location latitude -180 to 180 deg\n" );
     printf( "  -lon,  --longitude LONGITUDE             location longitude -90 to 90 deg\n" );
-    printf( "  -repost                                  verify and repost data if different\n");
     printf( "\n\n" );
 }
 
 /* Init Config to default values */
-int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, char * dateto, int * verbose, int * repost, int * test, int * install, int * update )
+int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, char * dateto, int * verbose, int * test, int * install, int * update )
 {
     int	i;
 
@@ -1112,9 +1102,6 @@ int ReadCommandConfig( ConfType *conf, int argc, char **argv, char * datefrom, c
             if(i<argc){
                 strcpy(dateto,argv[i]);
             }
-        } else if (strcmp(argv[i],"-repost")==0) {
-            i++;
-            (*repost)=1;
         } else if ((strcmp(argv[i],"-i")==0)||(strcmp(argv[i],"--inverter")==0)) {
             i++;
             if (i<argc){
@@ -1208,7 +1195,7 @@ int main(int argc, char **argv)
     int archdatalen=0;
     int failedbluetooth=0;
     int terminated=0;
-    int s,i,j,status,mysql=0,post=0,repost=0,test=0,file=0,daterange=0;
+    int s,i,j,status,test=0,file=0,daterange=0;
     int install=0, update=0, already_read=0;
     int location=0, error=0;
     int ret,found,crc_at_end, finished=0;
@@ -1267,7 +1254,7 @@ int main(int argc, char **argv)
     // set config to defaults
     InitConfig( &conf, datefrom, dateto );
     // read command arguments needed so can get config
-    if( ReadCommandConfig( &conf, argc, argv, datefrom, dateto, &verbose, &repost, &test, &install, &update ) < 0 ) {
+    if( ReadCommandConfig( &conf, argc, argv, datefrom, dateto, &verbose, &test, &install, &update ) < 0 ) {
         exit(0);
     }
     // read Config file
@@ -1275,7 +1262,7 @@ int main(int argc, char **argv)
         exit(-1);
     }
     // read command arguments  again - they overide config
-    if( ReadCommandConfig( &conf, argc, argv, datefrom, dateto, &verbose, &repost, &test, &install, &update ) < 0 ) {
+    if( ReadCommandConfig( &conf, argc, argv, datefrom, dateto, &verbose, &test, &install, &update ) < 0 ) {
         exit(0);
     }
     // read Inverter Setting file
@@ -1283,7 +1270,7 @@ int main(int argc, char **argv)
         exit(-1);
     }
     // set switches used through the program
-    SetSwitches( &conf, datefrom, dateto, &location, &mysql, &post, &file, &daterange, &test );
+    SetSwitches( &conf, datefrom, dateto, &location, &file, &daterange, &test );
     // Set value for inverter type
     //SetInverterType( &conf );
     // Get Return Value lookup from file
@@ -1292,11 +1279,11 @@ int main(int argc, char **argv)
     get_timezone_in_seconds( tzhex );
     if(daterange==0 ) { //auto set the dates
         d( "auto_set_dates\n", 6, verbose );
-        auto_set_dates( &conf, &daterange, mysql, datefrom, dateto );
+        auto_set_dates( &conf, &daterange, datefrom, dateto );
     } else {
         d( "QUERY RANGE from %s to %s\n", 6, verbose, datefrom, dateto );
     }
-    if(( daterange==1 )&&((location=0)||(mysql==0)||is_light( &conf ))) {
+    if(( daterange==1 )&&((location=0)||is_light( &conf ))) {
         d("Address %s\n", 6, verbose, conf.BTAddress);
 
         if (file ==1) {
