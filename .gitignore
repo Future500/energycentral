@@ -1,5 +1,8 @@
 /cache
 /vendor/
+/bin/sma-spot/
+/web/css/bootstrap*
+/web/js/bootstrap*
+/web/js/jquery*
 /web/pma
-.tags*
 silex.log

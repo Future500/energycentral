@@ -30,6 +30,10 @@ class Composerscript
         `cp vendor/twitter/bootstrap/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
         `cp -r vendor/highstock/js/* web/js/`;
+
+        $io->write( "Copying sma-spot..." );
+        `mkdir -p bin`;
+        `cp -r vendor/sma-spot bin`;
     }
 
 }
