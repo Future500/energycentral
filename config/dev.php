@@ -13,11 +13,15 @@ $app['debug'] = false;
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => array (
         'driver'    => 'pdo_mysql',
-        'host'      => 'localhost',
-        'dbname'    => 'future500_logcentral',
-        'user'      => 'future500',
-        'password'  => '46RhuBv8KFtz',
-        'charset'   => 'utf8',
+       /* 'host'      => 'localhost',
+       'dbname'    => 'future500_logcentral',
+       'user'      => 'future500',
+       'password'  => '46RhuBv8KFtz',*/
+       'host'      => 'localhost',
+       'dbname'    => 'future500',
+       'user'      => 'future500',
+       'password'  => 'test123',
+       'charset'   => 'utf8',
     )
 ));
 
