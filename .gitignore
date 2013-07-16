@@ -1,7 +1,9 @@
 /cache
 /vendor/
 /bin/sma-spot/
+/web/.htaccess
 /web/css/bootstrap*
+/web/img/glyph*
 /web/js/bootstrap*
 /web/js/jquery*
 /web/pma

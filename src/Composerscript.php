@@ -29,7 +29,7 @@ class Composerscript
         `mkdir -p web/js`;
         `cp vendor/twitter/bootstrap/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
-        `cp -r vendor/highstock/js/* web/js/`;
+        `cp -r vendor/highstock/js/* web/js/highstock/`;
 
         $io->write( "Copying sma-spot..." );
         `mkdir -p bin`;
