@@ -25,10 +25,10 @@
         {
             "type": "package",
             "package": {
-                "version": "2.0.5",
+                "version": "2.0.6",
                 "name": "sma-spot",
                 "dist": {
-                    "url": "https://sma-spot.googlecode.com/files/SMAspot_SRC_205_Linux_Win32.tar",
+                    "url": "https://sma-spot.googlecode.com/files/SMAspot_SRC_206_Linux_Win32.tar",
                     "type": "tar"
                 }
             }
