@@ -4,14 +4,7 @@
 
 {% block extra_topjs %}
 	<script type="text/javascript">
-		var myData = {{ dayStats|raw }}; // data parsed by PHP (class_stats.php)
-
-		function dateToYMD(date) {
-		    var d = date.getDate();
-		    var m = date.getMonth() + 1;
-		    var y = date.getFullYear();
-		    return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
-		}
+	//	var myData = {{ dayStats|raw }}; // data parsed by PHP (class_stats.php)
 
 		function outputFooter() {
 			var selectedDay = "";
@@ -52,7 +45,11 @@
 	</style>
 
 	<div id='footerArea'>
-		<script>outputFooter();</script>
+		{% if validDate %}
+			Currently viewing statistics for {{ date }}
+		{% else %}
+			An invalid date has been entered!
+		{% endif %}
 	</div>
 {% endblock %}
 
@@ -121,31 +118,12 @@
 				},
 				series: [{
 					name: 'kW generated',
-					data: []
+					data: {{ dayStats|raw }}	
 				}]
 			};
 
-// -------------------------------------------------------------------------
+			// -------------------------------------------------------------------------
 
-	console.log( {{dayStats|raw}});
-
-			for (var i = 0; i < myData.length; i++) {
-				// Replace non-digit and non decimal characters with a space
-				myData[i] = myData[i].replace(/[^0-9.]/g," ");
-
-				// Split data
-				var date_parts = myData[i].split(" ");
-
-				// adds the date and value of kW to array of series data
-				var date = Date.UTC(date_parts[0], date_parts[1], date_parts[2], date_parts[3], date_parts[4], date_parts[5]);
-
-				if(i == 0) { // we start with 0 kW 5 minutes earlier
-					chartConfig.series[0].data.push([date-300000, 0.0]); // 60000 ms * 5 = 300000 = 5 min
-				} else if(i == myData.length-1) { // we end with 0 kW 5 minutes later
-					chartConfig.series[0].data.push([date+300000, 0.0]);
-				}
-       			chartConfig.series[0].data.push([date, parseFloat(date_parts[6])]);
-       		}
 			new Highcharts.Chart(chartConfig);
 		}
 
