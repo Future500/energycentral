@@ -109,6 +109,8 @@
 			new Highcharts.Chart(chartConfig);
 		}
 
-		drawChart('dailyChart');
+		$( document ).ready(function() {
+			drawChart('dailyChart');
+		});
 	</script>
 {% endblock %}
