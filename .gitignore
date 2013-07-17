@@ -5,6 +5,7 @@
 /web/css/bootstrap*
 /web/img/glyph*
 /web/js/bootstrap*
+/web/js/highcharts/*
 /web/js/jquery*
 /web/pma
 silex.log
