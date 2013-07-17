@@ -46,7 +46,9 @@
 
 	<div id='footerArea'>
 		{% if validDate %}
-			Currently viewing statistics for {{ date }}
+			<a href='{{ date|date_modify("-1 day")|date("Y-m-d")}}'>Previous</a>
+			<span id='footerText'>Currently viewing statistics for {{ date }}</span>
+			<a href='{{ date|date_modify("+1 day")|date("Y-m-d")}}'>Next</a>
 		{% else %}
 			An invalid date has been entered!
 		{% endif %}
