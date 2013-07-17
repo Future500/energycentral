@@ -19,7 +19,7 @@ $app->register(new SessionServiceProvider(), array(
 
 $app->register(new TwigServiceProvider(), array(
     'twig.path'    => array(__DIR__.'/../templates'),
-    'twig.options' => array('cache' => __DIR__.'/../cache/twig'),
+ //   'twig.options' => array('cache' => __DIR__.'/../cache/twig'),
 ));
 $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     // add custom globals, filters, tags, ...
@@ -37,25 +37,5 @@ $app['translator'] = $app->share($app->extend('translator', function($translator
 
     return $translator;
 }));
-
-/*
- * Event functions
- */
-$app['event.findAll'] = $app->protect(function () use ($app) {
-    $q = '%' . $app['session']->get('q') . '%';
-    $statement = $app['db']->executeQuery('SELECT * FROM event WHERE tags LIKE :q', array( 'q' => $q));
-    return $statement->fetchAll();
-});
-$app['event.find'] = $app->protect(function ($id) use ($app) {
-    $statement = $app['db']->executeQuery('SELECT * FROM event WHERE id = ?', array($id));
-    return $statement->fetch();
-});
-$app['event.delete'] = $app->protect(function ($id) use ($app) {
-    return $app['db']->delete('event',array('id' => $id));
-});
-$app['event.insert'] = $app->protect(function ($data) use ($app) {
-    return $app['db']->insert('event', $data);
-});
-
 
 return $app;

@@ -30,6 +30,7 @@
                                        <link rel="shortcut icon" href="{{ app.request.basepath }}/ico/favicon.png">
         -->
     </head>
+
     <body>
         {% block navbar %}
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -55,16 +56,19 @@
 
         <div class="container">
         {% block content %}
-        <h1>Bootstrap starter template</h1>
-        <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+          <h1>Bootstrap starter template</h1>
+          <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
         {% endblock %}
         </div>
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ app.request.basepath }}/js/jquery-1.9.1.min.js"></script>
-    <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="{{ app.request.basepath }}/js/jquery-1.9.1.min.js"></script>
+        <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
 
+        {% block extrajs %}
+
+        {% endblock %}
     </body>
 </html>

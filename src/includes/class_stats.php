@@ -8,15 +8,16 @@ class Stats
 
     public function fetchDay(Silex\Application $app)
     {
-		$statement = $app['db']->executeQuery("SELECT * FROM daydata");
+		$statement = $app['db']->executeQuery("SELECT * FROM daydata WHERE datetime LIKE '%2013-04-19%' AND NOT kW='0.000'" );
 		$retn = $statement->fetchAll();
 
+		// loop through all the data
+		$numberArray = array();
+
 		foreach ($retn as $row) {
-			echo '----------------------<br>';
-			echo ' DateTime: ' . $row['datetime'] . '<br>';
-			echo ' kWh: ' . $row['kWh']. '<br>';
-			echo ' kW: ' . $row['kW']. '<br>';
+			array_push($numberArray, $row['datetime'] . ',' . floatval($row['kW']));
 		}
+		return json_encode($numberArray); // encode for jquery
 	}
 }
 ?>

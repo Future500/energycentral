@@ -3,6 +3,100 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-    Test var: {{ testvar }}
-	Testt!!!
+	<div id="myChart">
+
+	</div>
+{% endblock %}
+
+{% block extrajs %}
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+	<script type="text/javascript">
+		function drawChart(renderDiv)
+		{
+			var chartConfig = {
+				chart: {
+					type: 'area',
+					renderTo: renderDiv
+				},
+				title: {
+					text: 'Energy production',
+					x: -20
+				},
+				plotOptions: {
+					area: {
+						shadow: false,
+						states: {
+							hover: {
+								lineWidth: 2
+							}
+						},
+						marker: {
+							enabled: false,
+							states: {
+								hover: {
+									enabled: true,
+									radius: 4,
+									lineWidth: 1
+								}
+							}
+						}
+					}
+				},
+				xAxis: {
+					type: "datetime",
+       				tickInterval: 7200000,
+				},
+				yAxis: {
+					type: {
+						type: 'datetime'
+					},
+					title: {
+						text: 'kW'
+					},
+					plotLines: [{
+						value: 0,
+						width: 1,
+						color: '#808080'
+					}],
+				},
+				credits: {
+					enabled:false
+				},
+				tooltip: {
+					valueSuffix: 'kW',
+					snap:1
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle',
+					borderWidth: 0
+				},
+				series: [{
+					name: 'kW generated',
+					data: []
+				}]
+			};
+
+// -------------------------------------------------------------------------
+			var myData = {{ dayStats|raw }}; // data parsed by PHP (class_stats.php)
+
+			for (var i = 0; i < myData.length; i++) {
+				// Replace non-digit and non decimal characters with a space
+				myData[i] = myData[i].replace(/[^0-9.]/g," ");
+
+				// Split data
+				var date_parts = myData[i].split(" ");
+
+				// adds the  date and value of kW to array of series data
+				var date = Date.UTC(date_parts[0], date_parts[1], date_parts[2], date_parts[3], date_parts[4], date_parts[5]);
+       			chartConfig.series[0].data.push([date, parseFloat(date_parts[6])]);
+       		}
+			new Highcharts.Chart(chartConfig);
+		}
+
+		drawChart('myChart');
+	</script>
 {% endblock %}

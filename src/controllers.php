@@ -10,8 +10,5 @@ require_once('includes/class_stats.php'); // class which we use to parse the val
 
 $app->get('/', function (Request $request) use ($app) {
 	$stats = new Stats();
-	$stats->fetchDay($app);
-
-	return $app['twig']->render('index.html', Array("testvar" => "none"));
-})
-->bind('event');
+	return $app['twig']->render('index.html', Array("dayStats" => $stats->fetchDay($app)));
+});
