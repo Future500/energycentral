@@ -6,9 +6,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-require_once('includes/class_stats.php'); // class which we use to parse the values for the graph
-
 $app->get('/', function (Request $request) use ($app) {
-	$stats = new Stats();
-	return $app['twig']->render('index.html', Array("dayStats" => $stats->fetchDay($app)));
+	return $app['twig']->render('index.html', Array("dayStats" =>  $app['stats']->fetchDay($app)));
+});
+
+$app->get('/{date}', function (Request $request, $date) use ($app) {
+	return $app['twig']->render('index.html', Array("dayStats" =>  $app['stats']->fetchDay($app, $date)));
 });

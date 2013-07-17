@@ -2,15 +2,63 @@
 
 {% block title %}Index{% endblock %}
 
+{% block extra_topjs %}
+	<script type="text/javascript">
+		var myData = {{ dayStats|raw }}; // data parsed by PHP (class_stats.php)
+
+		function dateToYMD(date) {
+		    var d = date.getDate();
+		    var m = date.getMonth() + 1;
+		    var y = date.getFullYear();
+		    return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+		}
+
+		function outputFooter() {
+			var selectedDay = "";
+
+			if(myData.length != 0) {
+				selectedDay = myData[0].split(" ", 1); // get selected day
+			} else {
+				selectedDay = window.location.pathname;
+				selectedDay = selectedDay.substring(selectedDay.lastIndexOf('/') + 1); // remove slash at the beginning
+	    	}
+ 
+ 			var today = new Date(selectedDay);
+			var tomorrow = new Date(selectedDay);
+			var yesterday = new Date(selectedDay);
+
+			tomorrow.setDate(tomorrow.getDate() + 1);
+			yesterday.setDate(yesterday.getDate() - 1);	  
+
+			document.writeln("<a href='" + dateToYMD(yesterday) + "'>Previous</a><span id='footerText'>Viewing " + dateToYMD(today) + "</span><a href='" + dateToYMD(tomorrow) + "'>Next</a>");
+		}
+	</script>
+{% endblock %}
+
 {% block content %}
 	<div id="myChart">
 
 	</div>
+
+	<style>
+		#footerArea {
+			text-align:center;
+		}
+
+		#footerText {
+			padding-left:25px;
+			padding-right:25px;
+		}
+	</style>
+
+	<div id='footerArea'>
+		<script>outputFooter();</script>
+	</div>
 {% endblock %}
 
-{% block extrajs %}
-	<script src="http://code.highcharts.com/highcharts.js"></script>
-	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+{% block extra_bottomjs %}
+	<script src="{{ app.request.basepath }}js/highcharts/highcharts.js"></script>
+	<script src="{{ app.request.basepath }}js/highcharts/modules/exporting.js"></script>
 
 	<script type="text/javascript">
 		function drawChart(renderDiv)
@@ -45,13 +93,10 @@
 					}
 				},
 				xAxis: {
-					type: "datetime",
+					type: 'datetime',
        				tickInterval: 7200000,
 				},
 				yAxis: {
-					type: {
-						type: 'datetime'
-					},
 					title: {
 						text: 'kW'
 					},
@@ -81,7 +126,8 @@
 			};
 
 // -------------------------------------------------------------------------
-			var myData = {{ dayStats|raw }}; // data parsed by PHP (class_stats.php)
+
+	console.log( {{dayStats|raw}});
 
 			for (var i = 0; i < myData.length; i++) {
 				// Replace non-digit and non decimal characters with a space
@@ -90,8 +136,14 @@
 				// Split data
 				var date_parts = myData[i].split(" ");
 
-				// adds the  date and value of kW to array of series data
+				// adds the date and value of kW to array of series data
 				var date = Date.UTC(date_parts[0], date_parts[1], date_parts[2], date_parts[3], date_parts[4], date_parts[5]);
+
+				if(i == 0) { // we start with 0 kW 5 minutes earlier
+					chartConfig.series[0].data.push([date-300000, 0.0]); // 60000 ms * 5 = 300000 = 5 min
+				} else if(i == myData.length-1) { // we end with 0 kW 5 minutes later
+					chartConfig.series[0].data.push([date+300000, 0.0]);
+				}
        			chartConfig.series[0].data.push([date, parseFloat(date_parts[6])]);
        		}
 			new Highcharts.Chart(chartConfig);

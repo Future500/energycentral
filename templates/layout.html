@@ -16,6 +16,9 @@
         <link href="{{ app.request.basepath }}/css/bootstrap.css" rel="stylesheet">
         <link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet">
 
+        {% block extra_topjs %}
+
+        {% endblock %}
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
           <script src="{{ app.request.basepath }}/js/html5shiv.js"></script>
@@ -67,7 +70,7 @@
         <script src="{{ app.request.basepath }}/js/jquery-1.9.1.min.js"></script>
         <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
 
-        {% block extrajs %}
+        {% block extra_bottomjs %}
 
         {% endblock %}
     </body>

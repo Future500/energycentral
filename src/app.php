@@ -9,6 +9,8 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
+require_once('includes/class_stats.php'); // class which we use to parse the values for the graph
+
 $app = new Application();
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ValidatorServiceProvider());
@@ -25,7 +27,9 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     // add custom globals, filters, tags, ...
     return $twig;
 }));
-
+$app['stats'] = $app->share(function () {
+    return new Stats();
+});
 $app->register(new TranslationServiceProvider(), array(
     'locale_fallback' => 'nl',
 ));

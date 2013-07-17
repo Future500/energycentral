@@ -6,9 +6,13 @@ class Stats
 		// ...
 	}
 
-    public function fetchDay(Silex\Application $app)
+    public function fetchDay(Silex\Application $app, $date = '')
     {
-		$statement = $app['db']->executeQuery("SELECT * FROM daydata WHERE datetime LIKE '%2013-04-19%' AND NOT kW='0.000'" );
+    	if($date == '') {
+    		$date = date('Y-m-d');
+    	}
+    	$q = '%' . $date . '%';
+		$statement = $app['db']->executeQuery("SELECT * FROM daydata WHERE datetime LIKE :q AND NOT kW='0.000'", array('q' => $q));
 		$retn = $statement->fetchAll();
 
 		// loop through all the data
@@ -17,6 +21,7 @@ class Stats
 		foreach ($retn as $row) {
 			array_push($numberArray, $row['datetime'] . ',' . floatval($row['kW']));
 		}
+
 		return json_encode($numberArray); // encode for jquery
 	}
 }
