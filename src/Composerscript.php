@@ -18,22 +18,15 @@ class Composerscript
         $io = $event->getIO();
 
         $io->write( "Copying images..." );
-        `mkdir -p web/img`;
-        `cp vendor/twitter/bootstrap/img/* web/img/`;
+        `cp vendor/twitter/bootstrap-zip/img/* web/img/`;
 
         $io->write( "Copying css..." );
-        `mkdir -p web/css`;
-        `cp vendor/twitter/bootstrap/css/* web/css/`;
+        `cp vendor/twitter/bootstrap-zip/css/*.css web/css/`;
 
         $io->write( "Copying js..." );
-        `mkdir -p web/js`;
-        `cp vendor/twitter/bootstrap/js/* web/js/`;
+        `cp vendor/twitter/bootstrap-zip/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
-        `cp -r vendor/highstock/js/* web/js/highstock/`;
-
-        $io->write( "Copying sma-spot..." );
-        `mkdir -p bin`;
-        `cp -r vendor/sma-spot bin`;
+        `cp -r vendor/highcharts/js/* web/js/highcharts/`;
     }
 
 }
