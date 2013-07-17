@@ -3,7 +3,7 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-	<div id="myChart">
+	<div id="dailyChart">
 
 	</div>
 
@@ -25,7 +25,7 @@
 			{% if dayStats|raw|length != 2 %}
 				<span id='footerText'>Currently viewing statistics for {{ date }}.</span>
 			{% else %}
-				<span id='footerText'>No statistics available yet.</span>
+				<span id='footerText'>No statistics available yet for {{ date }}.</span>
 			{% endif %}
 
 			<a href='{{ date|date_modify("+1 day")|date("Y-m-d")}}'>Next</a>
@@ -109,6 +109,6 @@
 			new Highcharts.Chart(chartConfig);
 		}
 
-		drawChart('myChart');
+		drawChart('dailyChart');
 	</script>
 {% endblock %}
