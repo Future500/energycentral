@@ -30,7 +30,7 @@
 	<script type="text/javascript">
 		var chartStats = {{ dayStats|raw }};
 
-		function drawChart(renderDiv)
+		function drawChart(renderDiv, xAxisType, xAxisInterval)
 		{
 			var chartConfig = {
 				chart: {
@@ -62,8 +62,8 @@
 					}
 				},
 				xAxis: {
-					type: 'datetime',
-       				tickInterval: 7200000,
+					type: xAxisType,
+       				tickInterval: xAxisInterval,
 				},
 				yAxis: {
 					title: {
@@ -101,7 +101,7 @@
 
 		$( document ).ready(function() {
 			if(chartStats.length > 0) {
-				drawChart('dailyChart');
+				drawChart('dailyChart', 'datetime', 7200000);
 			}
 		});
 	</script>
