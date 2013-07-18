@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "273d2fe833510099a04dbdcbbf58af71",
+    "hash": "ab070c95c4e884bb626fdc48c6e7f921",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -475,57 +475,6 @@
             "time": "2013-03-07 12:15:25"
         },
         {
-            "name": "filp/whoops",
-            "version": "1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/filp/whoops.git",
-                "reference": "1.0.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/1.0.7",
-                "reference": "1.0.7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "dev-master",
-                "silex/silex": "1.0.*@dev"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Whoops": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Filipe Dobreira",
-                    "homepage": "https://github.com/filp",
-                    "role": "Developer"
-                }
-            ],
-            "description": "php error handling for cool kids",
-            "homepage": "https://github.com/filp/whoops",
-            "keywords": [
-                "error",
-                "exception",
-                "handling",
-                "library",
-                "silex-provider",
-                "whoops",
-                "zf2"
-            ],
-            "time": "2013-06-10 12:22:13"
-        },
-        {
             "name": "highcharts",
             "version": "3.0.2",
             "dist": {
@@ -535,6 +484,63 @@
                 "shasum": null
             },
             "type": "library"
+        },
+        {
+            "name": "igorw/config-service-provider",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/ConfigServiceProvider.git",
+                "reference": "v1.2.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorw/ConfigServiceProvider/zipball/v1.2.1",
+                "reference": "v1.2.1",
+                "shasum": ""
+            },
+            "require": {
+                "silex/silex": "~1.0"
+            },
+            "require-dev": {
+                "jamesmoss/toml": "~0.1",
+                "symfony/yaml": "~2.1"
+            },
+            "suggest": {
+                "jamesmoss/toml": "~0.1",
+                "symfony/yaml": "~2.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Igorw\\Silex": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/igorw/ConfigServiceProvider/contributors"
+                }
+            ],
+            "description": "A config ServiceProvider for Silex with support for php, json and yaml.",
+            "keywords": [
+                "silex"
+            ],
+            "time": "2013-05-31 14:23:34"
         },
         {
             "name": "jquery/jquery",
@@ -1205,12 +1211,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "v2.3.1"
+                "reference": "v2.3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/v2.3.1",
-                "reference": "v2.3.1",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/v2.3.2",
+                "reference": "v2.3.2",
                 "shasum": ""
             },
             "require": {
@@ -1412,12 +1418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "1c8466eea14e2f9ec50235ff63027c848cf45040"
+                "reference": "v2.3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/1c8466eea14e2f9ec50235ff63027c848cf45040",
-                "reference": "1c8466eea14e2f9ec50235ff63027c848cf45040",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/v2.3.2",
+                "reference": "v2.3.2",
                 "shasum": ""
             },
             "require": {
@@ -1453,7 +1459,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-11 19:36:36"
+            "time": "2013-07-17 05:57:53"
         },
         {
             "name": "symfony/http-kernel",
@@ -1462,12 +1468,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpKernel.git",
-                "reference": "8055d68c62f3a85b831fe8271d6be41ad43391be"
+                "reference": "515d24cbfcf795292393220a961f51188d7c7b13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/8055d68c62f3a85b831fe8271d6be41ad43391be",
-                "reference": "8055d68c62f3a85b831fe8271d6be41ad43391be",
+                "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/515d24cbfcf795292393220a961f51188d7c7b13",
+                "reference": "515d24cbfcf795292393220a961f51188d7c7b13",
                 "shasum": ""
             },
             "require": {
@@ -1523,7 +1529,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-11 19:36:36"
+            "time": "2013-07-17 08:47:37"
         },
         {
             "name": "symfony/icu",
@@ -1871,12 +1877,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Routing.git",
-                "reference": "3deda53b19ee9d361b03de5268bc91533eb76235"
+                "reference": "v2.3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/3deda53b19ee9d361b03de5268bc91533eb76235",
-                "reference": "3deda53b19ee9d361b03de5268bc91533eb76235",
+                "url": "https://api.github.com/repos/symfony/Routing/zipball/v2.3.2",
+                "reference": "v2.3.2",
                 "shasum": ""
             },
             "require": {

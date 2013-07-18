@@ -1,6 +1,8 @@
 /cache
 /vendor/
 /bin/sma-spot/
+/config/*.json
+/config/SMAspot.cfg
 /web/.htaccess
 /web/css/bootstrap*
 /web/img/glyph*
