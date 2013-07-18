@@ -9,12 +9,12 @@ use Symfony\Component\Console\Input\InputOption;
 $console = new Application('EnergyCentral', 'n/a');
 
 $console
-    ->register('demo:greet')
-    ->setDescription('Greet someone')
+    ->register('import:run')
+    ->setDescription('Import all available data files')
     ->addArgument(
         'year',
-        InputArgument::OPTIONAL,
-        'What year do you want to '
+        InputArgument::REQUIRED,
+        'What year do you want to import?'
     )
     // ->addOption(
     //    'yell',
@@ -23,18 +23,8 @@ $console
     //    'If set, the task will yell in uppercase letters'
     // )
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
-            $name = $input->getArgument('year');
-            if ($name) {
-                $text = 'Hello '.$name;
-            } else {
-                $text = 'Hello';
-            }
-
-            if ($input->getOption('yell')) {
-                $text = strtoupper($text);
-            }
-
-            $output->writeln($text);
+            $year = $input->getArgument('year');
+            $output->writeln();
     })
 ;
 
