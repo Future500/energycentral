@@ -7,13 +7,11 @@ class Stats
 	}
 
 	public function checkDate($date) 
-	{  
-	 	if(strlen($date) > 8) // need atleast the year and month before we continue
-	 	{
-		    list($yy, $mm, $dd) = explode("-", $date); // save explode result to variables
+	{
+		 if(strlen($date) > 8) { // need atleast the year and month before we continue
+			list($yy, $mm, $dd) = explode("-", $date); // save explode result to variables
 
-			if (is_numeric($yy) && is_numeric($mm) && is_numeric($dd)) // check if only numbers have been used
-			{ 
+			if (is_numeric($yy) && is_numeric($mm) && is_numeric($dd)) { // check if only numbers have been used
 				return checkdate($mm, $dd, $yy);  // check if valid
 			}
 		}
@@ -24,8 +22,7 @@ class Stats
 	{
 		$numberArray = array();
 		
-		if(count($input)) // If there is any data then we loop through it, if there isn't then the graph will be empty
-		{
+		if(count($input)) { // If there is any data then we loop through it, if there isn't then the graph will be empty
 			// We start with 0 kW so we take the first index of our input (which is the first time energy is received) and subtract 5 minutes
 			$lastTime = strtotime($input[0]['datetime'] . 'UTC') * 1000;
 			array_push($numberArray, array($lastTime - 300000, 0.0)); // We start with 0 kW 5 minutes before the first reading
