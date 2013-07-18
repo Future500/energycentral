@@ -52,24 +52,28 @@ class Stats
             $date = date('Y-m-d');
         }
 
-        // add invalid date check, if its true then we won't continue this func
-
-        // Fetch the first and last reading
-        $beginGraph = $app['db']->executeQuery(
-            "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime ASC LIMIT 1",
-            array('date' => $date)
-        );
-        $endGraph = $app['db']->executeQuery(
-            "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime DESC LIMIT 1",
-            array('date' => $date)
-        );
+        // Check if valid date otherwise we can skip the next part of code
+        if ($this->checkDate($date)) {
+            // Fetch the first and last reading
+            $beginGraph = $app['db']->fetchColumn(
+                "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime ASC LIMIT 1",
+                array('date' => $date)
+            );
+            $endGraph = $app['db']->fetchColumn(
+                "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime DESC LIMIT 1",
+                array('date' => $date)
+            );
+        }
 
         // Fetch all data between the two times
-        $statement = $app['db']->executeQuery(
-            "SELECT * FROM daydata WHERE datetime >= :first AND datetime <= :last",
-            array('first' => $beginGraph->fetchColumn(),'last' => $endGraph->fetchColumn())
-        );
-        $retn = $statement->fetchAll();
+        $retn = array();
+
+        if(!empty($beginGraph) && !empty($endGraph)) {
+            $retn = $app['db']->fetchAll(
+                "SELECT * FROM daydata WHERE datetime >= :first AND datetime <= :last",
+                array('first' => $beginGraph,'last' => $endGraph)
+            );
+        }
         return ($highcharts ? $this->encodeHighcharts($retn) : $retn);
     }
 }
