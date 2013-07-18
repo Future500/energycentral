@@ -12,8 +12,12 @@ $app->get('/', function (Request $request) use ($app) { // fetch a day (it will 
 													'date' => date('d-m-Y')));
 });
 
-$app->get('/{date}', function (Request $request, $date) use ($app) { // fetch a day with a specified date
-	return $app['twig']->render('index.html', Array('dayStats' =>  $app['stats']->fetchDay($app, $date),
+$app->get('/{date}', function (Request $request, $date) use ($app) { // fetch a day or month with a specified date
+	if(strlen($date) > 7) { // we've chosen a day (ex: 2013-04-07)
+		return $app['twig']->render('index.html', Array('dayStats' =>  $app['stats']->fetchDay($app, $date),
 													'validDate' => $app['stats']->checkDate($date),
 													'date' => $date));
+	} else { // we've chosen a month (ex: 2013-04)
+	
+	}
 });

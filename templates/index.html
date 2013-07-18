@@ -7,27 +7,14 @@
 
 	</div>
 
-	<style>
-		#footerArea {
-			text-align:center;
-		}
-
-		#footerText {
-			padding-left:25px;
-			padding-right:25px;
-		}
-	</style>
-
 	<div id='footerArea'>
 		{% if validDate %}
 			<a href='{{ date|date_modify("-1 day")|date("Y-m-d")}}'>Previous</a>
-
 			{% if dayStats|raw|length != 2 %}
 				<span id='footerText'>Currently viewing statistics for {{ date|date("d/m/Y") }}.</span>
 			{% else %}
 				<span id='footerText'>No statistics available yet for {{ date|date("d/m/Y") }}.</span>
 			{% endif %}
-
 			<a href='{{ date|date_modify("+1 day")|date("Y-m-d")}}'>Next</a>
 		{% else %}
 			<font color='red'>An invalid date has been entered!</font>
@@ -40,6 +27,8 @@
 	<script src="{{ app.request.basepath }}js/highcharts/modules/exporting.js"></script>
 
 	<script type="text/javascript">
+		var chartStats = {{ dayStats|raw }};
+
 		function drawChart(renderDiv)
 		{
 			var chartConfig = {
@@ -100,7 +89,7 @@
 				},
 				series: [{
 					name: 'kW generated',
-					data: {{ dayStats|raw }}	
+					data: chartStats	
 				}]
 			};
 
@@ -110,7 +99,9 @@
 		}
 
 		$( document ).ready(function() {
-			drawChart('dailyChart');
+			if(chartStats.length > 0) {
+				drawChart('dailyChart');
+			}
 		});
 	</script>
 {% endblock %}
