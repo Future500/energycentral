@@ -8,8 +8,7 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
-
-require_once('includes/class_stats.php'); // class which we use to parse the values for the graph
+use EC\Stats;
 
 $app = new Application();
 $app->register(new UrlGeneratorServiceProvider());
