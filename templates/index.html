@@ -17,7 +17,8 @@
 			{% endif %}
 			<a href='{{ date|date_modify("+1 day")|date("Y-m-d")}}'>Next</a>
 		{% else %}
-			<font color='red'>An invalid date has been entered!</font>
+			<p><font color='red'>An invalid date has been entered!</font></p>
+			<a href='/'>Return to the homepage</a>
 		{% endif %}
 	</div>
 {% endblock %}

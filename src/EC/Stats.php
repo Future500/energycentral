@@ -13,14 +13,8 @@ class Stats
 
     public function checkDate($date)
     {
-        if (strlen($date) > 8) { // need atleast the year and month before we continue
-            list($yy, $mm, $dd) = explode("-", $date); // save explode result to variables
-
-            if (is_numeric($yy) && is_numeric($mm) && is_numeric($dd)) { // check if only numbers have been used
-                return checkdate($mm, $dd, $yy);  // check if valid
-            }
-        }
-        return false;
+        $dateRes = \DateTime::createFromFormat('Y-m-d', $date);
+        return $dateRes != false; // check if it's a valid date
     }
 
     private function encodeHighcharts(array $input)
@@ -45,35 +39,48 @@ class Stats
         return json_encode($numberArray); // encode for jquery
     }
 
-    public function fetchDay(Silex\Application $app, $date = '', $highcharts = true)
+    public function fetchDay(Silex\Application $app, $date = NULL, $trimZeroData = false)
     {
         // Set current date if none is set yet
         if (empty($date)) {
             $date = date('Y-m-d');
         }
 
-        // Check if valid date otherwise we can skip the next part of code
-        if ($this->checkDate($date)) {
-            // Fetch the first and last reading
-            $beginGraph = $app['db']->fetchColumn(
-                "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime ASC LIMIT 1",
-                array('date' => $date)
-            );
-            $endGraph = $app['db']->fetchColumn(
-                "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime DESC LIMIT 1",
-                array('date' => $date)
-            );
-        }
-
-        // Fetch all data between the two times
+        // Setup return variable
         $retn = array();
 
-        if(!empty($beginGraph) && !empty($endGraph)) {
-            $retn = $app['db']->fetchAll(
-                "SELECT * FROM daydata WHERE datetime >= :first AND datetime <= :last",
-                array('first' => $beginGraph,'last' => $endGraph)
-            );
+        // Check if valid date otherwise we can skip the next part of code
+        if ($this->checkDate($date)) {
+            if (!$trimZeroData) {
+                // Fetch the first and last reading
+                $beginGraph = $app['db']->fetchColumn(
+                    "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime ASC LIMIT 1",
+                    array('date' => $date)
+                );
+                $endGraph = $app['db']->fetchColumn(
+                    "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime DESC LIMIT 1",
+                    array('date' => $date)
+                );
+
+                // Check if results aren't empty and also show 0 values
+                if (!empty($beginGraph) && !empty($endGraph)) {
+                    $retn = $app['db']->fetchAll(
+                        "SELECT * FROM daydata WHERE datetime >= :first AND datetime <= :last",
+                        array('first' => $beginGraph,'last' => $endGraph)
+                    );
+                }
+            } else { // Don't show 0 values in the middle of the graph
+                $retn = $app['db']->fetchAll(
+                    "SELECT * FROM daydata WHERE DATE(datetime) = :date AND NOT kW='0.000'",
+                    array('date' => $date)
+                );
+            }
         }
-        return ($highcharts ? $this->encodeHighcharts($retn) : $retn);
+        return $retn;
+    }
+
+    public function fetchDayHighcharts(Silex\Application $app, $date = NULL, $trimZeroData = false)
+    {
+        return $this->encodeHighcharts($this->fetchDay($app, $date, $trimZeroData));
     }
 }
