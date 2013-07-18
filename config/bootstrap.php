@@ -2,12 +2,13 @@
 
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
+use Igorw\Silex\JsonConfigDriver;
 
 $env = getenv('APPLICATION_ENV') ?: 'prod';
 $configFile = __DIR__."/".$env.".json";
 $configDefaults = array('root_dir' => dirname(__DIR__));
 
-$app->register(new Igorw\Silex\ConfigServiceProvider($configFile, $configDefaults));
+$app->register(new Igorw\Silex\ConfigServiceProvider($configFile, $configDefaults, new JsonConfigDriver()));
 $app->register(new Silex\Provider\DoctrineServiceProvider(), $app['config']);
 $app->register(new MonologServiceProvider(), $app['config']);
 
