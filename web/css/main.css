@@ -1,8 +1,12 @@
-#footerArea {
+#footerDaily, #footerMonthly {
 	text-align:center;
 }
 
-#footerText {
-	padding-left:25px;
-	padding-right:25px;
+#dailyText, #monthlyText {
+    padding-left:25px;
+    padding-right:25px;
+}
+
+#nextDay:hover, #prevDay:hover, #nextMonth:hover, #prevMonth:hover {
+    color: #8788CF;
 }

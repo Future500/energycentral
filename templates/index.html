@@ -9,9 +9,9 @@
 	<div id='footerDaily'>
 		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>Previous</A>
 		{% if dayStats|raw|length != 2 %}
-			<span class='footerText'>Currently viewing daily statistics for {{ date|date("d-m-Y")}}.</span>
+			<span id='dailyText'>Currently viewing daily statistics for {{ date|date("d-m-Y")}}.</span>
 		{% else %}
-			<span class='footerText'>No daily statistics available for {{ date|date("d-m-Y") }}.</span>
+			<span id='dailyText'>No daily statistics available for {{ date|date("d-m-Y") }}.</span>
 		{% endif %}
 		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</A>
 	</div>
@@ -22,9 +22,9 @@
 	<div id='footerMonthly'>
 		<a href="javascript:getMonth('{{ date|date_modify("-1 month")|date("m")}}');" id='prevMonth'>Previous</A>
 		{% if monthStats|raw|length != 2 %}
-			<span class='footerText'>Currently viewing monthly statistics for month {{ date|date("m")}}.</span>
+			<span id='monthlyText'>Currently viewing monthly statistics for month {{ date|date("m")}}.</span>
 		{% else %}
-			<span class='footerText'>No monthly statistics available for month {{ date|date("m") }}.</span>
+			<span id='monthlyText'>No monthly statistics available for month {{ date|date("m") }}.</span>
 		{% endif %}
 		<a href="javascript:getMonth('{{ date|date_modify("+1 month")|date("m")}}');" id='nextMonth'>Next</A>
 	</div>
@@ -182,22 +182,51 @@
 
 		function updateFooter(date, emptyData)
 		{
-			// we create a new date because the twig date is only sent once to the template
-			var tomorrow_date = new Date(date);
-			var yesterday_date = new Date(date);
+			var nextDate = new Date(date);
+			var prevDate = new Date(date);
 
-			if (!emptyData) {
-				$('#footerText').html('Currently viewing statistics for ' + dateToText(yesterday_date, false) + '.');
-			} else {
-				$('#footerText').html('No statistics available for ' + dateToText(tomorrow_date, false) + '.');
+
+			if(date.length > 2) { // we are updating the daily graph
+				// we create a new date because the twig date is only sent once to the template
+				if (!emptyData) {
+					$('#dailyText').html('Currently viewing statistics for ' + dateToText(nextDate, false) + '.');
+				} else {
+					$('#dailyText').html('No statistics available for ' + dateToText(nextDate, false) + '.');
+				}
+
+				// set new links and texts
+				nextDate.setDate(nextDate.getDate()+1);
+				prevDate.setDate(prevDate.getDate()-1);
+				
+				$("#nextDay").attr("href", "javascript:getDay('" + dateToText(nextDate, true) + "');");
+				$("#prevDay").attr("href", "javascript:getDay('" + dateToText(prevDate, true) + "');");
+			} else { // we are updating the monthly graph
+				// we create a new date because the twig date is only sent once to the template
+				var month = nextDate.getMonth() + 1; // months are zero based so +1
+
+				if (!emptyData) {
+					$('#monthlyText').html('Currently viewing monthly statistics for month ' + month + '.');
+				} else {
+					$('#monthlyText').html('No monthly statistics available for month ' + month + '.');
+				}
+
+				// set new links and texts
+				nextDate.setMonth(month + 1);
+				prevDate.setMonth(month - 1);
+
+				$("#nextMonth").attr("href", "javascript:getMonth('" + nextDate.getMonth() + "');");
+
+				/*if(prevDate.getMonth() == 0 && $('#prevMonth').is(":visible")) { // no more months to show so hide the link
+					$("#prevMonth").hide();
+				} else {
+					// show the link again if its hidden
+					if (!$('#prevMonth').is(":visible")) {
+						$("#prevMonth").show();
+					}
+				*/
+					$("#prevMonth").attr("href", "javascript:getMonth('" + prevDate.getMonth() + "');");
+				//}
 			}
-
-			// set new links and texts
-			tomorrow_date.setDate(tomorrow_date.getDate()+1);
-			yesterday_date.setDate(yesterday_date.getDate()-1);
-			
-			$("#next").attr("href", "javascript:getDay('" + dateToText(tomorrow_date, true) + "');");
-			$("#prev").attr("href", "javascript:getDay('" + dateToText(yesterday_date, true) + "');");
 		}
 
 		function getDay(date) {
@@ -212,7 +241,7 @@
 			$.getJSON("/" + month, function(data) { 
 				var chart = $('#monthlyChart').highcharts();
 				chart.series[0].setData(data);
-			//	updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+				updateFooter(month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
 			});
 		}
 	</script>

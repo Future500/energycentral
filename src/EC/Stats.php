@@ -44,12 +44,12 @@ class Stats
                 $datetime = new \DateTime($input[$lastIndex]['date']);
 
                 $lastTime = strtotime($input[$lastIndex]['date'] . 'UTC') * 1000;
-                $dayDiff = cal_days_in_month(CAL_GREGORIAN, $datetime->format('m'), date('y'))  - count($input);
+                $dayDiff = cal_days_in_month(CAL_GREGORIAN, $datetime->format('m'), $datetime->format('y'))  - count($input); //calculate day difference for a full month
 
                 if($dayDiff > 0) {
-                    for($i = 0; $i < $dayDiff; $i++) {
-                        $lastTime = $lastTime + (24 * 3600 * 1000); // add one day
-                        array_push($numberArray, array($lastTime, 0.0)); // We end with 0 kW 5 minutes after the last reading
+                    for($i = 0; $i < $dayDiff; $i++) { // add days until the month is filled
+                        $lastTime = $lastTime + (24 * 3600 * 1000);
+                        array_push($numberArray, array($lastTime, 0.0));
                     }
                 }
             }
