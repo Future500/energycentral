@@ -8,18 +8,13 @@
 	</div>
 
 	<div id='footerArea'>
-		{% if validDate %}
-			<a href='{{ date|date_modify("-1 day")|date("Y-m-d")}}'>Previous</a>
-			{% if dayStats|raw|length != 2 %}
-				<span id='footerText'>Currently viewing statistics for {{ date|date("d/m/Y") }}.</span>
-			{% else %}
-				<span id='footerText'>No statistics available yet for {{ date|date("d/m/Y") }}.</span>
-			{% endif %}
-			<a href='{{ date|date_modify("+1 day")|date("Y-m-d")}}'>Next</a>
+		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prev'>Previous</A>
+		{% if dayStats|raw|length != 2 %}
+			<span id='footerText'>Currently viewing statistics for {{ date|date("d-m-Y")}}.</span>
 		{% else %}
-			<p><font color='red'>An invalid date has been entered!</font></p>
-			<a href='/'>Return to the homepage</a>
+			<span id='footerText'>No statistics available for {{ date|date("d-m-Y") }}.</span>
 		{% endif %}
+		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='next'>Next</A>
 	</div>
 {% endblock %}
 
@@ -28,14 +23,10 @@
 	<script src="{{ app.request.basepath }}js/highcharts/modules/exporting.js"></script>
 
 	<script type="text/javascript">
-		var chartStats = {{ dayStats|raw }};
-
-		function drawChart(renderDiv, xAxisType, xAxisInterval)
-		{
-			var chartConfig = {
+		$(function () {
+		    $('#dailyChart').highcharts({
 				chart: {
 					type: 'area',
-					renderTo: renderDiv
 				},
 				title: {
 					text: 'Energy production',
@@ -62,8 +53,8 @@
 					}
 				},
 				xAxis: {
-					type: xAxisType,
-       				tickInterval: xAxisInterval,
+					type: 'datetime',
+       				tickInterval: 3600000,
 				},
 				yAxis: {
 					title: {
@@ -90,19 +81,51 @@
 				},
 				series: [{
 					name: 'kW generated',
-					data: chartStats	
+          			data: {{ dayStats }}
 				}]
-			};
+		    });
+		});
 
-			// -------------------------------------------------------------------------
+		function dateToText(date, YMD)
+		{
+		    var d = date.getDate();
+		    var m = date.getMonth() + 1;
+		    var y = date.getFullYear();
 
-			new Highcharts.Chart(chartConfig);
+		    if (YMD) {
+		    	return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+		    } else {
+		    	return (d <= 9 ? '0' + d : d) + '-' + (m<=9 ? '0' + m : m)  + '-' + y;
+		    }
 		}
 
-		$( document ).ready(function() {
-			if(chartStats.length > 0) {
-				drawChart('dailyChart', 'datetime', 7200000);
+		function updateFooter(date, emptyData)
+		{
+			// we create a new date because the twig date is only sent once to the template
+			var tomorrow_date = new Date(date);
+			var yesterday_date = new Date(date);
+
+			if (!emptyData) {
+				$('#footerText').html('Currently viewing statistics for ' + dateToText(yesterday_date, false) + '.');
+			} else {
+				$('#footerText').html('No statistics available for ' + dateToText(tomorrow_date, false) + '.');
+				console.log({{dayStats|raw}});
 			}
-		});
+
+			// set new links and texts
+			tomorrow_date.setDate(tomorrow_date.getDate()+1);
+			yesterday_date.setDate(yesterday_date.getDate()-1);
+			
+			$("#next").attr("href", "javascript:getDay('" + dateToText(tomorrow_date, true) + "');");
+			$("#prev").attr("href", "javascript:getDay('" + dateToText(yesterday_date, true) + "');");
+		}
+
+		function getDay(date) {
+			$.getJSON("/" + date, function(data) { 
+				var chart = $('#dailyChart').highcharts();
+				chart.series[0].setData(data);
+				updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+			});
+		}
 	</script>
 {% endblock %}
