@@ -11,30 +11,48 @@ class Stats
         // ...
     }
 
-    public function checkDate($date)
+    private function checkDate($date)
     {
         $dateRes = \DateTime::createFromFormat('Y-m-d', $date);
         return $dateRes != false; // check if it's a valid date
     }
 
-    private function encodeHighcharts(array $input)
+    private function encodeHighcharts(array $input, $months = false)
     {
         $numberArray = array();
 
         if (count($input)) { // If there is any data then we loop through it, if there isn't then the graph will be empty
-            // We start with 0 kW so we take the first index of our input (which is the first time energy is received) and subtract 5 minutes
-            $lastTime = strtotime($input[0]['datetime'] . 'UTC') * 1000;
-            array_push($numberArray, array($lastTime - 300000, 0.0)); // We start with 0 kW 5 minutes before the first reading
+            if (!$months) { // not needed when only looping through months
+                // We start with 0 kW so we take the first index of our input (which is the first time energy is received) and subtract 5 minutes
+                $lastTime = strtotime($input[0]['datetime'] . 'UTC') * 1000;
+                array_push($numberArray, array($lastTime - 300000, 0.0)); // We start with 0 kW 5 minutes before the first reading
+            }
 
             // Save time and energy production to array
             foreach ($input as $row) {
-                array_push($numberArray, array(strtotime($row['datetime'] . 'UTC') * 1000, floatval($row['kW'])));
+                $rowName = ($months ? $row['date'] : $row['datetime']); // date or datetime depends on if we are getting only months or only days
+                array_push($numberArray, array(strtotime($rowName . 'UTC') * 1000, floatval($row['kW'])));
             }
 
-            // We end with 0 kW so we take the last index of our input (which is the last time energy is received) and add 5 minutes
             $lastIndex = count($input) - 1; // Amount of elements in array
-            $lastTime = strtotime($input[$lastIndex]['datetime'] . 'UTC') * 1000;
-            array_push($numberArray, array($lastTime + 300000, 0.0)); // We end with 0 kW 5 minutes after the last reading
+
+            if (!$months) { // not needed when only looping through months
+                // We end with 0 kW so we take the last index of our input (which is the last time energy is received) and add 5 minutes
+                $lastTime = strtotime($input[$lastIndex]['datetime'] . 'UTC') * 1000;
+                array_push($numberArray, array($lastTime + 300000, 0.0)); // We end with 0 kW 5 minutes after the last reading
+            } else { // we are looping months, fill up the days if they don't have any data yet
+                $datetime = new \DateTime($input[$lastIndex]['date']);
+
+                $lastTime = strtotime($input[$lastIndex]['date'] . 'UTC') * 1000;
+                $dayDiff = cal_days_in_month(CAL_GREGORIAN, $datetime->format('m'), date('y'))  - count($input);
+
+                if($dayDiff > 0) {
+                    for($i = 0; $i < $dayDiff; $i++) {
+                        $lastTime = $lastTime + (24 * 3600 * 1000); // add one day
+                        array_push($numberArray, array($lastTime, 0.0)); // We end with 0 kW 5 minutes after the last reading
+                    }
+                }
+            }
         }
         return json_encode($numberArray); // encode for jquery
     }
@@ -79,8 +97,33 @@ class Stats
         return $retn;
     }
 
+    public function fetchMonth(Silex\Application $app, $month = NULL)
+    {
+        // Set current month if none is set yet
+        if (empty($month)) {
+            $month = date('m');
+        }
+
+        // Setup return variable
+        $retn = array();
+
+        // Check if valid month otherwise we can skip the next part of code
+        if ($month > 0 && $month <= 12) {
+             $retn = $app['db']->fetchAll(
+                    "SELECT date, kW FROM monthdata WHERE MONTH(date) = :m",
+                    array('m' => $month)
+                );
+        }
+        return $retn;
+    }
+
     public function fetchDayHighcharts(Silex\Application $app, $date = NULL, $trimZeroData = false)
     {
         return $this->encodeHighcharts($this->fetchDay($app, $date, $trimZeroData));
+    }
+
+    public function fetchMonthHighcharts(Silex\Application $app, $month = NULL)
+    {
+        return $this->encodeHighcharts($this->fetchMonth($app, $month), true);
     }
 }

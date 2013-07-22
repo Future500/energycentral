@@ -3,18 +3,30 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-	<div id="dailyChart">
-
+	<div id='dailyChart'>
 	</div>
 
-	<div id='footerArea'>
-		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prev'>Previous</A>
+	<div id='footerDaily'>
+		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>Previous</A>
 		{% if dayStats|raw|length != 2 %}
-			<span id='footerText'>Currently viewing statistics for {{ date|date("d-m-Y")}}.</span>
+			<span class='footerText'>Currently viewing daily statistics for {{ date|date("d-m-Y")}}.</span>
 		{% else %}
-			<span id='footerText'>No statistics available for {{ date|date("d-m-Y") }}.</span>
+			<span class='footerText'>No daily statistics available for {{ date|date("d-m-Y") }}.</span>
 		{% endif %}
-		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='next'>Next</A>
+		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</A>
+	</div>
+
+	<div id='monthlyChart'>
+	</div>
+
+	<div id='footerMonthly'>
+		<a href="javascript:getMonth('{{ date|date_modify("-1 month")|date("m")}}');" id='prevMonth'>Previous</A>
+		{% if monthStats|raw|length != 2 %}
+			<span class='footerText'>Currently viewing monthly statistics for month {{ date|date("m")}}.</span>
+		{% else %}
+			<span class='footerText'>No monthly statistics available for month {{ date|date("m") }}.</span>
+		{% endif %}
+		<a href="javascript:getMonth('{{ date|date_modify("+1 month")|date("m")}}');" id='nextMonth'>Next</A>
 	</div>
 {% endblock %}
 
@@ -30,7 +42,9 @@
 				},
 				title: {
 					text: 'Energy production',
-					x: -20
+				},
+				subtitle: {
+					text: 'per day'
 				},
 				plotOptions: {
 					area: {
@@ -84,6 +98,73 @@
           			data: {{ dayStats }}
 				}]
 		    });
+
+			$('#monthlyChart').highcharts({
+				chart: {
+					type: 'column',
+				},
+				title: {
+					text: 'Energy production',
+				},
+				subtitle: {
+					text: 'per month'
+				},
+				plotOptions: {
+					area: {
+						shadow: false,
+						states: {
+							hover: {
+								lineWidth: 2
+							}
+						},
+						marker: {
+							enabled: false,
+							states: {
+								hover: {
+									enabled: true,
+									radius: 4,
+									lineWidth: 1
+								}
+							}
+						}
+					}
+				},
+				xAxis: {
+					type: 'datetime',
+	       			tickInterval: 24 * 3600 * 1000,
+					labels: {
+						rotation: -90,
+						y:25
+					}
+				},
+				yAxis: {
+					title: {
+						text: 'kW'
+					},
+					plotLines: [{
+						value: 0,
+						width: 1,
+						color: '#808080'
+					}],
+				},
+				credits: {
+					enabled:false
+				},
+				tooltip: {
+					valueSuffix: 'kW',
+					snap:1
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle',
+					borderWidth: 0
+				},
+				series: [{
+					name: 'kW generated',
+	          		data: {{ monthStats }}
+				}]
+			});
 		});
 
 		function dateToText(date, YMD)
@@ -109,7 +190,6 @@
 				$('#footerText').html('Currently viewing statistics for ' + dateToText(yesterday_date, false) + '.');
 			} else {
 				$('#footerText').html('No statistics available for ' + dateToText(tomorrow_date, false) + '.');
-				console.log({{dayStats|raw}});
 			}
 
 			// set new links and texts
@@ -125,6 +205,14 @@
 				var chart = $('#dailyChart').highcharts();
 				chart.series[0].setData(data);
 				updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+			});
+		}
+
+		function getMonth(month) {
+			$.getJSON("/" + month, function(data) { 
+				var chart = $('#monthlyChart').highcharts();
+				chart.series[0].setData(data);
+			//	updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
 			});
 		}
 	</script>
