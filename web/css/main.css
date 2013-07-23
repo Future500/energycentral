@@ -10,3 +10,7 @@
 #nextDay:hover, #prevDay:hover, #nextMonth:hover, #prevMonth:hover {
     color: #8788CF;
 }
+
+#monthlyChart {
+    margin-top:25px;
+}

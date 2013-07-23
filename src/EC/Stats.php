@@ -42,11 +42,10 @@ class Stats
                 array_push($numberArray, array($lastTime + 300000, 0.0)); // We end with 0 kW 5 minutes after the last reading
             } else { // we are looping months, fill up the days if they don't have any data yet
                 $datetime = new \DateTime($input[$lastIndex]['date']);
-
                 $lastTime = strtotime($input[$lastIndex]['date'] . 'UTC') * 1000;
                 $dayDiff = cal_days_in_month(CAL_GREGORIAN, $datetime->format('m'), $datetime->format('y'))  - count($input); //calculate day difference for a full month
 
-                if($dayDiff > 0) {
+                if ($dayDiff > 0) {
                     for($i = 0; $i < $dayDiff; $i++) { // add days until the month is filled
                         $lastTime = $lastTime + (24 * 3600 * 1000);
                         array_push($numberArray, array($lastTime, 0.0));
@@ -97,10 +96,11 @@ class Stats
         return $retn;
     }
 
-    public function fetchMonth(Silex\Application $app, $month = NULL)
+    public function fetchMonth(Silex\Application $app, $month = NULL, $year = NULL)
     {
         // Set current month if none is set yet
-        if (empty($month)) {
+        if ($month == NULL || $year == NULL) {
+            $year = date('Y');
             $month = date('m');
         }
 
@@ -110,8 +110,8 @@ class Stats
         // Check if valid month otherwise we can skip the next part of code
         if ($month > 0 && $month <= 12) {
              $retn = $app['db']->fetchAll(
-                    "SELECT date, kW FROM monthdata WHERE MONTH(date) = :m",
-                    array('m' => $month)
+                    "SELECT date, kW FROM monthdata WHERE MONTH(date) = :m AND YEAR(date) = :y",
+                    array('m' => $month, 'y' => $year)
                 );
         }
         return $retn;
@@ -122,8 +122,8 @@ class Stats
         return $this->encodeHighcharts($this->fetchDay($app, $date, $trimZeroData));
     }
 
-    public function fetchMonthHighcharts(Silex\Application $app, $month = NULL)
+    public function fetchMonthHighcharts(Silex\Application $app, $month = NULL, $year = NULL)
     {
-        return $this->encodeHighcharts($this->fetchMonth($app, $month), true);
+        return $this->encodeHighcharts($this->fetchMonth($app, $month, $year), true);
     }
 }
