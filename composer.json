@@ -17,8 +17,8 @@
                 "name": "jquery/jqueryUI",
                 "version": "1.10.3",
                 "dist": {
-                    "url": "http://code.jquery.com/ui/1.10.3/jquery-ui.js",
-                    "type": "file"
+                    "url": "http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip",
+                    "type": "zip"
                 }
             }
         },

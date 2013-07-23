@@ -22,11 +22,17 @@ class Composerscript
 
         $io->write( "Copying css..." );
         `cp vendor/twitter/bootstrap-zip/css/*.css web/css/`;
+        `cp vendor/jquery/jqueryUI/themes/base/jquery.ui.datepicker.css web/css/`;
 
         $io->write( "Copying js..." );
         `cp vendor/twitter/bootstrap-zip/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
-        `cp vendor/jquery/jqueryUI/* web/js/`;
+        `cp vendor/jquery/jqueryUI/ui/jquery.ui.datepicker.js web/js/`;
+        `cp vendor/jquery/jqueryUI/ui/jquery.ui.core.js web/js/`;
+        `cp vendor/jquery/jqueryUI/ui/jquery.ui.position.js web/js/`;
+        `cp vendor/jquery/jqueryUI/ui/jquery.ui.widget.js web/js/`;
+        `cp vendor/jquery/jqueryUI/ui/jquery.ui.mouse.js web/js/`;
+
         `cp -r vendor/highcharts/js/* web/js/highcharts/`;
     }
 

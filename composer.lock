@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e49e5eb3f9e377581ba40990962d9219",
+    "hash": "f96c7311704d514420b7f14de39e90ea",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -557,8 +557,8 @@
             "name": "jquery/jqueryUI",
             "version": "1.10.3",
             "dist": {
-                "type": "file",
-                "url": "http://code.jquery.com/ui/1.10.3/jquery-ui.js",
+                "type": "zip",
+                "url": "http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip",
                 "reference": null,
                 "shasum": null
             },

@@ -2,9 +2,10 @@
 	text-align:center;
 }
 
-#dailyText, #monthlyText {
+.dailyText, .monthlyText {
     padding-left:25px;
     padding-right:25px;
+    padding-top:10px;
 }
 
 #nextDay:hover, #prevDay:hover, #nextMonth:hover, #prevMonth:hover {
@@ -13,4 +14,9 @@
 
 #monthlyChart {
     margin-top:25px;
+}
+
+#datepicker {
+    margin-top:15px;
+    height:15px;
 }
