@@ -26,6 +26,7 @@ class Composerscript
         $io->write( "Copying js..." );
         `cp vendor/twitter/bootstrap-zip/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
+        `cp vendor/jquery/jqueryUI/* web/js/`;
         `cp -r vendor/highcharts/js/* web/js/highcharts/`;
     }
 
