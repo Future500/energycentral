@@ -21,12 +21,10 @@ class Composerscript
 
         $io->write( "Copying css..." );
         `cp vendor/twitter/bootstrap-zip/css/* web/css/`;
-        `cp vendor/twitter/bootstrap-datepicker/css/* web/css/`;
 
         $io->write( "Copying js..." );
         `cp vendor/twitter/bootstrap-zip/js/* web/js/`;
         `cp vendor/jquery/jquery/* web/js/`;
-        `cp vendor/twitter/bootstrap-datepicker/js/* web/js/`;
 
         `cp -r vendor/highcharts/js/* web/js/highcharts/`;
     }

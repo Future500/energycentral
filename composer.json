@@ -14,17 +14,6 @@
         {
             "type": "package",
             "package": {
-                "name": "twitter/bootstrap-datepicker",
-                "version": "1.0.0",
-                "dist": {
-                    "url": "http://www.eyecon.ro/bootstrap-datepicker/datepicker.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
                 "version": "2.3.2",
                 "name": "twitter/bootstrap-zip",
                 "dist": {
@@ -80,7 +69,6 @@
         "jquery/jquery": "*",
         "highcharts": "*",
         "twitter/bootstrap-zip": "*",
-        "twitter/bootstrap-datepicker": "*",
         "sma-spot": "*"
     },
 
