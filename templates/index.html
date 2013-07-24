@@ -13,11 +13,8 @@
 		{% else %}
 			<span class='dailyText'>No daily statistics available for</span>
 		{% endif %}
-		<span id='dailyTextPicker'>{{ date|date("d-m-Y") }}.</span>
+		<span id='dailyTextPicker' class='datepicker'>{{ date|date("d-m-Y") }}.</span>
 		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</a>
-	
-		<div id="datePickerDay" data-date="02-2012" data-date-format="mm-yyyy">
-		</div>
 	</div>
 
 	<div id='monthlyChart'>
@@ -45,24 +42,40 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			// Set minimum and maximum values
-			$.get("/val/min/month", function(data) { 
-				$( "#datePickerMonth" ).datepicker( "option", "minDate", new Date(data) );
-			});
-			$.get("/val/max/month", function(data) { 
-				$( "#datePickerMonth" ).datepicker( "option", "maxDate", new Date(data) );
-			});
-			$.get("/val/min/day", function(data) { 
-				$( "#datePickerDay" ).datepicker( "option", "minDate", new Date(data) );
-			});
-			$.get("/val/max/day", function(data) { 
-				$( "#datePickerDay" ).datepicker( "option", "maxDate", new Date(data) );
+			$("#dailyTextPicker").datepicker({
+			 	format: "yyyy-mm-dd", 
+				viewMode: "days", 
+				minViewMode: "days",
+			 	autoclose: true
 			});
 
 			$("#monthlyTextPicker").datepicker({
-			 	format: "mm-yyyy", 
-			 	weekStart: 0, 
+			 	format: "yyyy-mm", 
+				viewMode: "months", 
+				minViewMode: "months",
 			 	autoclose: true
+			});
+
+			$("#dailyTextPicker").on('changeDate', function(e) {
+				getDay(convertDate(e.date, false, true));
+	    	});
+
+			$("#monthlyTextPicker").on('changeDate', function(e) {
+				getMonth(convertDate(e.date, true, true));
+	    	});
+
+			// Set minimum and maximum values
+			$.get("/val/min/month", function(data) {
+				$('#monthlyTextPicker').datepicker('setStartDate', data);
+			});
+			$.get("/val/max/month", function(data) { 
+				$('#monthlyTextPicker').datepicker('setEndDate', data);
+			});
+			$.get("/val/min/day", function(data) { 
+				$('#dailyTextPicker').datepicker('setStartDate', data);
+			});
+			$.get("/val/max/day", function(data) { 
+				$('#dailyTextPicker').datepicker('setEndDate', data);
 			});
 		});
 
@@ -211,7 +224,11 @@
 					return (m <= 9 ? '0' + m : m) + '-' + y;
 				}
 			} else {
-				return (d <= 9 ? '0' + d : d) + '-' + (m <= 9 ? '0' + m : m) + '-' + y;
+				if (reverse) {
+					return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+				} else {
+					return (d <= 9 ? '0' + d : d) + '-' + (m <= 9 ? '0' + m : m) + '-' + y;
+				}
 			}
 		}
 
@@ -227,10 +244,10 @@
 				});
 
 				if (!emptyData) {
-					$('.dailyText').html('Currently viewing statistics for ');
+					$('.dailyText').html('Currently viewing statistics for');
 					$('#dailyTextPicker').html(convertDate(new Date(date)));
 				} else {
-					$('.dailyText').html('No statistics available for ');
+					$('.dailyText').html('No statistics available for');
 					$('#dailyTextPicker').html(convertDate(new Date(date)));
 				}
 			} else { // we are updating the monthly graph
@@ -243,10 +260,10 @@
 				});
 
 				if (!emptyData) {
-					$('.monthlyText').html('Currently viewing statistics for ');
+					$('.monthlyText').html('Currently viewing statistics for');
 					$('#monthlyTextPicker').html(convertDate(new Date(date), true));
 				} else {
-					$('.monthlyText').html('No statistics available for ');
+					$('.monthlyText').html('No statistics available for');
 					$('#monthlyTextPicker').html(convertDate(new Date(date), true));
 				}
 			}

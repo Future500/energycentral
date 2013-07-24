@@ -47,5 +47,5 @@ $app->get('/val/{type}/{dateType}', function (Request $request, $type, $dateType
             'SELECT MAX(' . $columnName . ') FROM ' . $tableName
         );
     }
-    return $retn;
+    return date(($dateType == 'month' ? 'Y-m' : 'Y-m-d'), strtotime($retn));
 });
