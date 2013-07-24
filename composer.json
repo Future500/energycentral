@@ -14,10 +14,10 @@
         {
             "type": "package",
             "package": {
-                "name": "jquery/jqueryUI",
-                "version": "1.10.3",
+                "name": "twitter/bootstrap-datepicker",
+                "version": "1.0.0",
                 "dist": {
-                    "url": "http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip",
+                    "url": "http://www.eyecon.ro/bootstrap-datepicker/datepicker.zip",
                     "type": "zip"
                 }
             }
@@ -78,9 +78,9 @@
         "symfony/yaml": "~2.2",
         "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
         "jquery/jquery": "*",
-        "jquery/jqueryUI": "*",
         "highcharts": "*",
         "twitter/bootstrap-zip": "*",
+        "twitter/bootstrap-datepicker": "*",
         "sma-spot": "*"
     },
 

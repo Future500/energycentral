@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-$app->get('/dateCalc/{date}/{type}/{format}', function (Request $request, $date, $type, $format = 'Y-m-d') use ($app) { // fetch a month with specified year
+$app->get('/dateCalc/{date}/{type}/{format}', function (Request $request, $date, $type, $format = 'Y-m-d') use ($app) { //date calculations
     if ($type != '-') { // we need to decrease or increase the date
         if(strlen($date) > 7) { // date per day
             $newdate = strtotime(($type == 'inc' ? '+1 day' : '-1 day'), strtotime($date));
@@ -32,4 +32,20 @@ $app->get('/{date}', function (Request $request, $date) use ($app) { // fetch a 
 
 $app->get('/{year}/{month}', function (Request $request, $year, $month) use ($app) { // fetch a month with specified year
     return $app['stats']->fetchMonthHighcharts($app, $month, $year);
+});
+
+$app->get('/val/{type}/{dateType}', function (Request $request, $type, $dateType) use ($app) {
+    $tableName = ($dateType == 'month' ? 'monthdata' : 'daydata');
+    $columnName = ($dateType == 'month' ? 'date' : 'datetime');
+
+    if ($type == 'min') {
+        $retn = $app['db']->fetchColumn(
+            'SELECT MIN(' . $columnName . ') FROM ' . $tableName
+        );
+    } else if ($type == 'max') {
+        $retn = $app['db']->fetchColumn(
+            'SELECT MAX(' . $columnName . ') FROM ' . $tableName
+        );
+    }
+    return $retn;
 });

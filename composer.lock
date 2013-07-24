@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f96c7311704d514420b7f14de39e90ea",
+    "hash": "1156e35f0c114b948e824b401b15243f",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -548,17 +548,6 @@
             "dist": {
                 "type": "file",
                 "url": "http://code.jquery.com/jquery-1.10.2.min.js",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
-        },
-        {
-            "name": "jquery/jqueryUI",
-            "version": "1.10.3",
-            "dist": {
-                "type": "zip",
-                "url": "http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -2386,6 +2375,17 @@
                 "templating"
             ],
             "time": "2013-07-15 15:12:47"
+        },
+        {
+            "name": "twitter/bootstrap-datepicker",
+            "version": "1.0.0",
+            "dist": {
+                "type": "zip",
+                "url": "http://www.eyecon.ro/bootstrap-datepicker/datepicker.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
         },
         {
             "name": "twitter/bootstrap-zip",
