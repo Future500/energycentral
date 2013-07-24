@@ -1,16 +1,20 @@
-#footerDaily, #footerMonthly, #dailyPicker {
+#footerDaily, #footerMonthly {
 	text-align:center;
 }
 
-.dailyText, .monthlyText {
+#dailyText, #monthlyText {
     padding-left:25px;
     padding-top:10px;
 }
 
-#dailyTextPicker, #monthlyTextPicker {
+#dayPicker, #monthPicker {
     padding-right:15px;
 }
 
 #nextDay:hover, #prevDay:hover, #nextMonth:hover, #prevMonth:hover {
     color: #8788CF;
+}
+
+#monthlyChart {
+    margin-top:15px;
 }

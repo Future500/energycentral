@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout.twig" %}
 
 {% block title %}Index{% endblock %}
 
@@ -8,12 +8,8 @@
 
 	<div id='footerDaily'>
 		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>Previous</a>
-		{% if dayStats|raw|length != 2 %}
-			<span class='dailyText'>Currently viewing statistics for</span>
-		{% else %}
-			<span class='dailyText'>No daily statistics available for</span>
-		{% endif %}
-		<span id='dailyTextPicker' class='datepicker'>{{ date|date("d-m-Y") }}.</span>
+		<span id='dailyText'>{{ (dayStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
+		<span id='dayPicker' class='datepicker'>{{ date|date("d-m-Y") }}.</span>
 		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</a>
 	</div>
 
@@ -22,12 +18,8 @@
 
 	<div id='footerMonthly'>
 		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prevMonth'>Previous</a>
-		{% if monthStats|raw|length != 2 %}
-			<span class='monthlyText'>Currently viewing statistics for</span>
-		{% else %}
-			<span class='monthlyText'>No statistics available for</span>
-		{% endif %}
-		<span id='monthlyTextPicker' class='datepicker'>{{ date|date("m-Y")}}.</span>
+		<span id='monthlyText'>{{ (monthStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
+		<span id='monthPicker' class='datepicker'>{{ date|date("m-Y")}}.</span>
 		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='nextMonth'>Next</a>
 	</div>
 {% endblock %}
@@ -42,40 +34,40 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#dailyTextPicker").datepicker({
+			$("#dayPicker").datepicker({
 			 	format: "yyyy-mm-dd", 
 				viewMode: "days", 
 				minViewMode: "days",
 			 	autoclose: true
 			});
 
-			$("#monthlyTextPicker").datepicker({
+			$("#monthPicker").datepicker({
 			 	format: "yyyy-mm", 
 				viewMode: "months", 
 				minViewMode: "months",
 			 	autoclose: true
 			});
 
-			$("#dailyTextPicker").on('changeDate', function(e) {
+			$("#dayPicker").on('changeDate', function(e) {
 				getDay(convertDate(e.date, false, true));
 	    	});
 
-			$("#monthlyTextPicker").on('changeDate', function(e) {
+			$("#monthPicker").on('changeDate', function(e) {
 				getMonth(convertDate(e.date, true, true));
 	    	});
 
 			// Set minimum and maximum values
 			$.get("/val/min/month", function(data) {
-				$('#monthlyTextPicker').datepicker('setStartDate', data);
+				$('#monthPicker').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/month", function(data) { 
-				$('#monthlyTextPicker').datepicker('setEndDate', data);
+				$('#monthPicker').datepicker('setEndDate', data);
 			});
 			$.get("/val/min/day", function(data) { 
-				$('#dailyTextPicker').datepicker('setStartDate', data);
+				$('#dayPicker').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/day", function(data) { 
-				$('#dailyTextPicker').datepicker('setEndDate', data);
+				$('#dayPicker').datepicker('setEndDate', data);
 			});
 		});
 
@@ -234,7 +226,10 @@
 
 		function updateFooter(date, emptyData)
 		{
+			var viewingText = (emptyData ? 'No statistics available for' : 'Currently viewing statistics for');
+
 			if (date.length > 7) { // we are updating the daily graph
+				// Get previous and next date
 				$.get("/dateCalc/" + date + "/inc/Y-m-d", function(data) { 
 					$("#nextDay").attr("href", "javascript:getDay('" + data + "');");
 				});
@@ -243,14 +238,11 @@
 					$("#prevDay").attr("href", "javascript:getDay('" + data + "');");
 				});
 
-				if (!emptyData) {
-					$('.dailyText').html('Currently viewing statistics for');
-					$('#dailyTextPicker').html(convertDate(new Date(date)));
-				} else {
-					$('.dailyText').html('No statistics available for');
-					$('#dailyTextPicker').html(convertDate(new Date(date)));
-				}
+				// Set viewing text and date
+				$('#dailyText').html(viewingText);
+				$('#dayPicker').html(convertDate(new Date(date)));
 			} else { // we are updating the monthly graph
+				// Get previous and next date
 				$.get("/dateCalc/" + date + "/inc/Y-m", function(data) { 
 					$("#nextMonth").attr("href", "javascript:getMonth('" + data + "');");
 				});
@@ -259,19 +251,16 @@
 					$("#prevMonth").attr("href", "javascript:getMonth('" + data + "');");
 				});
 
-				if (!emptyData) {
-					$('.monthlyText').html('Currently viewing statistics for');
-					$('#monthlyTextPicker').html(convertDate(new Date(date), true));
-				} else {
-					$('.monthlyText').html('No statistics available for');
-					$('#monthlyTextPicker').html(convertDate(new Date(date), true));
-				}
+				// Set viewing text and date
+				$('#monthlyText').html(viewingText);
+				$('#monthPicker').html(convertDate(new Date(date), true));
 			}
 		}
+
 		function getDay(date) 
 		{
-			$('.dailyText').html('Fetching data ...');
-			$('#dailyTextPicker').html('');
+			$('#dailyText').html('Fetching data ...');
+			$('#dayPicker').html('');
 
 			$.getJSON("/" + date, function(data) { 
 				var chart = $('#dailyChart').highcharts();
@@ -282,15 +271,15 @@
 
 		function getMonth(date)  // change to date ? 
 		{
-			$('.monthlyText').html('Fetching data ...');
-			$('#monthlyTextPicker').html('');
+			$('#monthlyText').html('Fetching data ...');
+			$('#monthPicker').html('');
 
 			var splitData = date.split('-'); // split into year and month
-			var month = splitData[1];
 			var year = splitData[0];
+			var month = splitData[1];
 
 			if (!year || !month) { // check if valid
-				$('.monthlyText').html('Fetching data failed!');
+				$('#monthlyText').html('Fetching data failed!');
 			} else {
 				$.getJSON("/" + year + '/' + month, function(data) { 
 					var chart = $('#monthlyChart').highcharts();

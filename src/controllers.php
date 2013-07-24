@@ -6,22 +6,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-
-$app->get('/dateCalc/{date}/{type}/{format}', function (Request $request, $date, $type, $format = 'Y-m-d') use ($app) { //date calculations
-    if ($type != '-') { // we need to decrease or increase the date
-        if(strlen($date) > 7) { // date per day
-            $newdate = strtotime(($type == 'inc' ? '+1 day' : '-1 day'), strtotime($date));
-        } else { // date per month
-            $newdate = strtotime(($type == 'inc' ? '+1 month' : '-1 month'), strtotime($date));
-        }
-    } else { // just convert the current day to a readable format
-        $newdate = strtotime($date);
-    }
-    return date($format, $newdate); // return new formatted date
-});
-
 $app->get('/', function (Request $request) use ($app) { // fetch a day (it will use the current day by default)
-    return $app['twig']->render('index.html', array('dayStats' => $app['stats']->fetchDayHighcharts($app, ''),
+    return $app['twig']->render('index.twig', array('dayStats' => $app['stats']->fetchDayHighcharts($app, ''),
                                                     'monthStats' => $app['stats']->fetchMonthHighcharts($app, date('m')),
                                                     'date' => date('d-m-Y')));
 });
@@ -34,7 +20,7 @@ $app->get('/{year}/{month}', function (Request $request, $year, $month) use ($ap
     return $app['stats']->fetchMonthHighcharts($app, $month, $year);
 });
 
-$app->get('/val/{type}/{dateType}', function (Request $request, $type, $dateType) use ($app) {
+$app->get('/val/{type}/{dateType}', function (Request $request, $type, $dateType) use ($app) { // used for getting maximum and minimum dates
     $tableName = ($dateType == 'month' ? 'monthdata' : 'daydata');
     $columnName = ($dateType == 'month' ? 'date' : 'datetime');
 
@@ -48,4 +34,17 @@ $app->get('/val/{type}/{dateType}', function (Request $request, $type, $dateType
         );
     }
     return date(($dateType == 'month' ? 'Y-m' : 'Y-m-d'), strtotime($retn));
+});
+
+$app->get('/dateCalc/{date}/{type}/{format}', function (Request $request, $date, $type, $format = 'Y-m-d') use ($app) { //date calculations
+    if ($type != '-') { // we need to decrease or increase the date
+        if(strlen($date) > 7) { // date per day
+            $newdate = strtotime(($type == 'inc' ? '+1 day' : '-1 day'), strtotime($date));
+        } else { // date per month
+            $newdate = strtotime(($type == 'inc' ? '+1 month' : '-1 month'), strtotime($date));
+        }
+    } else { // just convert the current day to a readable format
+        $newdate = strtotime($date);
+    }
+    return date($format, $newdate); // return new formatted date
 });
