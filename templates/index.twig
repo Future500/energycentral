@@ -9,7 +9,8 @@
 	<div id='footerDaily'>
 		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>Previous</a>
 		<span id='dailyText'>{{ (dayStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
-		<span id='dayPicker' class='datepicker'>{{ date|date("d-m-Y") }}.</span>
+		<span id='dayPicker'>{{ date|date("d-m-Y")}}</span>
+		<i id="iconDaily" class="icon-th"></i>
 		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</a>
 	</div>
 
@@ -19,9 +20,11 @@
 	<div id='footerMonthly'>
 		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prevMonth'>Previous</a>
 		<span id='monthlyText'>{{ (monthStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
-		<span id='monthPicker' class='datepicker'>{{ date|date("m-Y")}}.</span>
+		<span id='monthPicker'>{{ date|date("m-Y")}}</span>
+		<i id="iconMonthly" class="icon-th"></i>
 		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='nextMonth'>Next</a>
 	</div>
+
 {% endblock %}
 
 {% block extra_bottomjs %}
@@ -34,40 +37,40 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#dayPicker").datepicker({
+			$("#iconDaily").datepicker({
 			 	format: "yyyy-mm-dd", 
 				viewMode: "days", 
 				minViewMode: "days",
 			 	autoclose: true
 			});
 
-			$("#monthPicker").datepicker({
+			$("#iconMonthly").datepicker({
 			 	format: "yyyy-mm", 
 				viewMode: "months", 
 				minViewMode: "months",
 			 	autoclose: true
 			});
 
-			$("#dayPicker").on('changeDate', function(e) {
+			$("#iconDaily").on('changeDate', function(e) {
 				getDay(convertDate(e.date, false, true));
 	    	});
 
-			$("#monthPicker").on('changeDate', function(e) {
+			$("#iconMonthly").on('changeDate', function(e) {
 				getMonth(convertDate(e.date, true, true));
 	    	});
 
 			// Set minimum and maximum values
 			$.get("/val/min/month", function(data) {
-				$('#monthPicker').datepicker('setStartDate', data);
+				$('#iconMonthly').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/month", function(data) { 
-				$('#monthPicker').datepicker('setEndDate', data);
+				$('#iconMonthly').datepicker('setEndDate', data);
 			});
 			$.get("/val/min/day", function(data) { 
-				$('#dayPicker').datepicker('setStartDate', data);
+				$('#iconDaily').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/day", function(data) { 
-				$('#dayPicker').datepicker('setEndDate', data);
+				$('#iconDaily').datepicker('setEndDate', data);
 			});
 		});
 

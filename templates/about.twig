@@ -1,0 +1,26 @@
+{% extends "layout.twig" %}
+
+{% block title %}About{% endblock %}
+
+{% block navItems %}
+		<li><a href='/'>Home</a></li>
+		<li class='active'><a href='#'>About</a></li>
+{% endblock %}
+
+{% block content %}
+	<img src='/img/logo.png' alt=''/>
+	<link rel='/css/main.css' type='stylesheet'>
+	<div id='aboutContent'>
+		<p>
+			<b>Solaris Energiesystemen</b><br>
+			Cypergras 213<br>
+			2498 CB  Den Haag
+		</p>
+
+		<p>
+			<a href='mailto:robin@solaris-energiesystemen.nl'>robin@solaris-energiesystemen.nl</a><br>
+			06-45466498<br>
+			Faxnr: 084-0031057<br>
+		</p>
+	</div>
+{% endblock %}

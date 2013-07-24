@@ -25,16 +25,16 @@ $console
         'What year do you want to import?'
     )
     ->addOption(
-       'dryrun',
-       null,
-       InputOption::VALUE_NONE,
-       'If set, only the filenames will be output'
+        'dryrun',
+        null,
+        InputOption::VALUE_NONE,
+        'If set, only the filenames will be output'
     )
     ->addOption(
-       'keepfiles',
-       null,
-       InputOption::VALUE_NONE,
-       'If set, data files are not deleted after import'
+        'keepfiles',
+        null,
+        InputOption::VALUE_NONE,
+        'If set, data files are not deleted after import'
     )
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
             $year = (int) $input->getArgument('year');

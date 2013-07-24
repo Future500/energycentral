@@ -1,5 +1,7 @@
 <?php
 
+namespace EC;
+
 use Silex\Application as SilexApplication;
 
 class Application extends SilexApplication
