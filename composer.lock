@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1156e35f0c114b948e824b401b15243f",
+    "hash": "5f9f8faeae751c74cd384c83121db57a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2375,17 +2375,6 @@
                 "templating"
             ],
             "time": "2013-07-24 03:16:45"
-        },
-        {
-            "name": "twitter/bootstrap-datepicker",
-            "version": "1.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "http://www.eyecon.ro/bootstrap-datepicker/datepicker.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
         },
         {
             "name": "twitter/bootstrap-zip",
