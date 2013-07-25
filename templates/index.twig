@@ -2,34 +2,47 @@
 
 {% block title %}Index{% endblock %}
 
+{% block extraTop %}
+	<link href="{{ app.request.basepath }}/css/datepicker.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 	<div id='dailyChart'>
 	</div>
 
 	<div id='footerDaily'>
-		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>Previous</a>
-		<span id='dailyText'>{{ (dayStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
+		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>{{ 'stats.footer.previous'|trans }}</a>
+		<span id='dailyText'>
+			{% if (dayStats|raw|length != 2) %}
+				{{ 'stats.footer.available'|trans }}
+			{% else %}
+				{{ 'stats.footer.notAvailable'|trans }}
+			{% endif %}
+		</span>
 		<span id='dayPicker'>{{ date|date("d-m-Y")}}</span>
 		<i id="iconDaily" class="icon-th"></i>
-		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>Next</a>
+		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>{{ 'stats.footer.next'|trans }}</a>
 	</div>
 
 	<div id='monthlyChart'>
 	</div>
 
 	<div id='footerMonthly'>
-		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prevMonth'>Previous</a>
-		<span id='monthlyText'>{{ (monthStats|raw|length != 2) ? 'Currently viewing statistics for' : 'No statistics available for' }}</span>
+		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prevMonth'>{{ 'stats.footer.previous'|trans }}</a>
+		<span id='monthlyText'>
+			{% if (monthStats|raw|length != 2) %}
+				{{ 'stats.footer.available'|trans }}
+			{% else %}
+				{{ 'stats.footer.notAvailable'|trans }}
+			{% endif %}
+		</span>
 		<span id='monthPicker'>{{ date|date("m-Y")}}</span>
 		<i id="iconMonthly" class="icon-th"></i>
-		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='nextMonth'>Next</a>
+		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='nextMonth'>{{ 'stats.footer.next'|trans }}</a>
 	</div>
-
 {% endblock %}
 
-{% block extra_bottomjs %}
-	<link href="{{ app.request.basepath }}/css/datepicker.css" rel="stylesheet">
-
+{% block extraBottom %}
 	<script src="{{ app.request.basepath }}js/highcharts/highcharts.js"></script>
 	<script src="{{ app.request.basepath }}js/highcharts/modules/exporting.js"></script>
 	<script type="text/javascript" src="{{ app.request.basepath }}js/bootstrap.min.js" charset="UTF-8"></script>
@@ -77,13 +90,13 @@
 		$(function () {
 		    $('#dailyChart').highcharts({
 				chart: {
-					type: 'area',
+					type: 'area'
 				},
 				title: {
-					text: 'Energy production',
+					text: "{{ 'dailyChart.title'|trans }}"
 				},
 				subtitle: {
-					text: 'per day'
+					text: "{{ 'dailyChart.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {
@@ -107,7 +120,7 @@
 				},
 				xAxis: {
 					type: 'datetime',
-       				tickInterval: 3600000,
+       				tickInterval: 3600000
 				},
 				yAxis: {
 					title: {
@@ -133,20 +146,20 @@
 					borderWidth: 0
 				},
 				series: [{
-					name: 'kW generated',
+					name: "{{ 'dailyChart.kwGenerated'|trans }}",
           			data: {{ dayStats }}
 				}]
 		    });
 
 			$('#monthlyChart').highcharts({
 				chart: {
-					type: 'column',
+					type: 'column'
 				},
 				title: {
-					text: 'Energy production',
+					text: "{{ 'monthlyChart.title'|trans }}"
 				},
 				subtitle: {
-					text: 'per month'
+					text: "{{ 'monthlyChart.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {
@@ -200,7 +213,7 @@
 					borderWidth: 0
 				},
 				series: [{
-					name: 'kW generated',
+					name: "{{ 'monthlyChart.kwGenerated'|trans }}",
 	          		data: {{ monthStats }}
 				}]
 			});
@@ -229,7 +242,7 @@
 
 		function updateFooter(date, emptyData)
 		{
-			var viewingText = (emptyData ? 'No statistics available for' : 'Currently viewing statistics for');
+			var viewingText = (emptyData ? "{{ 'stats.footer.notAvailable'|trans }}" : "{{ 'stats.footer.available'|trans }}");
 
 			if (date.length > 7) { // we are updating the daily graph
 				// Get previous and next date
@@ -262,7 +275,7 @@
 
 		function getDay(date) 
 		{
-			$('#dailyText').html('Fetching data ...');
+			$('#dailyText').html("{{ 'stats.general.fetching'|trans }}");
 			$('#dayPicker').html('');
 
 			$.getJSON("/" + date, function(data) { 
@@ -274,7 +287,7 @@
 
 		function getMonth(date)  // change to date ? 
 		{
-			$('#monthlyText').html('Fetching data ...');
+			$('#monthlyText').html("{{ 'stats.general.fetching'|trans }}");
 			$('#monthPicker').html('');
 
 			var splitData = date.split('-'); // split into year and month
@@ -282,7 +295,7 @@
 			var month = splitData[1];
 
 			if (!year || !month) { // check if valid
-				$('#monthlyText').html('Fetching data failed!');
+				$('#monthlyText').html("{{ 'stats.general.fetchingFailed'|trans }}");
 			} else {
 				$.getJSON("/" + year + '/' + month, function(data) { 
 					var chart = $('#monthlyChart').highcharts();

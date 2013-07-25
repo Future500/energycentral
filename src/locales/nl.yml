@@ -1,3 +1,23 @@
-label:
-    tag1: tag1 NL
-    tag2: tag2 NL
+navigation:
+    home: Homepagina
+    about: About
+
+dailyChart:
+    title: Energie productie
+    subtitle: per dag
+    kwGenerated: kW opgebracht
+
+monthlyChart:
+    title: Energy productie
+    subtitle: per dag
+    kwGenerated: kW opgebracht
+
+stats:
+    general:
+        fetching: Data ophalen ...
+        fetchingFailed: Date ophalen mislukt!
+    footer:
+        notAvailable: Geen statistieken beschikbaar voor
+        available: Statistieken voor
+        previous: Vorige
+        next: Volgende

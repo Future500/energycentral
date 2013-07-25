@@ -3,13 +3,13 @@
 {% block title %}About{% endblock %}
 
 {% block navItems %}
-		<li><a href='/'>Home</a></li>
-		<li class='active'><a href='#'>About</a></li>
+	<li><a href='/'>{{ 'navigation.home'|trans }}</a></li>
+	<li class='active'><a href='#'>{{ 'navigation.about'|trans }}</a></li>
 {% endblock %}
 
 {% block content %}
-	<img src='/img/logo.png' alt=''/>
-	<link rel='/css/main.css' type='stylesheet'>
+	<img src='{{app.request.basepath}}/img/logo.png' alt=''/>
+
 	<div id='aboutContent'>
 		<p>
 			<b>Solaris Energiesystemen</b><br>

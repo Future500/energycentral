@@ -6,6 +6,42 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+$app->before(
+    function () use ($app) {
+        $app['session']->start();
+        $locale = $app['session']->get('locale');
+
+        // Restore language that was selected if any
+        if($locale != null && $app['translator']->getLocale() != $locale) {
+            $app['translator']->setLocale($locale);
+        }
+    }
+);
+
+/*
+        $app['session']->start();
+        $locale = $app['session']->get('locale');
+
+        if($locale != $lang) {
+            $app['translator']->setLocale($lang);
+            $app['session']->set('locale', $lang);
+        }
+    */
+
+$app->get(
+    '/setLang/{lang}',
+    function (Request $request, $lang) use ($app) { // fetch a day (it will use the current day by default)
+        $app['session']->start();
+        $locale = $app['session']->get('locale');
+
+        if($locale != $lang) {
+            $app['translator']->setLocale($lang);
+            $app['session']->set('locale', $lang);
+        }
+        return 1;
+    }
+);
+
 $app->get(
     '/',
     function (Request $request) use ($app) { // fetch a day (it will use the current day by default)
@@ -22,8 +58,8 @@ $app->get(
 
 $app->get(
     '/about',
-    function (Request $request) use ($app) { // fetch a day or month with a specified date
-         return $app['twig']->render('about.twig');
+    function (Request $request) use ($app) {
+        return $app['twig']->render('about.twig');
     }
 );
 

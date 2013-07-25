@@ -1,3 +1,23 @@
-label:
-    tag1: tag1 EN
-    tag2: tag2 EN
+navigation:
+    home: Homepage
+    about: About
+
+dailyChart:
+    title: Energy production
+    subtitle: per day
+    kwGenerated: kW generated
+
+monthlyChart:
+    title: Energy production
+    subtitle: per day
+    kwGenerated: kW generated
+
+stats:
+    general:
+        fetching: Fetching data ...
+        fetchingFailed: Fetching data failed!
+    footer:
+        notAvailable: No statistics available for
+        available: Currently viewing statistics for
+        previous: Previous
+        next: Next

@@ -15,7 +15,9 @@
         <link href="{{ app.request.basepath }}/css/bootstrap-responsive.css" rel="stylesheet">
         <link href="{{ app.request.basepath }}/css/bootstrap.css" rel="stylesheet">
         <link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet">
+        {% block extraTop %}
 
+        {% endblock %}
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
           <script src="{{ app.request.basepath }}/js/html5shiv.js"></script>
@@ -46,11 +48,14 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                           {% block navItems %}
-                          <li class="active"><a href="#">Home</a></li>
-                          <li><a href="about">About</a></li>
+                          <li class="active"><a href="#">{{ 'navigation.home'|trans }}</a></li>
+                          <li><a href="about">{{ 'navigation.about'|trans }}</a></li>
                           {% endblock %}
                       </ul>
                     </div><!--/.nav-collapse -->
+
+                    <img src='{{ app.request.basepath }}/img/en.png' alt='' id='en' class='countryFlag'/>
+                    <img src='{{ app.request.basepath }}/img/nl.png' alt='' id='nl' class='countryFlag'/>
                 </div>
             </div>
         </div>
@@ -67,8 +72,26 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="{{ app.request.basepath }}/js/jquery-1.10.2.min.js"></script>
         <script src="{{ app.request.basepath }}/js/bootstrap.js"></script>
+        <script>
+            function setLanguage(lang)
+            {
+                var req = $.get('/setLang/' + lang, function () {
+                    location.reload();
+                })
 
-        {% block extra_bottomjs %}
+                req.fail(function () {
+                    alert('Failed to set language!')
+                });     
+            }
+            $('#nl').click(function() {
+                setLanguage('nl');
+            });
+
+            $('#en').click(function() {
+                setLanguage('en');
+            });
+        </script>
+        {% block extraBottom %}
 
         {% endblock %}
     </body>
