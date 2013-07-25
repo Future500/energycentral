@@ -446,7 +446,7 @@
 			if (yorient === 'top') {
 				top += height;
 			} else {
-				top -= calendarHeight + 5;
+				top -= calendarHeight;
 			}
 
 			this.picker.css({
