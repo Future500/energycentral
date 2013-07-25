@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>{% block title '' %} - EnergyCentral</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
         <style>
@@ -34,15 +34,27 @@
     </head>
 
     <body>
+    <style>
+    @media all and (max-width: 512px) {
+      #dailyChart, #monthlyChart {
+        height:250px;
+      }
+    }
+    @media all and (min-width: 512px) {
+      #dailyChart, #monthlyChart {
+        height:400px;
+      }
+    }
+    </style>
         {% block navbar %}
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </a>
                     <a class="brand" href="{{ app.request.basepath }}">EnergyCentral</a>
                     
                     <div class="nav-collapse">
