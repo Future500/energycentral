@@ -18,22 +18,13 @@ $app->before(
     }
 );
 
-/*
-        $app['session']->start();
-        $locale = $app['session']->get('locale');
-
-        if($locale != $lang) {
-            $app['translator']->setLocale($lang);
-            $app['session']->set('locale', $lang);
-        }
-    */
-
 $app->get(
     '/setLang/{lang}',
-    function (Request $request, $lang) use ($app) { // fetch a day (it will use the current day by default)
+    function (Request $request, $lang) use ($app) {
         $app['session']->start();
         $locale = $app['session']->get('locale');
 
+        // Set language if not set yet
         if($locale != $lang) {
             $app['translator']->setLocale($lang);
             $app['session']->set('locale', $lang);
