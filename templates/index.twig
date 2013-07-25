@@ -5,12 +5,12 @@
 {% block extraTop %}
 	<link href="{{ app.request.basepath }}/css/datepicker.css" rel="stylesheet">
     <style>
-    @media all and (max-width: 512px) {
+    @media all and (max-width: 768px) {
       #dailyChart, #monthlyChart {
         height:250px;
       }
     }
-    @media all and (min-width: 512px) {
+    @media all and (min-width: 768px) {
       #dailyChart, #monthlyChart {
         height:400px;
       }
@@ -316,5 +316,26 @@
 				});
 			}
 		}
+
+		$(window).resize(function() {
+			var chart = $('#dailyChart').highcharts();
+
+			// change rotation based on viewport width
+			if ($(this).width() <= 768) {
+				chart.xAxis[0].update({
+					labels: {
+						rotation: -90,
+						y:25
+					}
+				});
+			} else {
+				chart.xAxis[0].update({
+					labels: {
+						rotation: 0,
+						y:15
+					}
+				})		    	
+			}
+		});
 	</script>
 {% endblock %}
