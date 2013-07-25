@@ -27,6 +27,7 @@
 }
 
 .countryFlag {
-    margin-top:10px;
+    float:right;
+    margin-top:12.5px;
     margin-left:10px;
 }
