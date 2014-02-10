@@ -85,7 +85,7 @@
 	    	});
 
 			// Set minimum and maximum values
-			$.get("/val/min/month", function(data) {
+			/*$.get("/val/min/month", function(data) {
 				$('#iconMonthly').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/month", function(data) { 
@@ -96,7 +96,7 @@
 			});
 			$.get("/val/max/day", function(data) { 
 				$('#iconDaily').datepicker('setEndDate', data);
-			});
+			});*/
 		});
 
 		$(function () {
@@ -108,7 +108,7 @@
 					text: "{{ 'chart.title'|trans }}"
 				},
 				subtitle: {
-					text: "{{ 'chart.subtitle'|trans }}"
+					text: "{{ 'chart.day.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {
@@ -171,7 +171,7 @@
 					text: "{{ 'chart.title'|trans }}"
 				},
 				subtitle: {
-					text: "{{ 'chart.subtitle'|trans }}"
+					text: "{{ 'chart.month.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {

@@ -4,7 +4,10 @@ navigation:
 
 chart:
     title: Energy production
-    subtitle: per day
+    day:
+      subtitle: per day
+    month:
+      subtitle: per month
     kwgenerated: kW generated
 
 stats:
