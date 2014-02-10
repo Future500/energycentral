@@ -4,9 +4,12 @@ navigation:
 
 chart:
     title: Energie productie
-    subtitle: per dag
+    day:
+      subtitle: per dag
+    month:
+      subtitle: per maand
     kwgenerated: kW opgebracht
-
+    
 stats:
     general:
         fetching: Data ophalen ...
