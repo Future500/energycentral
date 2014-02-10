@@ -105,10 +105,10 @@
 					type: 'area'
 				},
 				title: {
-					text: "{{ 'dailyChart.title'|trans }}"
+					text: "{{ 'chart.title'|trans }}"
 				},
 				subtitle: {
-					text: "{{ 'dailyChart.subtitle'|trans }}"
+					text: "{{ 'chart.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {
@@ -158,7 +158,7 @@
 					borderWidth: 0
 				},
 				series: [{
-					name: "{{ 'dailyChart.kwGenerated'|trans }}",
+					name: "{{ 'chart.kwgenerated'|trans }}",
           			data: {{ dayStats }}
 				}]
 		    });
@@ -168,10 +168,10 @@
 					type: 'column'
 				},
 				title: {
-					text: "{{ 'monthlyChart.title'|trans }}"
+					text: "{{ 'chart.title'|trans }}"
 				},
 				subtitle: {
-					text: "{{ 'monthlyChart.subtitle'|trans }}"
+					text: "{{ 'chart.subtitle'|trans }}"
 				},
 				plotOptions: {
 					area: {
@@ -225,7 +225,7 @@
 					borderWidth: 0
 				},
 				series: [{
-					name: "{{ 'monthlyChart.kwGenerated'|trans }}",
+					name: "{{ 'chart.kwgenerated'|trans }}",
 	          		data: {{ monthStats }}
 				}]
 			});
@@ -258,7 +258,7 @@
 
 			if (date.length > 7) { // we are updating the daily graph
 				// Get previous and next date
-				$.get("/dateCalc/" + date + "/inc/Y-m-d", function(data) { 
+				$.get("/dateCalc/" + date + "/inc/Y-m-d", function(data) {
 					$("#nextDay").attr("href", "javascript:getDay('" + data + "');");
 				});
 

@@ -2,15 +2,10 @@ navigation:
     home: Homepage
     about: About
 
-dailyChart:
+chart:
     title: Energy production
     subtitle: per day
-    kwGenerated: kW generated
-
-monthlyChart:
-    title: Energy production
-    subtitle: per day
-    kwGenerated: kW generated
+    kwgenerated: kW generated
 
 stats:
     general:

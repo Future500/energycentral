@@ -17,15 +17,15 @@ class Stats
         return $dateRes != false; // check if it's a valid date
     }
 
-    private function encodeHighcharts (array $input, $months = false)
+    private function encodeHighcharts(array $input, $months = false)
     {
         $numberArray = array();
 
         if (count($input)) { // If there is any data then we loop through it, if there isn't then the graph will be empty
             if (!$months) { // not needed when only looping through months
                 // We start with 0 kW so we take the first index of our input (which is the first time energy is received) and subtract 5 minutes
-                $lastTime = strtotime($input[0]['datetime'] . 'UTC') * 1000;
-                array_push($numberArray, array($lastTime - 300000, 0.0)); // We start with 0 kW 5 minutes before the first reading
+                $firstReading = strtotime($input[0]['datetime'] . 'UTC') * 1000;
+                array_push($numberArray, array($firstReading - 300000, 0.0)); // We start with 0 kW 5 minutes before the first reading
             }
 
             // Save time and energy production to array

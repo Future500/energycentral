@@ -2,15 +2,10 @@ navigation:
     home: Homepagina
     about: About
 
-dailyChart:
+chart:
     title: Energie productie
     subtitle: per dag
-    kwGenerated: kW opgebracht
-
-monthlyChart:
-    title: Energy productie
-    subtitle: per dag
-    kwGenerated: kW opgebracht
+    kwgenerated: kW opgebracht
 
 stats:
     general:
