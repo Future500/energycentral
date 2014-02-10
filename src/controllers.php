@@ -24,8 +24,7 @@ $app->get(
         $app['session']->start();
         $locale = $app['session']->get('locale');
 
-        // Set language if not set yet
-        if($locale != $lang) {
+        if($locale != $lang) { // Set language if not set yet
             $app['translator']->setLocale($lang);
             $app['session']->set('locale', $lang);
         }

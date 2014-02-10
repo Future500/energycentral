@@ -48,7 +48,7 @@ $app['stats'] = $app->share(
 $app->register(
     new TranslationServiceProvider(),
     array(
-        'locale_fallback' => 'nl',
+        'locale_fallback' => 'en',
     )
 );
 $app['translator'] = $app->share(
