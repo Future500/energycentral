@@ -9,11 +9,11 @@ chart:
     month:
       subtitle: per maand
     kwgenerated: kW opgebracht
-    
+
 stats:
     general:
         fetching: Data ophalen ...
-        fetchingFailed: Date ophalen mislukt!
+        fetchingFailed: Data ophalen mislukt!
     footer:
         notAvailable: Geen statistieken beschikbaar voor
         available: Statistieken voor
