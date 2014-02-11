@@ -16,6 +16,6 @@ stats:
         fetchingFailed: Data ophalen mislukt!
     footer:
         notAvailable: Geen statistieken beschikbaar voor
-        available: Statistieken voor
+        available: Statistieken worden getoond voor
         previous: Vorige
         next: Volgende
