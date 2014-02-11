@@ -99,17 +99,14 @@ class Stats
 
     public function fetchMonth(Silex\Application $app, $month = null, $year = null)
     {
-        // Set current month if none is set yet
-        if ($month == null || $year == null) {
+        if ($month == null || $year == null) { // Set current month if none is set yet
             $year = date('Y');
             $month = date('m');
         }
 
-        // Setup return variable
         $monthData = array();
 
-        // Check if valid month otherwise we can skip the next part of code
-        if ($month > 0 && $month <= 12) {
+        if ($month > 0 && $month <= 12) { // Check if valid month otherwise we can skip the next part of code
             $monthData = $app['db']->fetchAll(
                 "SELECT date, kW FROM monthdata WHERE MONTH(date) = :m AND YEAR(date) = :y",
                 array('m' => $month, 'y' => $year)
