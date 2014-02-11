@@ -57,22 +57,18 @@
 				viewMode: "days", 
 				minViewMode: "days",
 			 	autoclose: true
-			});
+			}).on('changeDate', function(e) {
+                getDay(convertDate(e.date, false, true));
+            });
 
 			$("#icon-monthly").datepicker({
 			 	format: "yyyy-mm", 
 				viewMode: "months", 
 				minViewMode: "months",
 			 	autoclose: true
-			});
-
-			$("#icon-daily").on('changeDate', function(e) {
-				getDay(convertDate(e.date, false, true));
-	    	});
-
-			$("#icon-monthly").on('changeDate', function(e) {
-				getMonth(convertDate(e.date, true, true));
-	    	});
+			}).on('changeDate', function(e) {
+                getMonth(convertDate(e.date, true, true));
+            });
 
 			// Set minimum and maximum values
             $.getJSON("/val", function(data) {
