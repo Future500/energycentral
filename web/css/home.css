@@ -1,0 +1,40 @@
+#footer-daily, #footer-monthly {
+    text-align:center;
+}
+
+#daily-text, #monthly-text {
+    padding-left:25px;
+    padding-top:10px;
+}
+
+#icon-monthly, #icon-daily {
+    padding-right:15px;
+    margin-left:5px;
+    margin-right:20px;
+    width:1px;
+}
+
+#next-day:hover, #prev-day:hover, #next-month:hover, #prev-month:hover {
+    color: #FFF;
+}
+
+#monthly-chart {
+    margin-top:15px;
+}
+
+.country-flag {
+    float: right;
+    margin-top: 13px;
+    margin-left: 10px;
+}
+
+@media all and (max-width: 768px) {
+    #daily-chart, #monthly-chart {
+        height:250px;
+    }
+}
+@media all and (min-width: 768px) {
+    #daily-chart, #monthly-chart {
+        height:400px;
+    }
+}

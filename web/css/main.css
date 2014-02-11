@@ -1,33 +1,9 @@
-#footerDaily, #footerMonthly {
-	text-align:center;
-}
-
-#dailyText, #monthlyText {
-    padding-left:25px;
-    padding-top:10px;
-}
-
-#iconMonthly, #iconDaily {
-    padding-right:15px;
-    margin-left:5px;
-    margin-right:20px;
-    width:1px;
-}
-
-#nextDay:hover, #prevDay:hover, #nextMonth:hover, #prevMonth:hover {
-    color: #8788CF;
-}
-
-#monthlyChart {
-    margin-top:15px;
-}
-
-#aboutContent {
+#about-content {
     margin-top:20px;
 }
 
-.countryFlag {
-    float:right;
-    margin-top:12.5px;
-    margin-left:10px;
+.country-flag {
+    float: right;
+    margin-top: 13px;
+    margin-left: 10px;
 }
