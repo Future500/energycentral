@@ -2,59 +2,46 @@
 
 {% block title %}Index{% endblock %}
 
-{% block extraTop %}
+{% block head %}
 	<link href="{{ app.request.basepath }}/css/datepicker.css" rel="stylesheet">
-    <style>
-    @media all and (max-width: 768px) {
-      #dailyChart, #monthlyChart {
-        height:250px;
-      }
-    }
-    @media all and (min-width: 768px) {
-      #dailyChart, #monthlyChart {
-        height:400px;
-      }
-    }
-    </style>
+    <link href="{{ app.request.basepath }}/css/home.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-	<div id='dailyChart'>
-	</div>
+	<div id='daily-chart'></div> <!-- Daily chart will be output here -->
 
-	<div id='footerDaily'>
+	<div id='footer-daily'>
 		<a href="javascript:getDay('{{ date|date_modify("-1 day")|date("Y-m-d")}}');" id='prevDay'>{{ 'stats.footer.previous'|trans }}</a>
-		<span id='dailyText'>
+		<span id='daily-text'>
 			{% if (dayStats|raw|length != 2) %}
 				{{ 'stats.footer.available'|trans }}
 			{% else %}
 				{{ 'stats.footer.notAvailable'|trans }}
 			{% endif %}
 		</span>
-		<span id='dayPicker'>{{ date|date("d-m-Y")}}</span>
-		<i id="iconDaily" class="icon-th"></i>
+		<span id='day-picker'>{{ date|date("d-m-Y")}}</span>
+		<i id="icon-daily" class="icon-th"></i>
 		<a href="javascript:getDay('{{ date|date_modify("+1 day")|date("Y-m-d")}}');" id='nextDay'>{{ 'stats.footer.next'|trans }}</a>
-	</div>
+	</div> <!-- End div footer-daily -->
 
-	<div id='monthlyChart'>
-	</div>
+	<div id='monthly-chart'></div> <!-- Monthly chart will be output here -->
 
-	<div id='footerMonthly'>
-		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prevMonth'>{{ 'stats.footer.previous'|trans }}</a>
-		<span id='monthlyText'>
+	<div id='footer-monthly'>
+		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("-1 month")|date("m") }}');" id='prev-month'>{{ 'stats.footer.previous'|trans }}</a>
+		<span id='monthly-text'>
 			{% if (monthStats|raw|length != 2) %}
 				{{ 'stats.footer.available'|trans }}
 			{% else %}
 				{{ 'stats.footer.notAvailable'|trans }}
 			{% endif %}
 		</span>
-		<span id='monthPicker'>{{ date|date("m-Y")}}</span>
-		<i id="iconMonthly" class="icon-th"></i>
-		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='nextMonth'>{{ 'stats.footer.next'|trans }}</a>
+		<span id='month-picker'>{{ date|date("m-Y")}}</span>
+		<i id="icon-monthly" class="icon-th"></i>
+		<a href="javascript:getMonth('{{ date|date("Y") }}-{{ date|date_modify("+1 month")|date("m") }}');" id='next-month'>{{ 'stats.footer.next'|trans }}</a>
 	</div>
 {% endblock %}
 
-{% block extraBottom %}
+{% block footer %}
 	<script src="{{ app.request.basepath }}js/highcharts/highcharts.js"></script>
 	<script src="{{ app.request.basepath }}js/highcharts/modules/exporting.js"></script>
 	<script type="text/javascript" src="{{ app.request.basepath }}js/bootstrap.min.js" charset="UTF-8"></script>
@@ -62,45 +49,45 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#iconDaily").datepicker({
+			$("#icon-daily").datepicker({
 			 	format: "yyyy-mm-dd", 
 				viewMode: "days", 
 				minViewMode: "days",
 			 	autoclose: true
 			});
 
-			$("#iconMonthly").datepicker({
+			$("#icon-monthly").datepicker({
 			 	format: "yyyy-mm", 
 				viewMode: "months", 
 				minViewMode: "months",
 			 	autoclose: true
 			});
 
-			$("#iconDaily").on('changeDate', function(e) {
+			$("#icon-daily").on('changeDate', function(e) {
 				getDay(convertDate(e.date, false, true));
 	    	});
 
-			$("#iconMonthly").on('changeDate', function(e) {
+			$("#icon-monthly").on('changeDate', function(e) {
 				getMonth(convertDate(e.date, true, true));
 	    	});
 
 			// Set minimum and maximum values
-			/*$.get("/val/min/month", function(data) {
-				$('#iconMonthly').datepicker('setStartDate', data);
+			$.get("/val/min/month", function(data) {
+				$('#icon-monthly').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/month", function(data) { 
-				$('#iconMonthly').datepicker('setEndDate', data);
+				$('#icon-monthly').datepicker('setEndDate', data);
 			});
 			$.get("/val/min/day", function(data) { 
-				$('#iconDaily').datepicker('setStartDate', data);
+				$('#icon-daily').datepicker('setStartDate', data);
 			});
 			$.get("/val/max/day", function(data) { 
-				$('#iconDaily').datepicker('setEndDate', data);
-			});*/
+				$('#icon-daily').datepicker('setEndDate', data);
+			});
 		});
 
 		$(function () {
-		    $('#dailyChart').highcharts({
+		    $('#daily-chart').highcharts({
 				chart: {
 					type: 'area'
 				},
@@ -163,7 +150,7 @@
 				}]
 		    });
 
-			$('#monthlyChart').highcharts({
+			$('#monthly-chart').highcharts({
 				chart: {
 					type: 'column'
 				},
@@ -259,39 +246,39 @@
 			if (date.length > 7) { // we are updating the daily graph
 				// Get previous and next date
 				$.get("/dateCalc/" + date + "/inc/Y-m-d", function(data) {
-					$("#nextDay").attr("href", "javascript:getDay('" + data + "');");
+					$("#next-day").attr("href", "javascript:getDay('" + data + "');");
 				});
 
 				$.get("/dateCalc/" + date + "/dec/Y-m-d", function(data) { 
-					$("#prevDay").attr("href", "javascript:getDay('" + data + "');");
+					$("#prev-day").attr("href", "javascript:getDay('" + data + "');");
 				});
 
 				// Set viewing text and date
-				$('#dailyText').html(viewingText);
-				$('#dayPicker').html(convertDate(new Date(date)));
+				$('#daily-text').html(viewingText);
+				$('#day-picker').html(convertDate(new Date(date)));
 			} else { // we are updating the monthly graph
 				// Get previous and next date
 				$.get("/dateCalc/" + date + "/inc/Y-m", function(data) { 
-					$("#nextMonth").attr("href", "javascript:getMonth('" + data + "');");
+					$("#next-month").attr("href", "javascript:getMonth('" + data + "');");
 				});
 
 				$.get("/dateCalc/" + date + "/dec/Y-m", function(data) { 
-					$("#prevMonth").attr("href", "javascript:getMonth('" + data + "');");
+					$("#prev-month").attr("href", "javascript:getMonth('" + data + "');");
 				});
 
 				// Set viewing text and date
-				$('#monthlyText').html(viewingText);
-				$('#monthPicker').html(convertDate(new Date(date), true));
+				$('#monthly-text').html(viewingText);
+				$('#month-picker').html(convertDate(new Date(date), true));
 			}
 		}
 
 		function getDay(date) 
 		{
-			$('#dailyText').html("{{ 'stats.general.fetching'|trans }}");
-			$('#dayPicker').html('');
+			$('#daily-text').html("{{ 'stats.general.fetching'|trans }}");
+			$('#day-picker').html('');
 
 			$.getJSON("/" + date, function(data) { 
-				var chart = $('#dailyChart').highcharts();
+				var chart = $('#daily-chart').highcharts();
 				chart.series[0].setData(data);
 				updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
 			});
@@ -299,18 +286,18 @@
 
 		function getMonth(date)  // change to date ? 
 		{
-			$('#monthlyText').html("{{ 'stats.general.fetching'|trans }}");
-			$('#monthPicker').html('');
+			$('#monthly-text').html("{{ 'stats.general.fetching'|trans }}");
+			$('#month-picker').html('');
 
 			var splitData = date.split('-'); // split into year and month
 			var year = splitData[0];
 			var month = splitData[1];
 
 			if (!year || !month) { // check if valid
-				$('#monthlyText').html("{{ 'stats.general.fetchingFailed'|trans }}");
+				$('#monthly-text').html("{{ 'stats.general.fetchingFailed'|trans }}");
 			} else {
 				$.getJSON("/" + year + '/' + month, function(data) { 
-					var chart = $('#monthlyChart').highcharts();
+					var chart = $('#monthly-chart').highcharts();
 					chart.series[0].setData(data);
 					updateFooter(year + '-' + month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
 				});
@@ -318,7 +305,7 @@
 		}
 
 		$(window).resize(function() {
-			var chart = $('#dailyChart').highcharts();
+			var chart = $('#daily-chart').highcharts();
 
 			// change rotation based on viewport width
 			if ($(this).width() <= 768) {
