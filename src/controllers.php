@@ -54,35 +54,35 @@ $app->get(
 );
 
 $app->get(
-    '/{date}',
+    '/stats/{date}',
     function (Request $request, $date) use ($app) { // fetch a day or month with a specified date
         return $app['stats']->fetchDayHighcharts($app, $date);
     }
 );
 
 $app->get(
-    '/{year}/{month}',
+    '/stats/{year}/{month}',
     function (Request $request, $year, $month) use ($app) { // fetch a month with specified year
         return $app['stats']->fetchMonthHighcharts($app, $month, $year);
     }
 );
 
 $app->get(
-    '/val/{type}/{dateType}',
-    function (Request $request, $type, $dateType) use ($app) { // used for getting maximum and minimum dates
-        $tableName = ($dateType == 'month' ? 'monthdata' : 'daydata');
-        $columnName = ($dateType == 'month' ? 'date' : 'datetime');
+    '/val',
+    function (Request $request) use ($app) { // used for getting maximum and minimum dates
+        $days = $app['db']->fetchAssoc('SELECT MIN(datetime) AS minimum, MAX(datetime) AS maximum FROM daydata');
+        $months = $app['db']->fetchAssoc('SELECT MIN(date) AS minimum, MAX(date) AS maximum FROM monthdata');
 
-        if ($type == 'min') {
-            $retn = $app['db']->fetchColumn(
-                'SELECT MIN(' . $columnName . ') FROM ' . $tableName
-            );
-        } else if ($type == 'max') {
-            $retn = $app['db']->fetchColumn(
-                'SELECT MAX(' . $columnName . ') FROM ' . $tableName
-            );
-        }
-        return date(($dateType == 'month' ? 'Y-m' : 'Y-m-d'), strtotime($retn));
+        return json_encode(array(
+            'days' => array(
+                'min' => date('Y-m-d', strtotime($days['minimum'])),
+                'max' => date('Y-m-d', strtotime($days['maximum']))
+            ),
+            'months' => array(
+                'min' => date('Y-m', strtotime($months['minimum'])),
+                'max' => date('Y-m', strtotime($months['maximum']))
+            )
+        ));
     }
 );
 

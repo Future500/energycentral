@@ -49,6 +49,8 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
+            var selectedDate = '{{ date }}';
+
 			$("#icon-daily").datepicker({
 			 	format: "yyyy-mm-dd", 
 				viewMode: "days", 
@@ -72,6 +74,16 @@
 	    	});
 
 			// Set minimum and maximum values
+            $.getJSON("/val", function(data) {
+                $('#icon-daily').datepicker('setStartDate', data['days']['min']);
+                $('#icon-daily').datepicker('setEndDate', data['days']['max']);
+                $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
+                $('#icon-monthly').datepicker('setEndDate', data['months']['max']);
+
+                console.log(data);
+            });
+
+            /*
 			$.get("/val/min/month", function(data) {
 				$('#icon-monthly').datepicker('setStartDate', data);
 			});
@@ -83,7 +95,7 @@
 			});
 			$.get("/val/max/day", function(data) { 
 				$('#icon-daily').datepicker('setEndDate', data);
-			});
+			});*/
 		});
 
 		$(function () {
