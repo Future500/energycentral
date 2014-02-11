@@ -59,7 +59,7 @@ class Stats
     public function fetchDay(Silex\Application $app, $date = null, $trimZeroData = false)
     {
         // Set current date if none is set yet
-        if ($date = null) {
+        if ($date == null) {
             $date = date('Y-m-d');
         }
 
