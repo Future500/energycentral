@@ -14,10 +14,6 @@
     width:1px;
 }
 
-#next-day:hover, #prev-day:hover, #next-month:hover, #prev-month:hover {
-    color: #FFF;
-}
-
 #monthly-chart {
     margin-top:15px;
 }

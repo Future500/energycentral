@@ -39,8 +39,7 @@ $app->get(
             'index.twig',
             array(
                 'dayStats' => $app['stats']->fetchDayHighcharts($app, ''),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app, date('m')),
-                'date' => date('d-m-Y')
+                'monthStats' => $app['stats']->fetchMonthHighcharts($app, date('m'))
             )
         );
     }
@@ -87,17 +86,20 @@ $app->get(
 );
 
 $app->get(
-    '/dateCalc/{date}/{type}/{format}',
-    function (Request $request, $date, $type, $format = 'Y-m-d') use ($app) { //date calculations
-        if ($type != '-') { // we need to decrease or increase the date
-            if (strlen($date) > 7) { // date per day
-                $newdate = strtotime(($type == 'inc' ? '+1 day' : '-1 day'), strtotime($date));
-            } else { // date per month
-                $newdate = strtotime(($type == 'inc' ? '+1 month' : '-1 month'), strtotime($date));
-            }
-        } else { // just convert the current day to a readable format
-            $newdate = strtotime($date);
+    '/datecalc/{date}/{format}',
+    function (Request $request, $date, $format = 'Y-m-d') use ($app) { //date calculations
+        if ($format == 'Y-m-d') {
+            return json_encode(array(
+                    'prev' => date($format, strtotime('-1 day', strtotime($date))),
+                    'next' => date($format, strtotime('+1 day', strtotime($date)))
+                )
+            );
+        } else if ($format == 'Y-m') {
+            return json_encode(array(
+                    'prev' => date($format, strtotime('-1 month', strtotime($date))),
+                    'next' => date($format, strtotime('+1 month', strtotime($date)))
+                )
+            );
         }
-        return date($format, $newdate); // return new formatted date
     }
 );
