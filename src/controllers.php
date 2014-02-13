@@ -11,8 +11,7 @@ $app->before(
         $app['session']->start();
         $locale = $app['session']->get('locale');
 
-        // Restore language that was selected if any
-        if($locale != null && $app['translator']->getLocale() != $locale) {
+        if ($locale != null && $app['translator']->getLocale() != $locale) {
             $app['translator']->setLocale($locale);
         }
     }
@@ -32,16 +31,30 @@ $app->get(
     }
 );
 
+$app->get('/login', function(Request $request) use ($app) {
+    return $app['twig']->render('login.twig', array(
+        'error' => $app['security.last_error']($request),
+        'last_username' => $app['session']->get('_security.last_username'),
+    ));
+});
+
 $app->get(
     '/',
     function (Request $request) use ($app) { // fetch a day (it will use the current day by default)
         return $app['twig']->render(
             'index.twig',
             array(
-                'dayStats' => $app['stats']->fetchDayHighcharts($app, ''),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app, date('m'))
+                'dayStats' => $app['stats']->fetchDayHighcharts($app),
+                'monthStats' => $app['stats']->fetchMonthHighcharts($app)
             )
         );
+    }
+);
+
+$app->get(
+    '/admin',
+    function (Request $request) use ($app) {
+        return $app['twig']->render('admin.twig');
     }
 );
 
@@ -88,18 +101,10 @@ $app->get(
 $app->get(
     '/datecalc/{date}/{format}',
     function (Request $request, $date, $format = 'Y-m-d') use ($app) { //date calculations
-        if ($format == 'Y-m-d') {
-            return json_encode(array(
-                    'prev' => date($format, strtotime('-1 day', strtotime($date))),
-                    'next' => date($format, strtotime('+1 day', strtotime($date)))
-                )
-            );
-        } else if ($format == 'Y-m') {
-            return json_encode(array(
-                    'prev' => date($format, strtotime('-1 month', strtotime($date))),
-                    'next' => date($format, strtotime('+1 month', strtotime($date)))
-                )
-            );
-        }
+        return json_encode(array(
+                'prev' => date($format, strtotime($format == 'Y-m-d' ? '-1 day' : '-1 month', strtotime($date))),
+                'next' => date($format, strtotime($format == 'Y-m-d' ? '+1 day' : '+1 month', strtotime($date)))
+            )
+        );
     }
 );
