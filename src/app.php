@@ -2,7 +2,6 @@
 
 namespace EC;
 
-use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
@@ -32,6 +31,7 @@ $app->register(
     //   'twig.options' => array('cache' => __DIR__.'/../cache/twig'),
     )
 );
+
 $app['twig'] = $app->share(
     $app->extend(
         'twig',
@@ -40,17 +40,20 @@ $app['twig'] = $app->share(
         }
     )
 );
+
 $app['stats'] = $app->share(
     function () {
         return new Stats();
     }
 );
+
 $app->register(
     new TranslationServiceProvider(),
     array(
         'locale_fallback' => 'en',
     )
 );
+
 $app['translator'] = $app->share(
     $app->extend(
         'translator',
