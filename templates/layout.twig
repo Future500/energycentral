@@ -69,21 +69,12 @@
         <script src="{{ app.request.basepath }}/js/jquery-1.10.2.min.js"></script>
         <script src="{{ app.request.basepath }}/js/bootstrap.min.js"></script>
         <script>
-            function setLanguage(lang)
-            {
-                var req = $.post('/setlang/' + lang, function () {
+            $('.country-flag').click(function(event) {
+                var req = $.post('/setlang/' + event.target.id, function () {
                     location.reload();
                 }).fail(function () {
                     alert('Failed to set language!')
-                });     
-            }
-
-            $('#nl').click(function() {
-                setLanguage('nl');
-            });
-
-            $('#en').click(function() {
-                setLanguage('en');
+                });
             });
         </script>
         {% block footer %}{% endblock %}
