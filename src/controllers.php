@@ -17,8 +17,8 @@ $app->before(
     }
 );
 
-$app->get(
-    '/setLang/{lang}',
+$app->post(
+    '/setlang/{lang}',
     function (Request $request, $lang) use ($app) {
         $app['session']->start();
         $locale = $app['session']->get('locale');
