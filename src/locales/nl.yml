@@ -1,6 +1,8 @@
 navigation:
     home: Homepagina
     about: About
+    login: Inloggen
+    logout: Uitloggen
 
 chart:
     title: Energie productie

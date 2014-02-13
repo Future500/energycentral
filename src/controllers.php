@@ -42,7 +42,7 @@ $app->get(
             )
         );
     }
-);
+)->bind('login');
 
 $app->get(
     '/',
@@ -55,7 +55,7 @@ $app->get(
             )
         );
     }
-);
+)->bind('home');
 
 $app->get(
     '/admin',
@@ -69,7 +69,7 @@ $app->get(
     function (Request $request) use ($app) {
         return $app['twig']->render('about.twig');
     }
-);
+)->bind('about');
 
 $app->get(
     '/stats/{date}',

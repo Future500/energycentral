@@ -1,6 +1,8 @@
 navigation:
     home: Homepage
     about: About
+    login: Login
+    logout: Logout
 
 chart:
     title: Energy production

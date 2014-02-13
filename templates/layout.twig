@@ -44,16 +44,26 @@
                         <a class="brand" href="{{ app.request.basepath }}/">EnergyCentral</a>
 
                         <div class="nav-collapse">
-                            <ul class="nav">
+                          <ul class="nav pull-left">
                               {% block navItems %}
-                              <li class="active"><a href="#">{{ 'navigation.home'|trans }}</a></li>
-                              <li><a href="about">{{ 'navigation.about'|trans }}</a></li>
+                                <li {% if app.request.attributes.get('_route') == 'home' %}class="active"{% endif %}><a href="/">{{ 'navigation.home'|trans }}</a></li>
+                                <li {% if app.request.attributes.get('_route') == 'about' %}class="active"{% endif %}><a href="/about">{{ 'navigation.about'|trans }}</a></li>
                               {% endblock %}
                           </ul>
-                        </div><!--/.nav-collapse -->
 
-                        <img src='{{ app.request.basepath }}/img/en.png' alt='' id='en' class='country-flag'/>
-                        <img src='{{ app.request.basepath }}/img/nl.png' alt='' id='nl' class='country-flag'/>
+                          <ul class="nav pull-right">
+                              <img src='{{ app.request.basepath }}/img/en.png' alt='' id='en' class='country-flag'/>
+                              <img src='{{ app.request.basepath }}/img/nl.png' alt='' id='nl' class='country-flag'/>
+
+                              {% if app.centralmode %} {# We're running the mode in which data is centralized #}
+                                  {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                      <li><a href="{{ path('logout') }}">{{ 'navigation.logout'|trans }}</a></li>
+                                  {% else %}
+                                      <li {% if app.request.attributes.get('_route') == 'login' %}class="active"{% endif %}><a href="/login">{{ 'navigation.login'|trans }}</a></li>
+                                  {% endif %}
+                              {% endif %}
+                          </ul>
+                        </div><!--/.nav-collapse -->
                     </div>
                 </div>
             </div>

@@ -2,11 +2,6 @@
 
 {% block title %}About{% endblock %}
 
-{% block navItems %}
-	<li><a href='/'>{{ 'navigation.home'|trans }}</a></li>
-	<li class='active'><a href='#'>{{ 'navigation.about'|trans }}</a></li>
-{% endblock %}
-
 {% block content %}
 	<img src='{{app.request.basepath}}/img/logo.png' alt=''/>
 

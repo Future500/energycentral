@@ -13,7 +13,6 @@
 
     <div id='daily-chart'></div> <!-- Daily chart will be output here -->
 
-    {{ app.centralmode }}
     <div id='footer-daily'>
         <a href="javascript:getDay('{{ selectedDay|date_modify("-1 day")|date("Y-m-d") }}');" id='prev-day'>{{ 'stats.footer.previous'|trans }}</a>
 		<span id='daily-text'>
