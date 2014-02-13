@@ -11,17 +11,18 @@
         <div class="control-group">
             <label class="control-label" for="username">{{ 'login.username'|trans }}</label>
             <div class="controls">
-                <input type="text"  name="_username" id="username" placeholder="Username" value="{{ last_username }}"/>
+                <input type="text" name="_username" id="username" maxlength="30" placeholder="Username" value="{{ last_username }}" required/>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="password">{{ 'login.password'|trans }}</label>
             <div class="controls">
-                <input type="password" name="_password" id="password" placeholder="Password"/>
+                <input type="password" name="_password" id="password" maxlength="100" placeholder="Password" required/>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
+                <button type="reset" class="btn">Reset</button>
                 <button type="submit" class="btn">{{ 'login.signin'|trans }}</button>
             </div>
         </div>

@@ -38,6 +38,7 @@ $app->get(
         if (!$app['centralmode']) { // Running local mode?
             return $app->redirect('/');
         }
+
         return $app['twig']->render(
             'login.twig',
             array(
