@@ -40,7 +40,7 @@ $app->register(
 
 $app['security.access_rules'] = array(
     array('^/login', 'IS_AUTHENTICATED_ANONYMOUSLY'),
-    array('^/stats', 'ROLE_USER'),
+   // array('^/stats', 'ROLE_USER'),
     array('^/admin', 'ROLE_ADMIN')
 );
 
