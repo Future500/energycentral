@@ -5,6 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 $app->before(
     function () use ($app) {
@@ -34,6 +35,9 @@ $app->post(
 $app->get(
     '/login',
     function (Request $request) use ($app) {
+        if (!$app['centralmode']) { // Running local mode?
+            return $app->redirect('/');
+        }
         return $app['twig']->render(
             'login.twig',
             array(
