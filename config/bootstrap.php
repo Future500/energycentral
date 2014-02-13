@@ -31,7 +31,10 @@ $app->register(
                     'login_path' => '/login',
                     'check_path' => '/login_check'
                 ),
-                'logout' => array('logout_path' => '/logout'),
+                'logout' => array(
+                    'logout_path' => '/logout',
+                    'target' => '/'
+                ),
                 'users' => $app['security.users']
             )
         )

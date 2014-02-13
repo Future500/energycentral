@@ -3,5 +3,27 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    loginpage
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ path('login_check') }}" method="post">
+        <div class="control-group">
+            <label class="control-label" for="username">{{ 'login.username'|trans }}</label>
+            <div class="controls">
+                <input type="text"  name="_username" id="username" placeholder="Username" value="{{ last_username }}"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">{{ 'login.password'|trans }}</label>
+            <div class="controls">
+                <input type="password" name="_password" id="password" placeholder="Password"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">{{ 'login.signin'|trans }}</button>
+            </div>
+        </div>
+    </form>
 {% endblock %}

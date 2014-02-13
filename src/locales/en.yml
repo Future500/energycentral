@@ -4,6 +4,11 @@ navigation:
     login: Login
     logout: Logout
 
+login:
+    username: Username
+    password: Password
+    signin: Sign in
+
 chart:
     title: Energy production
     day:

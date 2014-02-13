@@ -4,6 +4,11 @@ navigation:
     login: Inloggen
     logout: Uitloggen
 
+login:
+    username: Gebruikersnaam
+    password: Wachtwoord
+    signin: Inloggen
+
 chart:
     title: Energie productie
     day:
