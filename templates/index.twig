@@ -49,7 +49,6 @@
     <script src="{{ app.request.basepath }}/js/highcharts/highcharts.js"></script>
     <script src="{{ app.request.basepath }}/js/highcharts/modules/exporting.js"></script>
     <script src="{{ app.request.basepath }}/js/date.format.js"></script>
-    <script type="text/javascript" src="{{ app.request.basepath }}/js/bootstrap.min.js" charset="UTF-8"></script>
     <script type="text/javascript" src="{{ app.request.basepath }}/js/bootstrap-datepicker.js" charset="UTF-8"></script>
 
     <script type="text/javascript">
@@ -218,27 +217,6 @@
             }
         ]
     });
-
-    function convertDate(date, monthly, reverse)
-    {
-        var d = date.getDate();
-        var m = date.getMonth() + 1;
-        var y = date.getFullYear();
-
-        if (monthly) {
-            if (reverse) { // backwards
-                return y + '-' + (m <= 9 ? '0' + m : m);
-            } else {
-                return (m <= 9 ? '0' + m : m) + '-' + y;
-            }
-        } else {
-            if (reverse) {
-                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
-            } else {
-                return (d <= 9 ? '0' + d : d) + '-' + (m <= 9 ? '0' + m : m) + '-' + y;
-            }
-        }
-    }
 
     function updateFooter(date, emptyData)
     {
