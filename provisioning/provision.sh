@@ -13,5 +13,5 @@ mysqladmin -u root -p"U7KOekqJOMvf3Uu" CREATE future500
 mysql -u root -p"U7KOekqJOMvf3Uu" future500 < "/vagrant/provisioning/db.sql"
 
 # Configure and restart nginx
-sudo -s cp /vagrant/provisioning/nginx_default /etc/nginx/sites-available/default
+sudo -s cp /vagrant/provisioning/nginx.conf /etc/nginx/sites-available/default
 sudo -s /etc/init.d/nginx restart

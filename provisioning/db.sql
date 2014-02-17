@@ -850,6 +850,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`userid`, `username`, `password`, `roles`) VALUES
 (1, 'future500', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw==', 'ROLE_ADMIN');
+(2, 'testuser', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw==', 'ROLE_USER');
 
 GRANT ALL ON future500.* TO future500@localhost IDENTIFIED BY 'test123';
 
