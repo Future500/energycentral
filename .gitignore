@@ -1,4 +1,5 @@
 /.idea
+/.vagrant
 /cache
 /vendor/
 /bin/sma-spot/
