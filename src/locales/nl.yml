@@ -20,9 +20,9 @@ chart:
 stats:
     general:
         fetching: Data ophalen ...
-        fetchingFailed: Data ophalen mislukt!
+        fetchingfailed: Data ophalen mislukt!
     footer:
-        notAvailable: Geen statistieken beschikbaar voor
+        notavailable: Geen statistieken beschikbaar voor
         available: Statistieken worden getoond voor
         previous: Vorige
         next: Volgende

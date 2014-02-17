@@ -20,9 +20,9 @@ chart:
 stats:
     general:
         fetching: Fetching data ...
-        fetchingFailed: Fetching data failed!
+        fetchingfailed: Fetching data failed!
     footer:
-        notAvailable: No statistics available for
+        notavailable: No statistics available for
         available: Currently viewing statistics for
         previous: Previous
         next: Next
