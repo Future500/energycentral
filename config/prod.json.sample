@@ -1,5 +1,6 @@
 {
     "debug": false,
+    "centralmode": false,
     "config": {
         "db.options": {
             "driver":   "pdo_mysql",
