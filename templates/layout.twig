@@ -57,7 +57,7 @@
                             <ul class="nav pull-right">
                                 {% if app.centralmode %} {# We're running the mode in which data is centralized #}
                                   {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                      <li><a href="/mydevice">{{ 'navigation.mydevice'|trans }}</a></li>
+                                      <li><a href="/mydevices">{{ 'navigation.mydevice'|trans }}</a></li>
 
                                       {% if is_granted('ROLE_ADMIN') %} {# Show dropdown if we are logged in as admin #}
                                           <li class="dropdown">
@@ -92,7 +92,7 @@
         <script src="{{ app.request.basepath }}/js/bootstrap.min.js"></script>
         <script>
             $('.country-flag').click(function(event) {
-                var req = $.post('/setlang/' + event.target.id, function () {
+                var req = $.post('/conf/lang/' + event.target.id, function () {
                     location.reload();
                 }).fail(function () {
                     alert('Failed to set language!')

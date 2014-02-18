@@ -3,7 +3,6 @@
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
-use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
 use Igorw\Silex\JsonConfigDriver;
 use Igorw\Silex\YamlConfigDriver;
 use EC\User\UserProvider;

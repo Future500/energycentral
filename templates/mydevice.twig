@@ -71,7 +71,7 @@
         });
 
         // Set minimum and maximum values
-        $.getJSON("/val", function (data) {
+        $.getJSON("/date/min_max", function (data) {
             $('#icon-daily').datepicker('setStartDate', data['days']['min']);
             $('#icon-daily').datepicker('setEndDate', data['days']['max']);
             $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
@@ -223,7 +223,7 @@
 
         if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
             // Get previous and next date
-            $.getJSON("/datecalc/" + date + "/Y-m-d", function (data) {
+            $.getJSON("/date/calc/" + date + "/Y-m-d", function (data) {
                 $("#prev-day").attr("href", "javascript:getDay('" + data['prev'] + "');");
                 $("#next-day").attr("href", "javascript:getDay('" + data['next'] + "');");
             });
@@ -233,7 +233,7 @@
             $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
         } else { // we are updating the monthly graph
             // Get previous and next date
-            $.getJSON("/datecalc/" + date + "/Y-m", function (data) {
+            $.getJSON("/date/calc/" + date + "/Y-m", function (data) {
                 $("#prev-month").attr("href", "javascript:getMonth('" + data['prev'] + "');");
                 $("#next-month").attr("href", "javascript:getMonth('" + data['next'] + "');");
             });
