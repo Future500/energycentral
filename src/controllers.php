@@ -14,9 +14,9 @@ $app->before(
     }
 );
 
-$app->mount('/', new EC\Provider\IndexControllerProvider());
-$app->mount('/login', new EC\Provider\LoginControllerProvider());
-$app->mount('/conf', new EC\Provider\ConfigControllerProvider());
-$app->mount('/stats', new EC\Provider\StatsControllerProvider());
-$app->mount('/mydevices', new EC\Provider\DeviceControllerProvider());
-$app->mount('/date', new EC\Provider\DateControllerProvider());
+$app->mount('/', new EC\Provider\Controller\IndexControllerProvider());
+$app->mount('/login', new EC\Provider\Controller\LoginControllerProvider());
+$app->mount('/conf', new EC\Provider\Controller\ConfigControllerProvider());
+$app->mount('/stats', new EC\Provider\Controller\StatsControllerProvider());
+$app->mount('/mydevices', new EC\Provider\Controller\DeviceControllerProvider());
+$app->mount('/date', new EC\Provider\Controller\DateControllerProvider());

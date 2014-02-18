@@ -5,7 +5,7 @@ use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
 use Igorw\Silex\JsonConfigDriver;
 use Igorw\Silex\YamlConfigDriver;
-use EC\User\UserProvider;
+use EC\Provider\Security\UserProvider;
 
 $env = getenv('APPLICATION_ENV') ?: 'prod';
 $configFile = __DIR__."/".$env.".json";

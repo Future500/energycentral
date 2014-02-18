@@ -1,6 +1,6 @@
 <?php
 
-namespace EC\Provider;
+namespace EC\Provider\Controller;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
