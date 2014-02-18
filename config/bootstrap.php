@@ -11,10 +11,12 @@ $env = getenv('APPLICATION_ENV') ?: 'prod';
 $configFile = __DIR__."/".$env.".json";
 $configDefaults = array('root_dir' => dirname(__DIR__));
 
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/security.yml', $configDefaults, new YamlConfigDriver()));
 $app->register(new Igorw\Silex\ConfigServiceProvider($configFile, $configDefaults, new JsonConfigDriver()));
 $app->register(new Silex\Provider\DoctrineServiceProvider(), $app['config']);
 $app->register(new MonologServiceProvider(), $app['config']);
+
+$securityFile = $app['centralmode'] ? 'security_central.yml' : 'security_noncentral.yml';
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/' . $securityFile, $configDefaults, new YamlConfigDriver()));
 
 $firewalls = $app['security']['firewalls'];
 $firewalls['main']['users'] = $app->share(

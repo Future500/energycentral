@@ -10,7 +10,6 @@ class DateControllerProvider implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
-        /* check before access */
         $controllers = $app['controllers_factory'];
         $controllers->get(
             '/min_max',

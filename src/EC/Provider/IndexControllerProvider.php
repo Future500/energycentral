@@ -4,6 +4,8 @@ namespace EC\Provider;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class IndexControllerProvider implements ControllerProviderInterface
 {
@@ -15,7 +17,7 @@ class IndexControllerProvider implements ControllerProviderInterface
             function () use ($app) {
                 if (!$app['centralmode']) { // Local mode, we just show the device (subrequest to /mydevice)
                     return $app->handle(
-                        Request::create('/mydevice', 'GET'),
+                        Request::create('/mydevices', 'GET'),
                         HttpKernelInterface::SUB_REQUEST
                     );
                 }

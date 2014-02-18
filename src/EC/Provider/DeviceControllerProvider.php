@@ -22,7 +22,6 @@ class DeviceControllerProvider implements ControllerProviderInterface
                 );
             }
         )->bind('mydevice');
-       //->before($beforeAccess);
 
         return $controllers;
     }
