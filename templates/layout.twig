@@ -57,7 +57,7 @@
                             <ul class="nav pull-right">
                                 {% if app.centralmode %} {# We're running the mode in which data is centralized #}
                                   {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                      <li><a href="/mydevice">My device</a></li>
+                                      <li><a href="/mydevice">{{ 'navigation.mydevice'|trans }}</a></li>
                                       <li><a href="{{ path('logout') }}">{{ 'navigation.logout'|trans }}</a></li>
                                   {% else %}
                                       <li {% if app.request.attributes.get('_route') == 'login' %}class="active"{% endif %}><a href="{{ path('login') }}">{{ 'navigation.login'|trans }}</a></li>
