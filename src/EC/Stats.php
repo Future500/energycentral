@@ -6,11 +6,6 @@ use Silex;
 
 class Stats
 {
-    public function __construct()
-    {
-        // ...
-    }
-
     private function checkDate($date)
     {
         $dateRes = \DateTime::createFromFormat('Y-m-d', $date);
