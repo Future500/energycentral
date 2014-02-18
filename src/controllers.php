@@ -22,13 +22,21 @@ $app->post(
     '/setlang/{lang}',
     function ($lang) use ($app) {
         $app['session']->start();
-        $locale = $app['session']->get('locale');
+        $currentLang = $app['session']->get('locale');
 
-        if($locale != $lang) { // Set language if not set yet
+        if ($currentLang != $lang) { // Set language if not set yet
             $app['translator']->setLocale($lang);
             $app['session']->set('locale', $lang);
         }
-        return 1;
+    }
+);
+
+$app->post(
+    '/setdevice/{device}',
+    function ($device) use ($app) {
+        if ($app['session']->get('device') != $device) { // Set device if not set yet
+            $app['session']->set('locale', $device);
+        }
     }
 );
 
