@@ -4,6 +4,10 @@ navigation:
     login: Login
     logout: Logout
     mydevice: My device
+    admin:
+        dropdown: Admin
+        adduser: Add user
+        edituser: Edit user
 
 login:
     username: Username

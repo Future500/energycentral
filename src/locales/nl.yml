@@ -4,6 +4,10 @@ navigation:
     login: Inloggen
     logout: Uitloggen
     mydevice: Mijn apparaat
+    admin:
+        dropdown: Beheer
+        adduser: Gebruiker toevoegen
+        edituser: Gebruiker wijzigen
 
 login:
     username: Gebruikersnaam
