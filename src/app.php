@@ -47,6 +47,16 @@ $app['stats'] = $app->share(
     }
 );
 
+// Checks if the mode is set to central, if yes then you must be logged in
+$app['central.noaccess'] = $app->share(
+    function () use ($app) {
+        if ($app['centralmode'] && !$app['security']->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return true;
+        }
+        return false;
+    }
+);
+
 $app->register(
     new TranslationServiceProvider(),
     array(

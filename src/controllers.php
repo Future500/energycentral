@@ -2,57 +2,35 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 $app->before(
     function () use ($app) {
-        $app['session']->start();
-        $locale = $app['session']->get('locale');
+        $sessionLocale = $app['session']->get('locale') == null ? 'en' : $app['session']->get('locale');
 
-        if ($locale != null && $app['translator']->getLocale() != $locale) {
-            $app['translator']->setLocale($locale);
+        if ($app['translator']->getLocale() != $sessionLocale) {
+            $app['translator']->setLocale($sessionLocale);
         }
     }
 );
 
-$app->post(
-    '/setlang/{lang}',
-    function ($lang) use ($app) {
-        $app['session']->start();
-        $currentLang = $app['session']->get('locale');
-
-        if ($currentLang != $lang) { // Set language if not set yet
-            $app['translator']->setLocale($lang);
-            $app['session']->set('locale', $lang);
-        }
+$beforeAccess = function (Request $request, Silex\Application $app) { // Executed for every main page except home, login and about
+    if ($app['centralmode'] && !$app['security']->isGranted('IS_AUTHENTICATED_FULLY')) {
+        throw new AccessDeniedException(); // We're in central mode and we are not logged in (while we need to be), throw an exception
     }
-);
-
-$app->post(
-    '/setdevice/{device}',
-    function ($device) use ($app) {
-        if ($app['session']->get('device') != $device) { // Set device if not set yet
-            $app['session']->set('locale', $device);
-        }
-    }
-);
+};
 
 $app->get(
     '/',
-    function () use ($app) { // fetch a day (it will use the current day by default)
-        if ($app['centralmode'] && $app['security']->isGranted('ROLE_ADMIN')) {
-            return $app['twig']->render('admin.twig'); // If we're admin and central mode is on we will get a different page
+    function () use ($app) {
+        if (!$app['centralmode']) { // Local mode, we just show the device (subrequest to /mydevice)
+            return $app->handle(
+                Request::create('/mydevice', 'GET'),
+                HttpKernelInterface::SUB_REQUEST
+            );
         }
-        return $app['twig']->render(
-            'index.twig',
-            array(
-                'dayStats'   => $app['stats']->fetchDayHighcharts($app),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app)
-            )
-        );
+        return $app['twig']->render('index.twig'); // Non-central mode, we show the homepage with information
     }
 )->bind('home');
 
@@ -80,19 +58,56 @@ $app->get(
     }
 )->bind('login');
 
+$app->post(
+    '/setlang/{lang}',
+    function ($lang) use ($app) {
+        $sessionLocale = $app['session']->get('locale');
+
+        if ($sessionLocale != $lang) { // Set language if not set yet
+            $app['translator']->setLocale($lang);
+            $app['session']->set('locale', $lang);
+        }
+        return 1;
+    }
+);
+
+$app->post(
+    '/setdevice/{device}',
+    function ($device) use ($app) {
+        if ($app['session']->get('device') != $device) { // Set device if not set yet
+            $app['session']->set('locale', $device);
+        }
+    }
+);
+
+$app->get(
+    '/mydevice',
+    function () use ($app) { // fetch a day (it will use the current day by default)
+        return $app['twig']->render(
+            'mydevice.twig',
+            array(
+                'dayStats'   => $app['stats']->fetchDayHighcharts($app),
+                'monthStats' => $app['stats']->fetchMonthHighcharts($app)
+            )
+        );
+    }
+)
+->bind('mydevice')
+->before($beforeAccess);
+
 $app->get(
     '/stats/{date}',
     function ($date) use ($app) { // fetch a day or month with a specified date
         return $app['stats']->fetchDayHighcharts($app, $date);
     }
-);
+)->before($beforeAccess);
 
 $app->get(
     '/stats/{year}/{month}',
     function ($year, $month) use ($app) { // fetch a month with specified year
         return $app['stats']->fetchMonthHighcharts($app, $month, $year);
     }
-);
+)->before($beforeAccess);
 
 $app->get(
     '/val',
@@ -112,7 +127,7 @@ $app->get(
             )
         );
     }
-);
+)->before($beforeAccess);
 
 $app->get(
     '/datecalc/{date}/{format}',
@@ -124,4 +139,4 @@ $app->get(
             )
         );
     }
-);
+)->before($beforeAccess);
