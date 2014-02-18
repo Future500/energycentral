@@ -3,6 +3,7 @@ navigation:
     about: About
     login: Inloggen
     logout: Uitloggen
+    mydevice: Mijn apparaat
 
 login:
     username: Gebruikersnaam

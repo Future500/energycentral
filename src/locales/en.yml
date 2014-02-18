@@ -3,6 +3,7 @@ navigation:
     about: About
     login: Login
     logout: Logout
+    mydevice: My device
 
 login:
     username: Username
