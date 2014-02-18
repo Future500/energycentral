@@ -3,18 +3,22 @@
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\WebProfilerServiceProvider;
+use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
 use Igorw\Silex\JsonConfigDriver;
+use Igorw\Silex\YamlConfigDriver;
 use EC\User\UserProvider;
 
 $env = getenv('APPLICATION_ENV') ?: 'prod';
 $configFile = __DIR__."/".$env.".json";
 $configDefaults = array('root_dir' => dirname(__DIR__));
 
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/security.yml', $configDefaults, new YamlConfigDriver()));
 $app->register(new Igorw\Silex\ConfigServiceProvider($configFile, $configDefaults, new JsonConfigDriver()));
 $app->register(new Silex\Provider\DoctrineServiceProvider(), $app['config']);
 $app->register(new MonologServiceProvider(), $app['config']);
 
-$app['security.users'] = $app->share(
+$firewalls = $app['security']['firewalls'];
+$firewalls['main']['users'] = $app->share(
     function ($app) {
         return new UserProvider($app['db']);
     }
@@ -22,36 +26,11 @@ $app['security.users'] = $app->share(
 
 $app->register(
     new SecurityServiceProvider(),
-    array(
-        'security.firewalls' => array(
-            'main' => array(
-                'pattern'    => '^/',
-                'anonymous'  => true,
-                'form' => array(
-                    'login_path' => '/login',
-                    'check_path' => '/login_check'
-                ),
-                'logout' => array(
-                    'logout_path' => '/logout',
-                    'target' => '/'
-                ),
-                'users' => $app['security.users']
-            )
-        )
+    array (
+        'security.firewalls'        => $firewalls,
+        'security.access_rules'     => $app['security']['access_control'],
+        'security.role_hierarchy'   => $app['security']['role_hierarchy']
     )
-);
-
-$app['security.access_rules'] = array(
-    array('^/login', 'IS_AUTHENTICATED_ANONYMOUSLY'),
-   // array('^/stats', 'ROLE_USER'),
-    array('^/admin', 'ROLE_ADMIN')
-);
-
-$app['security.role_hierarchy'] = array(
-    'ROLE_ADMIN' => array(
-        'ROLE_USER',
-        'ROLE_ALLOWED_TO_SWITCH'
-    ),
 );
 
 if ($app['debug']) {
