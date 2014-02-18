@@ -250,13 +250,12 @@
         $('#day-picker').empty();
 
         $.getJSON("/stats/" + date, function (data) {
-            var chart = $('#daily-chart').highcharts();
-            chart.series[0].setData(data);
+            var chart = $('#daily-chart').highcharts().series[0].setData(data);
             updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
         });
     }
 
-    function getMonth(date)  // change to date ?
+    function getMonth(date)
     {
         $('#monthly-text').html("{{ 'stats.general.fetching'|trans }}");
         $('#month-picker').empty();
@@ -276,23 +275,15 @@
     }
 
     $(window).resize(function () {
-        var chart = $('#daily-chart').highcharts();
+        var rotation = $(this).width() <= 768 ? -90 : 0;
+        var y = $(this).width() <= 768 ? 25 : 15;
 
-        if ($(this).width() <= 768) { // change rotation based on viewport width
-            chart.xAxis[0].update({
-                labels: {
-                    rotation: -90,
-                    y: 25
-                }
-            });
-        } else {
-            chart.xAxis[0].update({
-                labels: {
-                    rotation: 0,
-                    y: 15
-                }
-            })
-        }
+        $('#daily-chart').highcharts().xAxis[0].update({
+            labels: {
+                rotation: rotation,
+                y: y
+            }
+        });
     });
     </script>
 {% endblock %}
