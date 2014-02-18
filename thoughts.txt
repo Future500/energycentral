@@ -1,4 +1,0 @@
-select max(datetime) from daydata;
-select max(date) from monthdata;
-
-sudo -u www-data bin/sma-spot/bin/Release/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq
