@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "10857694a96903eb1149bd07de89e6e7",
+    "hash": "8a6c709d824e62a73a059df542403148",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -552,6 +552,48 @@
                 "shasum": null
             },
             "type": "library"
+        },
+        {
+            "name": "kilte/silex-pagination",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kilte/silex-pagination.git",
+                "reference": "5aad3433face19af7d6daa9bc7e24240e759b1c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kilte/silex-pagination/zipball/5aad3433face19af7d6daa9bc7e24240e759b1c1",
+                "reference": "5aad3433face19af7d6daa9bc7e24240e759b1c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "kilte/silex-view": "~1.0",
+                "silex/silex": "*",
+                "twig/twig": ">=1.8,<2.0-dev"
+            },
+            "suggest": {
+                "kilte/silex-view": "",
+                "twig/twig": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Kilte\\Silex\\Pagination\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Kilte",
+                    "email": "nwotnbm@gmail.com"
+                }
+            ],
+            "description": "Simple PaginationServiceProvider for Silex",
+            "time": "2013-12-31 13:52:15"
         },
         {
             "name": "monolog/monolog",

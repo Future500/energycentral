@@ -14,9 +14,14 @@ $app->before(
     }
 );
 
-$app->mount('/', new EC\Provider\Controller\IndexControllerProvider());
-$app->mount('/login', new EC\Provider\Controller\LoginControllerProvider());
-$app->mount('/conf', new EC\Provider\Controller\ConfigControllerProvider());
-$app->mount('/stats', new EC\Provider\Controller\StatsControllerProvider());
-$app->mount('/mydevices', new EC\Provider\Controller\DeviceControllerProvider());
-$app->mount('/date', new EC\Provider\Controller\DateControllerProvider());
+$app->get('/',                           'EC\\Controller\\IndexController::indexAction');
+$app->get('/about',                      'EC\\Controller\\AboutController::indexAction');
+$app->get('/login',                      'EC\\Controller\\LoginController::indexAction')
+    ->bind('login');
+$app->get('/admin',                      'EC\\Controller\\AdminController::indexAction');
+$app->get('/mydevices',                  'EC\\Controller\\DeviceController::indexAction');
+$app->get('/stats/{date}',               'EC\\Controller\\StatsController::dayAction');
+$app->get('/stats/{year}/{month}',       'EC\\Controller\\StatsController::monthAction');
+$app->get('/date/min_max',               'EC\\Controller\\DateController::minMaxAction');
+$app->get('/date/calc/{date}/{format}',  'EC\\Controller\\DateController::calcAction');
+$app->post('/conf/lang/{lang}',           'EC\\Controller\\ConfigController::languageAction');

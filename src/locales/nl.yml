@@ -1,13 +1,12 @@
 navigation:
     home: Homepagina
-    about: About
+    about: Over ons
     login: Inloggen
     logout: Uitloggen
-    mydevice: Mijn apparaat
+    mydevices: Mijn apparaten
     admin:
         dropdown: Beheer
-        adduser: Gebruiker toevoegen
-        edituser: Gebruiker wijzigen
+        users: Gebruikers
 
 login:
     username: Gebruikersnaam

@@ -3,11 +3,10 @@ navigation:
     about: About
     login: Login
     logout: Logout
-    mydevice: My device
+    mydevices: My devices
     admin:
         dropdown: Admin
-        adduser: Add user
-        edituser: Edit user
+        users: Users
 
 login:
     username: Username

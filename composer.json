@@ -66,6 +66,7 @@
         "symfony/twig-bridge": "~2.2",
         "symfony/validator": "~2.2",
         "symfony/yaml": "~2.2",
+        "kilte/silex-pagination": "~1.0",
         "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
         "jquery/jquery": "*",
         "highcharts": "*",

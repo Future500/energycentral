@@ -17,6 +17,8 @@ $app = new Application();
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
+$app->register(new \Kilte\Silex\Pagination\PaginationServiceProvider());
+
 $app->register(
     new SessionServiceProvider(),
     array(
