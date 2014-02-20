@@ -7,8 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminController
 {
-    public function indexAction(Request $request, Application $app)
+    public function usersAction(Request $request, Application $app)
     {
-        return $app['twig']->render('admin.twig');
+        return $app['twig']->render('admin/users.twig');
     }
 }

@@ -9,8 +9,8 @@ class DateController
 {
     public function minMaxAction(Request $request, Application $app)
     {
-        $days = $app['db']->fetchAssoc('SELECT MIN(datetime) AS minimum, MAX(datetime) AS maximum FROM daydata');
-        $months = $app['db']->fetchAssoc('SELECT MIN(date) AS minimum, MAX(date) AS maximum FROM monthdata');
+        $days = $app['datalayer.minmax']('days'); // get minimum and maximum day
+        $months = $app['datalayer.minmax']('months'); // get minimum and maximum month
         return json_encode(
             array(
                 'days' => array(
