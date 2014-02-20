@@ -1,0 +1,26 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'navigation.mydevices'|trans }}{% endblock %}
+
+{% block content %}
+   <table class="table table-bordered">
+       <thead>
+           <tr>
+               <th>Device number</th>
+               <th>Zipcode</th>
+               <th>House number</th>
+               <th>Options</th>
+           </tr>
+       </thead>
+       <tbody>
+       {% for device in devices %} {# Show all devices the user has access to #}
+           <tr>
+               <td>{{ device.deviceid }}</td>
+               <td>{{ device.zipcode }}</td>
+               <td>{{ device.housenumber }}</td>
+               <td><a href="/mydevices/{{ device.deviceid }}">View statistics</a></td>
+           </tr>
+       {% endfor %}
+       </tbody>
+   </table>
+{% endblock %}
