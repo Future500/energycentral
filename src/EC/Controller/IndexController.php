@@ -10,9 +10,9 @@ class IndexController
 {
     public function indexAction(Request $request, Application $app)
     {
-        if (!$app['centralmode']) { // Local mode, we just show the device (subrequest to /mydevice/local)
+        if (!$app['centralmode']) { // Local mode, we just show the device
             return $app->handle(
-                Request::create('/mydevices/local', 'GET'),
+                Request::create('/mydevices/view', 'GET'),
                 HttpKernelInterface::SUB_REQUEST
             );
         }

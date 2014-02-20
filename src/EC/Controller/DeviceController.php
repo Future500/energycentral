@@ -20,12 +20,15 @@ class DeviceController
 
     public function viewAction(Request $request, Application $app, $deviceId = null)
     {
+        $deviceId = $request->get('deviceId');
+        $deviceRoute = ($deviceId == null ? '' : '/' . $deviceId);
+
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
-                'dayStats'   => $app['stats']->fetchDayHighcharts($app, $deviceId),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app, $deviceId),
-                'deviceId'   => $request->get('deviceId')
+                'dayStats'      => $app['stats']->fetchDayHighcharts($app, $deviceId),
+                'monthStats'    => $app['stats']->fetchMonthHighcharts($app, $deviceId),
+                'deviceRoute'   => $deviceRoute
             )
         );
     }
