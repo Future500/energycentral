@@ -18,26 +18,14 @@ class DeviceController
         );
     }
 
-    public function localAction(Request $request, Application $app)
+    public function viewAction(Request $request, Application $app, $deviceId = null)
     {
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
-                'dayStats'   => $app['stats']->fetchDayHighcharts($app),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app)
-            )
-        );
-    }
-
-    public function viewAction(Request $request, Application $app)
-    {
-        // TODO: Show statistics based on device id
-
-        return $app['twig']->render(
-            'mydevices/viewdevice.twig',
-            array(
-                'dayStats'   => $app['stats']->fetchDayHighcharts($app),
-                'monthStats' => $app['stats']->fetchMonthHighcharts($app)
+                'dayStats'   => $app['stats']->fetchDayHighcharts($app, $deviceId),
+                'monthStats' => $app['stats']->fetchMonthHighcharts($app, $deviceId),
+                'deviceId'   => $request->get('deviceId')
             )
         );
     }

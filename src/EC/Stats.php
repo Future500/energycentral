@@ -52,7 +52,7 @@ class Stats
         return json_encode($encodedData); // encode for jquery
     }
 
-    public function fetchDay(Silex\Application $app, $date = null, $trimZeroData = false)
+    public function fetchDay(Silex\Application $app, $date = null, $deviceId = null, $trimZeroData = false)
     {
         // Set current date if none is set yet
         if ($date == null) {
@@ -66,21 +66,21 @@ class Stats
         if ($this->checkDate($date)) {
             if (!$trimZeroData) {
                 // Fetch the first and last reading
-                $beginGraph = $app['datalayer.getreading']($date, 'ASC');
-                $endGraph   = $app['datalayer.getreading']($date, 'DESC');
+                $beginGraph = $app['datalayer.getreading']($date, 'ASC', $deviceId);
+                $endGraph   = $app['datalayer.getreading']($date, 'DESC', $deviceId);
 
                 // Check if results aren't empty and also show 0 values
                 if ($beginGraph != null && $endGraph != null) {
-                    $dayData = $app['datalayer.getalldata.day']($beginGraph, $endGraph);
+                    $dayData = $app['datalayer.getalldata.day']($beginGraph, $endGraph, $deviceId);
                 }
             } else { // Don't show 0 values in the middle of the graph
-                $dayData = $app['datalayer.getdata.day']($date); // get all data without null values
+                $dayData = $app['datalayer.getdata.day']($date, $deviceId); // get all data without null values
             }
         }
         return $dayData;
     }
 
-    public function fetchMonth(Silex\Application $app, $month = null, $year = null)
+    public function fetchMonth(Silex\Application $app, $month = null, $year = null, $deviceId = null)
     {
         if ($month == null || $year == null) { // Set current month if none is set yet
             $year = date('Y');
@@ -90,18 +90,18 @@ class Stats
         $monthData = array();
 
         if ($month > 0 && $month <= 12) { // Check if valid month otherwise we can skip the next part of code
-            $monthData = $app['datalayer.getalldata.month']($month, $year);
+            $monthData = $app['datalayer.getalldata.month']($month, $year, $deviceId);
         }
         return $monthData;
     }
 
-    public function fetchDayHighcharts(Silex\Application $app, $date = null, $trimZeroData = false)
+    public function fetchDayHighcharts(Silex\Application $app, $deviceId = null, $date = null, $trimZeroData = false)
     {
-        return $this->encodeHighcharts($this->fetchDay($app, $date, $trimZeroData));
+        return $this->encodeHighcharts($this->fetchDay($app, $date, $deviceId, $trimZeroData));
     }
 
-    public function fetchMonthHighcharts(Silex\Application $app, $month = null, $year = null)
+    public function fetchMonthHighcharts(Silex\Application $app, $deviceId = null, $month = null, $year = null)
     {
-        return $this->encodeHighcharts($this->fetchMonth($app, $month, $year), true);
+        return $this->encodeHighcharts($this->fetchMonth($app, $month, $year, $deviceId), true);
     }
 }

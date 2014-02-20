@@ -7,13 +7,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StatsController
 {
-    public function dayAction(Application $app, $date)
+    public function dayAction(Application $app, $deviceId = null, $date = null)
     {
-        return $app['stats']->fetchDayHighcharts($app, $date);
+        return $app['stats']->fetchDayHighcharts($app, $deviceId, $date);
     }
 
-    public function monthAction(Application $app, $year, $month)
+    public function monthAction(Application $app, $deviceId = null, $year = null, $month = null)
     {
-        return $app['stats']->fetchMonthHighcharts($app, $month, $year);
+        return $app['stats']->fetchMonthHighcharts($app, $deviceId, $month, $year);
     }
 }

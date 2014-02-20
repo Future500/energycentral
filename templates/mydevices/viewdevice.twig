@@ -71,7 +71,7 @@
         });
 
         // Set minimum and maximum values
-        $.getJSON("/date/min_max", function (data) {
+        $.getJSON("/date/min_max/{{ deviceId }}", function (data) {
             $('#icon-daily').datepicker('setStartDate', data['days']['min']);
             $('#icon-daily').datepicker('setEndDate', data['days']['max']);
             $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
@@ -249,7 +249,7 @@
         $('#daily-text').html("{{ 'stats.general.fetching'|trans }}");
         $('#day-picker').empty();
 
-        $.getJSON("/stats/" + date, function (data) {
+        $.getJSON("/stats/" + date + "/{{ deviceId }}", function (data) {
             var chart = $('#daily-chart').highcharts().series[0].setData(data);
             updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
         });
@@ -267,7 +267,7 @@
         if (!Date.validateYear(parseInt(year)) || !Date.validateMonth(parseInt(month))) { // check if valid
             $('#monthly-text').html("{{ 'stats.general.fetchingfailed'|trans }}");
         } else {
-            $.getJSON("/stats/" + year + '/' + month, function (data) {
+            $.getJSON("/stats/" + year + '/' + month + "/{{ deviceId }}", function (data) {
                 var chart = $('#monthly-chart').highcharts().series[0].setData(data);
                 updateFooter(year + '-' + month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
             });

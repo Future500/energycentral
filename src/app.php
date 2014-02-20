@@ -94,12 +94,9 @@ $app['datalayer.getalldata.day'] = $app->protect(
                 ->setParameter('devid', $deviceId);
         }
 
-        $queryBuilder->setParameters(
-            array(
-                'first' => $start,
-                'last' => $end
-            )
-        );
+        $queryBuilder
+            ->setParameter('first', $start)
+            ->setParameter('last', $end);
 
         $stmt = $queryBuilder->execute();
         return $stmt->fetchAll();
@@ -120,12 +117,9 @@ $app['datalayer.getalldata.month'] = $app->protect(
                 ->setParameter('devid', $deviceId);
         }
 
-        $queryBuilder ->setParameters(
-            array(
-                'month' => $month,
-                'year' => $year
-            )
-        );
+        $queryBuilder
+            ->setParameter('month', $month)
+            ->setParameter('year', $year);
 
         $stmt = $queryBuilder->execute();
         return $stmt->fetchAll();
@@ -172,8 +166,9 @@ $app['datalayer.getreading'] = $app->protect(
                 ->setParameter('devid', $deviceId);
         }
 
-        $queryBuilder->orderBy('datetime', $type);
-        $queryBuilder->setParameter('date', $date);
+        $queryBuilder
+            ->orderBy('datetime', $type)
+            ->setParameter('date', $date);
 
         $stmt = $queryBuilder->execute();
         return $stmt->fetchColumn();

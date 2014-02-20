@@ -7,10 +7,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DateController
 {
-    public function minMaxAction(Request $request, Application $app)
+    public function minMaxAction(Request $request, Application $app, $deviceId)
     {
-        $days = $app['datalayer.minmax']('days'); // get minimum and maximum day
-        $months = $app['datalayer.minmax']('months'); // get minimum and maximum month
+        $days = $app['datalayer.minmax']('days', $deviceId); // get minimum and maximum day
+        $months = $app['datalayer.minmax']('months', $deviceId); // get minimum and maximum month
+
         return json_encode(
             array(
                 'days' => array(
