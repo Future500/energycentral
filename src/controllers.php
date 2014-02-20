@@ -14,13 +14,14 @@ $app->get('/',                                      'EC\\Controller\\IndexContro
 $app->get('/about',                                 'EC\\Controller\\AboutController::indexAction');
 $app->get('/login',                                 'EC\\Controller\\LoginController::indexAction')
     ->bind('login');
+$app->get('/profile',                               'EC\\Controller\\ProfileController::indexAction');
 $app->get('/admin/users',                           'EC\\Controller\\AdminController::usersAction');
 $app->get('/mydevices',                             'EC\\Controller\\DeviceController::indexAction');
 $app->get('/mydevices/view/{deviceId}',             'EC\\Controller\\DeviceController::viewAction')
     ->value('deviceId', null);
-$app->get('/stats/{date}/{deviceId}',               'EC\\Controller\\StatsController::dayAction')
-    ->value('deviceId', null);
 $app->get('/stats/{year}/{month}/{deviceId}',       'EC\\Controller\\StatsController::monthAction')
+    ->value('deviceId', null);
+$app->get('/stats/{date}/{deviceId}',               'EC\\Controller\\StatsController::dayAction')
     ->value('deviceId', null);
 $app->get('/date/min_max/{deviceId}',               'EC\\Controller\\DateController::minMaxAction')
     ->value('deviceId', null);

@@ -200,6 +200,20 @@ $app['devices.list'] = $app->protect(
     }
 );
 
+$app['devices.hasaccess'] = $app->protect(
+    function ($deviceId) use ($app) {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $app['db']->createQueryBuilder()
+            ->select('ac.deviceid')
+            ->from('devaccess', 'ac')
+            ->where('userid = :userid')
+            ->setParameter('userid', $app['security']->getToken()->getUser()->getId());
+
+        $stmt = $queryBuilder->execute();
+        return in_array($deviceId, $stmt->fetchAll(\PDO::FETCH_COLUMN));
+    }
+);
+
 $app->register(
     new TranslationServiceProvider(),
     array(

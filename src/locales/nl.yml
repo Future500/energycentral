@@ -7,6 +7,7 @@ navigation:
     profile: Profiel
     admin:
         dropdown: Beheer
+        devices: Alle apparaten
         users: Gebruikers
 
 login:
@@ -21,6 +22,19 @@ chart:
     month:
       subtitle: per maand
     kwgenerated: kW opgebracht
+
+mydevices:
+    devicenumber: Apparaat nummer
+    zipcode: Postcode
+    housenumber: Huis nummer
+    options: Opties
+    viewstats: Bekijk statistieken
+
+profile:
+    change: Wijzigen
+
+device:
+    noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!
 
 stats:
     general:

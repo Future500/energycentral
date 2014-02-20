@@ -52,25 +52,17 @@ class Stats
         return json_encode($encodedData); // encode for jquery
     }
 
-    public function fetchDay(Silex\Application $app, $date = null, $deviceId = null, $trimZeroData = false)
+    public function fetchDay(Silex\Application $app, $date = null, $deviceId = null, $trimZeroData = false) // problem with trimming zero data?
     {
-        // Set current date if none is set yet
-        if ($date == null) {
-            $date = date('Y-m-d');
-        }
-
-        // Setup return variable
+        $date = ($date == null ? date('Y-m-d') : $date); // Set current date if none is set yet
         $dayData = array();
 
-        // Check if valid date otherwise we can skip the next part of code
-        if ($this->checkDate($date)) {
+        if ($this->checkDate($date)) { // Check if valid date otherwise we can skip the next part of code
             if (!$trimZeroData) {
-                // Fetch the first and last reading
-                $beginGraph = $app['datalayer.getreading']($date, 'ASC', $deviceId);
-                $endGraph   = $app['datalayer.getreading']($date, 'DESC', $deviceId);
+                $beginGraph = $app['datalayer.getreading']($date, 'ASC', $deviceId); // get first reading
+                $endGraph   = $app['datalayer.getreading']($date, 'DESC', $deviceId); // get last reading
 
-                // Check if results aren't empty and also show 0 values
-                if ($beginGraph != null && $endGraph != null) {
+                if ($beginGraph != null && $endGraph != null) { // Check if results aren't empty and also show 0 values
                     $dayData = $app['datalayer.getalldata.day']($beginGraph, $endGraph, $deviceId);
                 }
             } else { // Don't show 0 values in the middle of the graph
@@ -82,17 +74,10 @@ class Stats
 
     public function fetchMonth(Silex\Application $app, $month = null, $year = null, $deviceId = null)
     {
-        if ($month == null || $year == null) { // Set current month if none is set yet
-            $year = date('Y');
-            $month = date('m');
-        }
+        $year = ($year == null ? date('Y') : $year);
+        $month = ($month == null ? date('m') : $month);
 
-        $monthData = array();
-
-        if ($month > 0 && $month <= 12) { // Check if valid month otherwise we can skip the next part of code
-            $monthData = $app['datalayer.getalldata.month']($month, $year, $deviceId);
-        }
-        return $monthData;
+        return ($month > 0 && $month <= 12 ? $app['datalayer.getalldata.month']($month, $year, $deviceId) : array());
     }
 
     public function fetchDayHighcharts(Silex\Application $app, $deviceId = null, $date = null, $trimZeroData = false)

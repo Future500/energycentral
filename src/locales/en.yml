@@ -7,6 +7,7 @@ navigation:
     profile: Profile
     admin:
         dropdown: Admin
+        devices: All devices
         users: Users
 
 login:
@@ -21,6 +22,20 @@ chart:
     month:
       subtitle: per month
     kwgenerated: kW generated
+    kwgenerated: kW generated
+
+mydevices:
+    devicenumber: Device number
+    zipcode: Zipcode
+    housenumber: House number
+    options: Options
+    viewstats: View statistics
+
+profile:
+    change: Wijzigen
+
+device:
+    noaccess: Sorry, but you don't have permsision to view the statistics of this device!
 
 stats:
     general:
