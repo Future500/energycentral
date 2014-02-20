@@ -4,6 +4,7 @@ navigation:
     login: Inloggen
     logout: Uitloggen
     mydevices: Mijn apparaten
+    profile: Profiel
     admin:
         dropdown: Beheer
         users: Gebruikers

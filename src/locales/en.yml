@@ -4,6 +4,7 @@ navigation:
     login: Login
     logout: Logout
     mydevices: My devices
+    profile: Profile
     admin:
         dropdown: Admin
         users: Users

@@ -66,27 +66,15 @@ class Stats
         if ($this->checkDate($date)) {
             if (!$trimZeroData) {
                 // Fetch the first and last reading
-                $beginGraph = $app['db']->fetchColumn(
-                    "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime ASC LIMIT 1",
-                    array('date' => $date)
-                );
-                $endGraph = $app['db']->fetchColumn(
-                    "SELECT datetime FROM daydata WHERE DATE(datetime) = :date AND kW > 0.000 ORDER BY datetime DESC LIMIT 1",
-                    array('date' => $date)
-                );
+                $beginGraph = $app['datalayer.getreading']($date, 'ASC');
+                $endGraph   = $app['datalayer.getreading']($date, 'DESC');
 
                 // Check if results aren't empty and also show 0 values
-                if (!empty($beginGraph) && !empty($endGraph)) {
-                    $dayData = $app['db']->fetchAll(
-                        "SELECT * FROM daydata WHERE datetime >= :first AND datetime <= :last",
-                        array('first' => $beginGraph, 'last' => $endGraph)
-                    );
+                if ($beginGraph != null && $endGraph != null) {
+                    $dayData = $app['datalayer.getalldata.day']($beginGraph, $endGraph);
                 }
             } else { // Don't show 0 values in the middle of the graph
-                $dayData = $app['db']->fetchAll(
-                    "SELECT * FROM daydata WHERE DATE(datetime) = :date AND NOT kW='0.000'",
-                    array('date' => $date)
-                );
+                $dayData = $app['datalayer.getdata.day']($date); // get all data without null values
             }
         }
         return $dayData;
@@ -102,10 +90,7 @@ class Stats
         $monthData = array();
 
         if ($month > 0 && $month <= 12) { // Check if valid month otherwise we can skip the next part of code
-            $monthData = $app['db']->fetchAll(
-                "SELECT date, kW FROM monthdata WHERE MONTH(date) = :m AND YEAR(date) = :y",
-                array('m' => $month, 'y' => $year)
-            );
+            $monthData = $app['datalayer.getalldata.month']($month, $year);
         }
         return $monthData;
     }
