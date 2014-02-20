@@ -4,9 +4,9 @@ namespace EC\Provider\Security;
 
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use EC\User;
 use Doctrine\DBAL\Connection;
 
 class UserProvider implements UserProviderInterface
@@ -26,7 +26,7 @@ class UserProvider implements UserProviderInterface
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
 
-        return new User($user['username'], $user['password'], explode(',', $user['roles']), true, true, true, true);
+        return new User($user['userid'], $user['username'], $user['password'], explode(',', $user['roles']), true, true, true, true);
     }
 
     public function refreshUser(UserInterface $user)
