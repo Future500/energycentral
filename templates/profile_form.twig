@@ -1,0 +1,48 @@
+{% block profile_form %}
+    {% if errors|length != null %} {# Show errors if any ocurred #}
+        <div class="alert alert-error">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if profileupdated %} {# Shows only when the profile was successfully updated #}
+        <div class="alert alert-success">
+            {{ 'profile.updated'|trans }}
+        </div>
+    {% endif %}
+
+    <form action="#" method="post" class="form form-horizontal">
+        {% block options %}
+            {% if show_oldpass %} {# Show the old password input? #}
+                <div class="control-group">
+                    <label class="control-label" for="old-password">{{ 'profile.oldpassword'|trans }}</label>
+                    <div class="controls">
+                        <input type="password" name="old_password" id="old-password" maxlength="100" placeholder="{{ 'profile.oldpassword'|trans }}" required/>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="control-group">
+                <label class="control-label" for="new-password">{{ 'profile.newpassword'|trans }}</label>
+                <div class="controls">
+                    <input type="password" name="new_password" id="new-password" maxlength="100" placeholder="{{ 'profile.newpassword'|trans }}" {% if require_pass %}required{% endif %}/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="new-password-confirm">{{ 'profile.newpasswordconfirm'|trans }}</label>
+                <div class="controls">
+                    <input type="password" name="new_password_confirm" id="new-password-confirm" maxlength="100" placeholder="{{ 'profile.newpasswordconfirm'|trans }}" {% if require_pass %}required{% endif %}/>
+                </div>
+            </div>
+        {% endblock %}
+        <div class="control-group">
+            <div class="controls">
+                <input type="reset" class="btn" value="Reset"/>
+                <input type="submit" class="btn btn-success" id="save-devices" value="{{ 'profile.change'|trans }}"/>
+            </div>
+        </div>
+    </form>
+{% endblock %}

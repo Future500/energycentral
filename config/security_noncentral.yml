@@ -1,4 +1,7 @@
 security:
+    encoders:
+        EC\User: sha512
+
     firewalls:
         main:
             pattern: ^/
@@ -16,5 +19,5 @@ security:
 
     access_control:
         - [ '^/login', 'IS_AUTHENTICATED_ANONYMOUSLY' ]
-        - [ '^/mydevices$', 'ROLE_USER' ]
+        - [ '^/(mydevices$|profile)', 'ROLE_USER' ]
         - [ '^/admin', 'ROLE_ADMIN' ]

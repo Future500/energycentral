@@ -1,0 +1,15 @@
+#device-label {
+    float: left;
+    width: 160px;
+    text-align: right;
+}
+
+#device-controls {
+    float: left;
+    margin-left: 20px;
+    width: 350px;
+}
+
+.device {
+    margin-left: 180px;
+}

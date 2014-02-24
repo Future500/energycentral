@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>{{ 'navigation.mydevices'|trans }}</h1>
+        <h3>{{ 'navigation.mydevices'|trans }}</h3>
     </div>
 
     <table class="table table-bordered">
@@ -16,7 +16,6 @@
                 <th>{{ 'mydevices.options'|trans }}</th>
             </tr>
         </thead>
-
         <tbody>
             {% for device in devices %} {# Show all devices the user has access to #}
                 <tr>

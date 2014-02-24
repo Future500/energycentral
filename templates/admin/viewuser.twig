@@ -1,0 +1,71 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'navigation.admin.viewuser'|trans }}{% endblock %}
+
+{% block head %}
+    <link href="{{ app.request.basepath }}/css/profile.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/jquery-ui-1.10.4.custom.min.css">
+
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h3>Viewing user '{{ user.username }}'</h3>
+    </div>
+
+    {% embed 'profile_form.twig' with {'show_oldpass': false, 'require_pass': false} %}
+        {% block options %}
+            {{ parent() }}
+
+            <div class="control-group">
+                <label class="control-label" for="add-device">Devices</label>
+                <div class="controls">
+                    <a href="#" class="btn btn-info" id="add-device">Add new device</a>
+                    <a href="#" class="btn btn-danger" id="cancel">Cancel</a>
+                </div>
+            </div>
+
+            <div id="devices">
+                {% for device in user_devices %}
+                    <div class="control-group">
+                        <div class="controls">
+                            <input type="text" name="devices[]" class="all-devices" value="{{ device.zipcode }}" maxlength="6" required/>
+                            <a href="#" class="remove-device">Remove</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block footer %}
+    <script src="{{ app.request.basepath }}/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var originalDevices = $('#devices').html();
+
+            $('#add-device').click(function () {
+                var newItem = $('#devices').append('<div class="control-group"><div class="controls">' +
+                        '<input type="text" name="devices[]" class="all-devices" maxlength="6" required/>' +
+                        ' <a href="#" class="remove-device">Remove</a></div></div>'
+                );
+                newItem.find('input').autocomplete({
+                    source: {{ all_devices|raw }}
+                });
+            });
+
+            $('#cancel').click(function () {
+                $('#devices').html(originalDevices);
+            });
+
+            $("body").on("click", ".remove-device", function(e){
+                $(this).parent('div').parent('div').remove(); // Removes the div where the device is located in
+            });
+
+            $(".all-devices").autocomplete({
+                source: {{ all_devices|raw }}
+            });
+        });
+    </script>
+{% endblock %}

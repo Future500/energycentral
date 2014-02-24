@@ -9,7 +9,7 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Symfony\Component\Security\Core\Util\SecureRandom;
 
 // use EC\Stats;
 // use EC\Application;
@@ -47,6 +47,63 @@ $app['twig'] = $app->share(
 $app['stats'] = $app->share(
     function () {
         return new Stats();
+    }
+);
+
+$app['datalayer.user'] = $app->protect(
+    function ($userId) use ($app) {
+        $provider = new Provider\Security\UserProvider($app['db']);
+        return $provider->loadUserById($userId);
+    }
+);
+
+$app['datalayer.users'] = $app->protect(
+    function () use ($app) {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $app['db']->createQueryBuilder()
+            ->select('*')
+            ->from('user', 'u');
+
+        $stmt = $queryBuilder->execute();
+        return $stmt->fetchAll();
+    }
+);
+
+$app['datalayer.add_devices'] = $app->protect(
+    function ($userId, Array $devices) use ($app) {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        /*$queryBuilder = $app['db']->createQueryBuilder();
+
+        foreach ($devices as $device) {
+            $queryBuilder
+                ->insert('devaccess')
+                ->values(
+                    array(
+                        'deviceid' => $device[''];
+                    )
+                );
+        }
+
+        $stmt = $queryBuilder->execute();
+        return $stmt->fetchAll(); */
+    }
+);
+
+$app['datalayer.updatepassword'] = $app->protect(
+    function ($userId, $password) use ($app) {
+        $randGenerator = new SecureRandom();
+
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $app['db']->createQueryBuilder();
+        $query = $queryBuilder
+            ->update('user', 'u')
+            ->set('u.password', $queryBuilder->expr()->literal($password))
+           // ->set('u.salt', $queryBuilder->expr()->literal(base64_encode($randGenerator->nextBytes(10))))
+            ->where('u.userid = :userid')
+            ->setParameter(':userid', $userId);
+
+        $stmt = $query->execute();
+        return ($stmt == 1);
     }
 );
 
@@ -175,8 +232,20 @@ $app['datalayer.getreading'] = $app->protect(
     }
 );
 
+$app['devices.getzipcodes'] = $app->protect(
+    function (Array $devices) use ($app) {
+        array_walk(
+            $devices,
+            function (&$item) {
+                $item = $item['zipcode'];
+            }
+        );
+        return $devices;
+    }
+);
+
 $app['devices.list'] = $app->protect(
-    function ($withDetails = false) use ($app) {
+    function ($withDetails = false, $userId = null) use ($app) {
         /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
         $queryBuilder = $app['db']->createQueryBuilder();
 
@@ -193,7 +262,19 @@ $app['devices.list'] = $app->protect(
 
         $queryBuilder
             ->where('userid = :userid')
-            ->setParameter('userid', $app['security']->getToken()->getUser()->getId());
+            ->setParameter('userid', $userId == null ? $app['security']->getToken()->getUser()->getId() : $userId);
+
+        $stmt = $queryBuilder->execute();
+        return $stmt->fetchAll();
+    }
+);
+
+$app['devices.list.all'] = $app->protect(
+    function ($zipcodeOnly = false) use ($app) {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $app['db']->createQueryBuilder()
+            ->select($zipcodeOnly ? 'zipcode' : '*')
+            ->from('device', 'dev');
 
         $stmt = $queryBuilder->execute();
         return $stmt->fetchAll();

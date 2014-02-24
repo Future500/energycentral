@@ -23,6 +23,10 @@ chart:
       subtitle: per maand
     kwgenerated: kW opgebracht
 
+admin:
+    user: Gebruiker
+    options: Opties
+
 mydevices:
     devicenumber: Apparaat nummer
     zipcode: Postcode
@@ -31,7 +35,12 @@ mydevices:
     viewstats: Bekijk statistieken
 
 profile:
-    change: Wijzigen
+    oldpassword: Huidige wachtwoord
+    newpassword: Nieuw wachtwoord
+    newpasswordconfirm: Nieuw wachtwoord (bevestig)
+    updated: Profiel is bijgewerkt!
+    change: Wijzigingen opslaan
+    devices: Apparaten waar deze gebruiker toegang tot heeft
 
 device:
     noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!

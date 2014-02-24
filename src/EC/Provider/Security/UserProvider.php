@@ -18,6 +18,17 @@ class UserProvider implements UserProviderInterface
         $this->conn = $conn;
     }
 
+    public function loadUserById($userId)
+    {
+        $stmt = $this->conn->executeQuery('SELECT * FROM user WHERE userid = :userid', array('userid' => $userId));
+
+        if (!$user = $stmt->fetch()) {
+            throw new UsernameNotFoundException(sprintf('User ID "%i" does not exist.', $username));
+        }
+
+        return new User($user['userid'], $user['username'], $user['password'], $user['salt'], explode(',', $user['roles']));
+    }
+
     public function loadUserByUsername($username)
     {
         $stmt = $this->conn->executeQuery('SELECT * FROM user WHERE username = :username', array('username' => strtolower($username)));
@@ -26,7 +37,7 @@ class UserProvider implements UserProviderInterface
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
 
-        return new User($user['userid'], $user['username'], $user['password'], explode(',', $user['roles']), true, true, true, true);
+        return new User($user['userid'], $user['username'], $user['password'], $user['salt'], explode(',', $user['roles']));
     }
 
     public function refreshUser(UserInterface $user)

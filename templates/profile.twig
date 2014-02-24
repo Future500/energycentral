@@ -4,21 +4,8 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>{{ 'navigation.profile'|trans }}</h1>
+        <h3>{{ 'navigation.profile'|trans }}</h3>
     </div>
 
-    <form action="#" method="post">
-        <div class="control-group">
-            <label class="control-label" for="password">{{ 'login.password'|trans }}</label>
-            <div class="controls">
-                <input type="password" name="_password" id="password" maxlength="100" placeholder="Password" required/>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="reset" class="btn">Reset</button>
-                <button type="submit" class="btn">{{ 'profile.change'|trans }}</button>
-            </div>
-        </div>
-    </form>
+    {% include 'profile_form.twig' with {'show_oldpass': true, 'require_pass': true} %}
 {% endblock %}

@@ -9,14 +9,15 @@ class User implements UserInterface
     protected $id;
     protected $username;
     protected $password;
-    protected $roles;
     protected $salt;
+    protected $roles;
 
-    public function __construct($userid, $username, $password, array $roles = array())
+    public function __construct($userId, $username, $password, $salt, array $roles = array())
     {
-        $this->id = $userid;
+        $this->id = $userId;
         $this->username = $username;
         $this->password = $password;
+        $this->salt = $salt;
         $this->roles = $roles;
     }
 

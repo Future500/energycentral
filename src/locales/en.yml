@@ -9,6 +9,7 @@ navigation:
         dropdown: Admin
         devices: All devices
         users: Users
+        viewuser: View user
 
 login:
     username: Username
@@ -22,7 +23,10 @@ chart:
     month:
       subtitle: per month
     kwgenerated: kW generated
-    kwgenerated: kW generated
+
+admin:
+    user: User
+    options: Options
 
 mydevices:
     devicenumber: Device number
@@ -32,10 +36,15 @@ mydevices:
     viewstats: View statistics
 
 profile:
-    change: Wijzigen
+    oldpassword: Current password
+    newpassword: New password
+    newpasswordconfirm: New password (confirm)
+    updated: Profile has been successfully updated!
+    change: Save changes
+    devices: Devices this user has access to
 
 device:
-    noaccess: Sorry, but you don't have permsision to view the statistics of this device!
+    noaccess: Sorry, but you don't have permission to view the statistics of this device!
 
 stats:
     general:
