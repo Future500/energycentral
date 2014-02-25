@@ -72,7 +72,7 @@ class ProfileController
     public function changeProfileAction(Request $request, Application $app)
     {
         $errors = $this->validateDetails($request, $app);
-        $validationSuccess = (count($errors) == null);
+        $validationSuccess = ($errors->count() == null);
 
         if ($validationSuccess) { // Update the profile
             $app['datalayer.updatepassword'](

@@ -9,28 +9,40 @@ class DeviceServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['datalayer.add_devices'] = $app->protect(
-            function ($userId, Array $devices) use ($app) {
+        $app['devices.update'] = $app->protect(
+            function ($userId, array $addedDevices, array $removedDevices) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
-                /*$queryBuilder = $app['db']->createQueryBuilder();
+                $queryBuilder = $app['db']->createQueryBuilder();
 
-                foreach ($devices as $device) {
+                foreach ($addedDevices as $deviceId) { // add new devices
                     $queryBuilder
-                        ->insert('devaccess')
+                        ->insert('devaccess', 'dev')
                         ->values(
                             array(
-                                'deviceid' => $device[''];
+                                'deviceid'  => $deviceId,
+                                'userid'    => $userId
                             )
-                        );
+                        )
+                        ->execute();
                 }
 
-                $stmt = $queryBuilder->execute();
-                return $stmt->fetchAll(); */
+                foreach ($removedDevices as $deviceId) { // remove old devices if needed
+                    $queryBuilder
+                        ->delete('devaccess')
+                        ->where('deviceid = :deviceid AND userid = :userid')
+                        ->setParameters(
+                            array(
+                                'deviceid' => $deviceId,
+                                'userid' => $userId
+                            )
+                        )
+                        ->execute();
+                }
             }
         );
 
         $app['devices.getzipcodes'] = $app->protect(
-            function (Array $devices) use ($app) {
+            function (array $devices) {
                 array_walk(
                     $devices,
                     function (&$item) {
@@ -42,17 +54,21 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         $app['devices.getids'] = $app->protect(
-            function (Array $devices) use ($app) {
-                /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
-                array_walk(
-                    $devices,
-                    function (&$item) {
-                        die($item);
-                    }
-                );
+            function (array $devices) use ($app) {
+                $deviceIds = array();
 
-                //   $stmt = $queryBuilder->execute();
-                //  return $stmt->fetchAll();
+                foreach ($devices as $device) {
+                    /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                    $queryBuilder = $app['db']->createQueryBuilder()
+                        ->select('deviceid')
+                        ->from('device', 'dev')
+                        ->where('zipcode = :zipcode')
+                        ->setParameter('zipcode', $device);
+
+                    $stmt = $queryBuilder->execute();
+                    $deviceIds[$device] = $stmt->fetchColumn();
+                }
+                return $deviceIds;
             }
         );
 
@@ -89,7 +105,7 @@ class DeviceServiceProvider implements ServiceProviderInterface
                     ->from('device', 'dev');
 
                 $stmt = $queryBuilder->execute();
-                return $stmt->fetchAll();
+                return $stmt->fetchAll($zipcodeOnly ? \PDO::FETCH_COLUMN : \PDO::FETCH_ASSOC);
             }
         );
 
