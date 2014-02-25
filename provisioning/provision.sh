@@ -3,7 +3,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 apt-get -y update
-apt-get -y install nginx mysql-server mysql-client phpmyadmin php5-fpm php5-cli php5-gd php5-mcrypt php5-mysql
+apt-get -y install nginx mysql-server mysql-client phpmyadmin php5-fpm php5-cli php5-gd php5-mcrypt php5-mysql php-apc
 
 # Set MySQL root password
 mysqladmin -u root password U7KOekqJOMvf3Uu
