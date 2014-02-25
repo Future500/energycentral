@@ -75,12 +75,10 @@ class ProfileController
         $validationSuccess = (count($errors) == null);
 
         if ($validationSuccess) { // Update the profile
-            $passwordUpdated = $app['datalayer.updatepassword'](
+            $app['datalayer.updatepassword'](
                 $app['security']->getToken()->getUser()->getId(),
                 $app['security.encoder.digest']->encodePassword($request->get('new_password'), null)
             );
-
-            // .. password updated check
         }
 
         return $app['twig']->render(
