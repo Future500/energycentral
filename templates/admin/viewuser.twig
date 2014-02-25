@@ -29,7 +29,7 @@
                 {% for device in user_devices %}
                     <div class="control-group">
                         <div class="controls">
-                            <input type="text" name="devices[]" class="all-devices" value="{{ device.zipcode }}" maxlength="6" required/>
+                            <input type="text" name="devices[]" class="all-devices" value="{{ device.zipcode }}" pattern="[0-9]{4}[A-Za-z]{2}" maxlength="6" required/>
                             <a href="#" class="remove-device">{{ 'admin.devices.remove'|trans }}</a>
                         </div>
                     </div>
@@ -47,10 +47,9 @@
 
             $('#add-device').click(function () {
                 var newItem = $('#devices').append('<div class="control-group"><div class="controls">' +
-                        '<input type="text" name="devices[]" class="all-devices" maxlength="6" required/>' +
+                        '<input type="text" name="devices[]" class="all-devices" pattern="[0-9]{4}[A-Za-z]{2}" maxlength="6" required/>' +
                         ' <a href="#" class="remove-device">{{ "admin.devices.remove"|trans }}</a></div></div>'
-                );
-                newItem.find('input').autocomplete({
+                ).find('input').autocomplete({
                     source: {{ all_devices|raw }}
                 });
             });
