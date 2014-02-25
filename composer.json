@@ -67,7 +67,7 @@
         "symfony/validator": "~2.2",
         "symfony/yaml": "~2.2",
         "kilte/silex-pagination": "~1.0",
-        "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
+        "doctrine/dbal": "~2.5.0",
         "jquery/jquery": "*",
         "highcharts": "*",
         "twitter/bootstrap-zip": "*",
@@ -82,7 +82,7 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
