@@ -26,6 +26,11 @@ chart:
 
 admin:
     user: User
+    devices:
+        label: Devices
+        add: Add device
+        remove: Remove
+        cancel: Cancel
     options: Options
 
 mydevices:

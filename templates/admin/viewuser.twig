@@ -18,10 +18,10 @@
             {{ parent() }}
 
             <div class="control-group">
-                <label class="control-label" for="add-device">Devices</label>
+                <label class="control-label" for="add-device">{{ 'admin.devices.label'|trans }}</label>
                 <div class="controls">
-                    <a href="#" class="btn btn-info" id="add-device">Add new device</a>
-                    <a href="#" class="btn btn-danger" id="cancel">Cancel</a>
+                    <a href="#" class="btn btn-info" id="add-device">{{ 'admin.devices.add'|trans }}</a>
+                    <a href="#" class="btn btn-danger" id="cancel">{{ 'admin.devices.cancel'|trans }}</a>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                     <div class="control-group">
                         <div class="controls">
                             <input type="text" name="devices[]" class="all-devices" value="{{ device.zipcode }}" maxlength="6" required/>
-                            <a href="#" class="remove-device">Remove</a>
+                            <a href="#" class="remove-device">{{ 'admin.devices.remove'|trans }}</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -48,7 +48,7 @@
             $('#add-device').click(function () {
                 var newItem = $('#devices').append('<div class="control-group"><div class="controls">' +
                         '<input type="text" name="devices[]" class="all-devices" maxlength="6" required/>' +
-                        ' <a href="#" class="remove-device">Remove</a></div></div>'
+                        ' <a href="#" class="remove-device">{{ "admin.devices.remove"|trans }}</a></div></div>'
                 );
                 newItem.find('input').autocomplete({
                     source: {{ all_devices|raw }}

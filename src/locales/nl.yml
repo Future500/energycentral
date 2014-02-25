@@ -9,6 +9,7 @@ navigation:
         dropdown: Beheer
         devices: Alle apparaten
         users: Gebruikers
+        viewuser: Gebruiker bekijken
 
 login:
     username: Gebruikersnaam
@@ -25,6 +26,11 @@ chart:
 
 admin:
     user: Gebruiker
+    devices:
+        label: Apparaten
+        add: Apparaat toevoegen
+        remove: Verwijderen
+        cancel: Annuleren
     options: Opties
 
 mydevices:
