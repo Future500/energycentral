@@ -68,6 +68,7 @@
         "symfony/yaml": "~2.2",
         "kilte/silex-pagination": "~1.0",
         "doctrine/dbal": "~2.5.0@dev",
+        "ivaynberg/select2": "dev-master",
         "jquery/jquery": "*",
         "highcharts": "*",
         "twitter/bootstrap-zip": "*",

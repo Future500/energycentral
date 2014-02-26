@@ -1,6 +1,7 @@
 /.idea
 /.vagrant
 /cache
+/components
 /vendor/
 /bin/sma-spot/
 /config/*.json
