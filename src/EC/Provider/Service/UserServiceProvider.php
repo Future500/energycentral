@@ -19,20 +19,20 @@ class UserServiceProvider implements ServiceProviderInterface
         );
 
         $app['datalayer.users'] = $app->protect(
-            function () use ($app) {
+            function ($usernameOnly = false) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
-                    ->select('*')
+                    ->select($usernameOnly ? 'u.username' : '*')
                     ->from('user', 'u');
 
                 $stmt = $queryBuilder->execute();
-                return $stmt->fetchAll();
+                return $stmt->fetchAll($usernameOnly ? \PDO::FETCH_COLUMN : \PDO::FETCH_ASSOC);
             }
         );
 
         $app['datalayer.updatepassword'] = $app->protect(
             function ($userId, $password) use ($app) {
-                $randGenerator = new SecureRandom();
+                //$randGenerator = new SecureRandom();
 
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder();

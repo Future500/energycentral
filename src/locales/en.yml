@@ -38,7 +38,6 @@ device:
     options:
         add: Add device
         adduser: Add user
-        remove: Remove
         cancel: Cancel
         viewstats: View statistics
 

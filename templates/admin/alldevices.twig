@@ -1,6 +1,18 @@
 {% extends "layout.twig" %}
 
-{% block title %}{{ 'navigation.admin.alldevices'|trans }}{% endblock %}
+{% block title %}{{ 'navigation.admin.devices'|trans }}{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap-tagsinput.css" />
+    <style>
+        .bootstrap-tagsinput {
+            margin-top: 10px;
+        }
+
+        .user-tags {
+            margin: 0px;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="page-header">
@@ -24,20 +36,40 @@
                     <td>{{ device.zipcode }}</td>
                     <td>{{ device.housenumber }}</td>
                     <td>
-                        <div class="control-group">
-                            <div class="controls">
-                                <a href="#" class="btn btn-info" id="add-device">{{ 'device.adduser'|trans }}</a>
-                                <a href="#" class="btn btn-danger" id="cancel">{{ 'device.cancel'|trans }}</a>
+                        <form action="#" method="POST" name="dev{{ device.deviceid }}" class="user-tags">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <input type="text" id="dev{{ device.deviceid }}_users" class="device" placeholder="Add user"/>
+                                    <input type="submit" value="Save" class="btn btn-success"/>
+                                </div>
                             </div>
-                        </div>
-
-                        <div id="devices">
-
-                        </div>
+                        </form>
                     </td>
                     <td><a href="#">Edit</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block footer %}
+    <script src="{{ app.request.basepath }}/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="{{ app.request.basepath }}/js/bootstrap-tagsinput.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.device').tagsinput({
+                typeahead: {
+                    source: {{ users|raw }}
+                },
+                freeInput: false
+            });
+
+            {% for device in devices %} {# For each device, add the users to the tags #}
+                {% for user in device_getusers(device.deviceid) %}
+                    var deviceInput = '#dev{{ device.deviceid }}_users';
+                    $(deviceInput).tagsinput('add', '{{ user }}');
+                {% endfor %}
+            {% endfor %}
+        });
+    </script>
 {% endblock %}

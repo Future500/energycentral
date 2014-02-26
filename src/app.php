@@ -48,6 +48,14 @@ $app['twig'] = $app->share(
     $app->extend(
         'twig',
         function ($twig, $app) {
+            $twig->addFunction(
+                new \Twig_SimpleFunction(
+                    'device_getusers',
+                    function ($deviceId) use ($app) {
+                        return $app['devices.list_users']($deviceId);
+                    }
+                )
+            );
             return $twig;
         }
     )

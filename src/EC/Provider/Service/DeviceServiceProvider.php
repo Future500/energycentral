@@ -9,6 +9,10 @@ class DeviceServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        /*
+         * Update the device access table for a specific user.
+         * The function adds new devices or removes devices that the user should no longer have access to.
+         */
         $app['devices.update'] = $app->protect(
             function ($userId, array $addedDevices, array $removedDevices) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
@@ -41,6 +45,9 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        /*
+         * Extracts the zipcode from a device array
+         */
         $app['devices.getzipcodes'] = $app->protect(
             function (array $devices) {
                 array_walk(
@@ -53,6 +60,9 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        /*
+         * Returns the id for every device in the array
+         */
         $app['devices.getids'] = $app->protect(
             function (array $devices) use ($app) {
                 $deviceIds = array();
@@ -72,6 +82,9 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        /*
+         * List all devices a user has access to, including the zipcode if needed
+         */
         $app['devices.list'] = $app->protect(
             function ($withDetails = false, $userId = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
@@ -97,6 +110,27 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        /*
+         * List all users that belong to a specific device ID
+         */
+        $app['devices.list_users'] = $app->protect(
+            function ($deviceId = null) use ($app) {
+                /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                $queryBuilder = $app['db']->createQueryBuilder()
+                    ->select('u.username')
+                    ->from('devaccess', 'a')
+                    ->innerJoin('a', 'user', 'u', 'a.userid = u.userid')
+                    ->where('a.deviceid = :deviceid')
+                    ->setParameter('deviceid', $deviceId);
+
+                $stmt = $queryBuilder->execute();
+                return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+            }
+        );
+
+        /*
+         * List all devices, including zipcode if needed
+         */
         $app['devices.list.all'] = $app->protect(
             function ($zipcodeOnly = false) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
@@ -109,14 +143,17 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        /*
+         * Checks if a user has access to a specific device
+         */
         $app['devices.hasaccess'] = $app->protect(
-            function ($deviceId) use ($app) {
+            function ($deviceId, $userId = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
                     ->select('ac.deviceid')
                     ->from('devaccess', 'ac')
                     ->where('userid = :userid')
-                    ->setParameter('userid', $app['security']->getToken()->getUser()->getId());
+                    ->setParameter('userid', $userId == null ? $app['security']->getToken()->getUser()->getId() : $userId);
 
                 $stmt = $queryBuilder->execute();
                 return in_array($deviceId, $stmt->fetchAll(\PDO::FETCH_COLUMN));

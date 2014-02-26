@@ -25,7 +25,8 @@ class AdminController
         return $app['twig']->render(
             'admin/alldevices.twig',
             array(
-                'devices' => $app['devices.list.all']()
+                'devices'   => $app['devices.list.all'](),
+                'users'     => json_encode($app['datalayer.users'](true))
             )
         );
     }
@@ -84,7 +85,7 @@ class AdminController
         $devices = array(
             'user'      => $app['devices.getzipcodes']($app['devices.list'](true, $request->get('userid'))), // user devices (zipcodes)
             'all'       => $app['devices.list.all'](true), // all devices (zipcodes)
-            'form'      => $request->get('devices') ? $request->get('devices') : array(), // submitted devices by form (zipcodes)
+            'form'      => $request->get('devices') ? explode(',', $request->get('devices')) : array(), // submitted devices by form (zipcodes)
             'added'     => null,
             'removed'   => null,
         );
