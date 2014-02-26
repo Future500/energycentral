@@ -34,6 +34,8 @@ device:
     housenumber: Huis nummer
     zipcode: Postcode
     accesslist: Gebruikers met toegang tot dit apparaat
+    addzipcode: Postcode toevoegen
+    adduser: Gebruiker toevoegen
     noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!
     options:
         add: Apparaat toevoegen

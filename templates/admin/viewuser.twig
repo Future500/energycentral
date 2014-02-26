@@ -12,6 +12,7 @@
     <div class="page-header">
         <h3>Viewing user '{{ user.username }}'</h3>
     </div>
+
     {% embed 'profile_form.twig' with {'show_oldpass': false, 'require_pass': false} %}
         {% block options %}
             {{ parent() }}
@@ -19,7 +20,7 @@
             <div class="control-group">
                 <label class="control-label" for="add-device">{{ 'device.label'|trans }}</label>
                 <div class="controls">
-                    <input type="text" name="devices" id="devices" placeholder="Add zipcode"/>
+                    <input type="text" name="devices" id="devices" placeholder="{{ 'device.addzipcode'|trans }}"/>
                 </div>
             </div>
         {% endblock %}

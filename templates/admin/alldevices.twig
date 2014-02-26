@@ -3,15 +3,7 @@
 {% block title %}{{ 'navigation.admin.devices'|trans }}{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap-tagsinput.css" />
-    <style>
-        .bootstrap-tagsinput {
-            margin-top: 10px;
-        }
-
-        .user-tags {
-            margin: 0px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/admin.css" />
 {% endblock %}
 
 {% block content %}
@@ -26,7 +18,6 @@
                 <th>{{ 'device.zipcode'|trans }}</th>
                 <th>{{ 'device.housenumber'|trans }}</th>
                 <th>{{ 'device.accesslist'|trans }}</th>
-                <th>{{ 'navigation.options'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -39,13 +30,12 @@
                         <form action="#" method="POST" name="dev{{ device.deviceid }}" class="user-tags">
                             <div class="control-group">
                                 <div class="controls">
-                                    <input type="text" id="dev{{ device.deviceid }}_users" class="device" placeholder="Add user"/>
+                                    <input type="text" id="dev{{ device.deviceid }}_users" class="device" placeholder="{{ 'device.adduser'|trans }}"/>
                                     <input type="submit" value="Save" class="btn btn-success"/>
                                 </div>
                             </div>
                         </form>
                     </td>
-                    <td><a href="#">Edit</a></td>
                 </tr>
             {% endfor %}
         </tbody>
