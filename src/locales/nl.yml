@@ -31,9 +31,9 @@ admin:
 device:
     label: Apparaten
     devicenumber: Apparaat nummer
-    housenumber: Huis nummer
+    housenumber: Huisnummer
     zipcode: Postcode
-    accesslist: Gebruikers met toegang tot dit apparaat
+    accesslist: Gebruikers met toegang
     addzipcode: Postcode toevoegen
     adduser: Gebruiker toevoegen
     noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!

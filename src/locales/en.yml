@@ -33,7 +33,7 @@ device:
     devicenumber: Device number
     housenumber: House number
     zipcode: Zipcode
-    accesslist: Users with access to this device
+    accesslist: Users with access
     addzipcode: Add zipcode
     adduser: Add user
     noaccess: Sorry, but you don't have permission to view the statistics of this device!
