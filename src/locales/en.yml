@@ -37,6 +37,7 @@ device:
     accesslist: Users with access
     addzipcode: Add zipcode
     adduser: Add user
+    nodevices: No devices has been assigned to your account yet!
     noaccess: Sorry, but you don't have permission to view the statistics of this device!
     options:
         add: Add device

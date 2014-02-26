@@ -37,6 +37,7 @@ device:
     accesslist: Gebruikers met toegang
     addzipcode: Postcode toevoegen
     adduser: Gebruiker toevoegen
+    nodevices: Er zijn nog geen apparaten aan jouw account toegewezen!
     noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!
     options:
         add: Apparaat toevoegen
