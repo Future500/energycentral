@@ -63,6 +63,47 @@ class AdminController
         );
     }
 
+    public function changeDevicesAction(Request $request, Application $app)
+    {
+        $validation = array(
+            'errors' => new ConstraintViolationList(),
+            'success' => true
+        );
+
+        $users = array(
+            'all'       => $app['datalayer.users'](true), // all usernames
+            'current'   => $app['devices.list_users']($request->get('deviceid')),
+            'form'      => $request->get('users') ? explode(',', $request->get('users')) : array(), // submitted usernames by form
+            'added'     => null,
+            'removed'   => null,
+        );
+
+        $users['added'] = array_diff($users['form'], $users['current']); // devices that should be added
+        $users['removed'] = array_diff($users['current'], $users['form']); // devices that should be removed
+
+        if ($request->get('users') != null || ($users['current'] != null && $request->get('users') == null)) { // Update when new users are added, deleted OR when the last user is deleted
+            foreach ($users['added'] as $user) { // Check if each device that is about to be added exists
+                $validation['success'] = in_array($user, $users['all']);
+
+                if (!$validation['success']) {
+                    $validation['errors']->add(
+                        new ConstraintViolation('User does not exist: ' . $user, null, array(), null, null, null)
+                    ); // Add error to list
+                }
+            }
+
+            if ($validation['success']) {
+                $app['devices.update_users']( // update device list for user, will add or remove any devices if needed
+                    $request->get('deviceid'),
+                    $app['user.getids']($users['added']),
+                    $app['user.getids']($users['removed'])
+                );
+                return true;
+            }
+        }
+        return $validation['success'];
+    }
+
     public function changeUserAction(Request $request, Application $app)
     {
         $validation = array(

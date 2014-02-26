@@ -11,6 +11,7 @@ navigation:
         users: Gebruikers
         viewuser: Gebruiker bekijken
     options: Opties
+    change: Opslaan
 
 login:
     username: Gebruikersnaam
@@ -48,7 +49,6 @@ profile:
     newpassword: Nieuw wachtwoord
     newpasswordconfirm: Nieuw wachtwoord (bevestig)
     updated: Profiel is bijgewerkt!
-    change: Wijzigingen opslaan
     devices: Apparaten waar deze gebruiker toegang tot heeft
 
 stats:

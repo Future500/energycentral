@@ -27,11 +27,11 @@
                     <td>{{ device.zipcode }}</td>
                     <td>{{ device.housenumber }}</td>
                     <td>
-                        <form action="#" method="POST" name="dev{{ device.deviceid }}" class="user-tags">
+                        <form action="javascript:updateAccess({{ device.deviceid }});" method="POST" class="user-tags">
                             <div class="control-group">
                                 <div class="controls">
                                     <input type="text" id="dev{{ device.deviceid }}_users" class="device" placeholder="{{ 'device.adduser'|trans }}"/>
-                                    <input type="submit" value="Save" class="btn btn-success"/>
+                                    <input type="submit" id="dev{{ device.deviceid }}_save" value="{{ 'navigation.change'|trans }}" class="btn btn-success"/>
                                 </div>
                             </div>
                         </form>
@@ -46,6 +46,28 @@
     <script src="{{ app.request.basepath }}/js/jquery-ui-1.10.4.custom.min.js"></script>
     <script src="{{ app.request.basepath }}/js/bootstrap-tagsinput.min.js"></script>
     <script>
+        function updateAccess(deviceId)
+        {
+            var userData = $('#dev' + deviceId + '_users');
+            var button = $('#dev' + deviceId + '_save').get();
+
+            $('#dev' + deviceId + '_save').replaceWith("<img src='{{ app.request.basepath }}/img/select2-spinner.gif' id='dev" + deviceId + "_save'/>");
+
+            $.post(
+                "/admin/devices",
+                {
+                    users: userData.val(),
+                    deviceid: deviceId
+                },
+                    function (data) {
+                        if (!data) {
+                            alert("Failed to update device access list!");
+                        }
+                        $('#dev' + deviceId + '_save').replaceWith(button); // restore button
+                    }
+            );
+        }
+
         $(document).ready(function() {
             $('.device').tagsinput({
                 typeahead: {

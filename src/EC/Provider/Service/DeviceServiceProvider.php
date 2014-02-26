@@ -46,6 +46,42 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         /*
+         * Update the device access table.
+         * The function adds new users or removes users from a device.
+         */
+        $app['devices.update_users'] = $app->protect(
+            function ($deviceId, array $addedUsers, array $removedUsers) use ($app) {
+                /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                $queryBuilder = $app['db']->createQueryBuilder();
+
+                foreach ($addedUsers as $userId) { // add new users
+                    $queryBuilder
+                        ->insert('devaccess', 'dev')
+                        ->values(
+                            array(
+                                'deviceid'  => $deviceId,
+                                'userid'    => $userId
+                            )
+                        )
+                        ->execute();
+                }
+
+                foreach ($removedUsers as $userId) { // remove old users if needed
+                    $queryBuilder
+                        ->delete('devaccess')
+                        ->where('deviceid = :deviceid AND userid = :userid')
+                        ->setParameters(
+                            array(
+                                'deviceid' => $deviceId,
+                                'userid' => $userId
+                            )
+                        )
+                        ->execute();
+                }
+            }
+        );
+
+        /*
          * Extracts the zipcode from a device array
          */
         $app['devices.getzipcodes'] = $app->protect(

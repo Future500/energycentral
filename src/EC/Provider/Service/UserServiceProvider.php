@@ -30,6 +30,25 @@ class UserServiceProvider implements ServiceProviderInterface
             }
         );
 
+        $app['user.getids'] = $app->protect(
+            function (array $users) use ($app) {
+                $userIds = array();
+
+                foreach ($users as $user) {
+                    /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                    $queryBuilder = $app['db']->createQueryBuilder()
+                        ->select('userid')
+                        ->from('user', 'u')
+                        ->where('username = :username')
+                        ->setParameter('username', $user);
+
+                    $stmt = $queryBuilder->execute();
+                    $userIds[$user] = $stmt->fetchColumn();
+                }
+                return $userIds;
+            }
+        );
+
         $app['datalayer.updatepassword'] = $app->protect(
             function ($userId, $password) use ($app) {
                 //$randGenerator = new SecureRandom();

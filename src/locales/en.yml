@@ -11,6 +11,7 @@ navigation:
         users: Users
         viewuser: View user
     options: Options
+    change: Save
 
 login:
     username: Username
@@ -48,7 +49,6 @@ profile:
     newpassword: New password
     newpasswordconfirm: New password (confirm)
     updated: Profile has been successfully updated!
-    change: Save changes
     devices: Devices this user has access to
 
 stats:
