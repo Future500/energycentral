@@ -28,7 +28,7 @@ class DeviceController
             array(
                 'dayStats'      => $app['stats']->fetchDayHighcharts($app, null, $deviceId),
                 'monthStats'    => $app['stats']->fetchMonthHighcharts($app, null, $deviceId),
-                'deviceRoute'   => $deviceRoute,
+                'device_route'   => $deviceRoute,
                 'device_access' => $app['devices.hasaccess']($deviceId)
             )
         );

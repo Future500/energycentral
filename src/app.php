@@ -22,11 +22,9 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new FormServiceProvider());
-
 $app->register(new StatsServiceProvider());
 $app->register(new UserServiceProvider());
 $app->register(new DeviceServiceProvider());
-
 $app->register(new \Kilte\Silex\Pagination\PaginationServiceProvider());
 
 $app->register(
