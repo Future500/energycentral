@@ -10,6 +10,7 @@ navigation:
         devices: Alle apparaten
         users: Gebruikers
         viewuser: Gebruiker bekijken
+    options: Opties
 
 login:
     username: Gebruikersnaam
@@ -26,19 +27,20 @@ chart:
 
 admin:
     user: Gebruiker
-    devices:
-        label: Apparaten
+
+device:
+    label: Apparaten
+    devicenumber: Apparaat nummer
+    housenumber: Huis nummer
+    zipcode: Postcode
+    accesslist: Gebruikers met toegang tot dit apparaat
+    noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!
+    options:
         add: Apparaat toevoegen
+        adduser: Gebruiker toevoegen
         remove: Verwijderen
         cancel: Annuleren
-    options: Opties
-
-mydevices:
-    devicenumber: Apparaat nummer
-    zipcode: Postcode
-    housenumber: Huis nummer
-    options: Opties
-    viewstats: Bekijk statistieken
+        viewstats: Bekijk statistieken
 
 profile:
     oldpassword: Huidige wachtwoord
@@ -47,9 +49,6 @@ profile:
     updated: Profiel is bijgewerkt!
     change: Wijzigingen opslaan
     devices: Apparaten waar deze gebruiker toegang tot heeft
-
-device:
-    noaccess: Sorry, maar je hebt geen toegang om de statistieken van dit apparaat te bekijken!
 
 stats:
     general:

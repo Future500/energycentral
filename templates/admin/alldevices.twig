@@ -1,0 +1,43 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'navigation.admin.alldevices'|trans }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h3>{{ 'navigation.admin.devices'|trans }}</h3>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>{{ 'device.devicenumber'|trans }}</th>
+                <th>{{ 'device.zipcode'|trans }}</th>
+                <th>{{ 'device.housenumber'|trans }}</th>
+                <th>{{ 'device.accesslist'|trans }}</th>
+                <th>{{ 'navigation.options'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %} {# Show all devices #}
+                <tr>
+                    <td>{{ device.deviceid }}</td>
+                    <td>{{ device.zipcode }}</td>
+                    <td>{{ device.housenumber }}</td>
+                    <td>
+                        <div class="control-group">
+                            <div class="controls">
+                                <a href="#" class="btn btn-info" id="add-device">{{ 'device.adduser'|trans }}</a>
+                                <a href="#" class="btn btn-danger" id="cancel">{{ 'device.cancel'|trans }}</a>
+                            </div>
+                        </div>
+
+                        <div id="devices">
+
+                        </div>
+                    </td>
+                    <td><a href="#">Edit</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

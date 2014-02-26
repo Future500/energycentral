@@ -14,7 +14,19 @@ class AdminController
     {
         return $app['twig']->render(
             'admin/users.twig',
-            array('users' => $app['datalayer.users']())
+            array(
+                'users' => $app['datalayer.users']()
+            )
+        );
+    }
+
+    public function devicesAction(Request $request, Application $app)
+    {
+        return $app['twig']->render(
+            'admin/alldevices.twig',
+            array(
+                'devices' => $app['devices.list.all']()
+            )
         );
     }
 

@@ -10,6 +10,7 @@ navigation:
         devices: All devices
         users: Users
         viewuser: View user
+    options: Options
 
 login:
     username: Username
@@ -26,19 +27,20 @@ chart:
 
 admin:
     user: User
-    devices:
-        label: Devices
+
+device:
+    label: Devices
+    devicenumber: Device number
+    housenumber: House number
+    zipcode: Zipcode
+    accesslist: Users with access to this device
+    noaccess: Sorry, but you don't have permission to view the statistics of this device!
+    options:
         add: Add device
+        adduser: Add user
         remove: Remove
         cancel: Cancel
-    options: Options
-
-mydevices:
-    devicenumber: Device number
-    zipcode: Zipcode
-    housenumber: House number
-    options: Options
-    viewstats: View statistics
+        viewstats: View statistics
 
 profile:
     oldpassword: Current password
@@ -47,9 +49,6 @@ profile:
     updated: Profile has been successfully updated!
     change: Save changes
     devices: Devices this user has access to
-
-device:
-    noaccess: Sorry, but you don't have permission to view the statistics of this device!
 
 stats:
     general:

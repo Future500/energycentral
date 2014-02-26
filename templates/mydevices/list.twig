@@ -10,10 +10,10 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>{{ 'mydevices.devicenumber'|trans }}</th>
-                <th>{{ 'mydevices.zipcode'|trans }}</th>
-                <th>{{ 'mydevices.housenumber'|trans }}</th>
-                <th>{{ 'mydevices.options'|trans }}</th>
+                <th>{{ 'device.devicenumber'|trans }}</th>
+                <th>{{ 'device.zipcode'|trans }}</th>
+                <th>{{ 'device.housenumber'|trans }}</th>
+                <th>{{ 'navigation.options'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                     <td>{{ device.deviceid }}</td>
                     <td>{{ device.zipcode }}</td>
                     <td>{{ device.housenumber }}</td>
-                    <td><a href="/mydevices/view/{{ device.deviceid }}">{{ 'mydevices.viewstats'|trans }}</a></td>
+                    <td><a href="/mydevices/view/{{ device.deviceid }}">{{ 'device.viewstats'|trans }}</a></td>
                 </tr>
             {% endfor %}
         </tbody>

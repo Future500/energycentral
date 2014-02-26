@@ -16,6 +16,7 @@ $app->get('/login',                                     'EC\\Controller\\LoginCo
     ->bind('login');
 $app->get('/profile',                                   'EC\\Controller\\ProfileController::indexAction');
 $app->post('/profile',                                  'EC\\Controller\\ProfileController::changeProfileAction');
+$app->get('/admin/devices',                             'EC\\Controller\\AdminController::devicesAction');
 $app->get('/admin/users',                               'EC\\Controller\\AdminController::usersAction');
 $app->get('/admin/users/{userid}',                      'EC\\Controller\\AdminController::viewUserAction');
 $app->post('/admin/users/{userid}',                     'EC\\Controller\\AdminController::changeUserAction');
