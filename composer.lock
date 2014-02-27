@@ -346,12 +346,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "646edacd87d5b9d201bf19aaf55ee0e4d5e470c2"
+                "reference": "149f18001a459c22e1f2a87903e455eb89c1b4de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/646edacd87d5b9d201bf19aaf55ee0e4d5e470c2",
-                "reference": "646edacd87d5b9d201bf19aaf55ee0e4d5e470c2",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/149f18001a459c22e1f2a87903e455eb89c1b4de",
+                "reference": "149f18001a459c22e1f2a87903e455eb89c1b4de",
                 "shasum": ""
             },
             "require": {
@@ -409,7 +409,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2014-02-23 12:02:55"
+            "time": "2014-02-26 21:39:13"
         },
         {
             "name": "doctrine/inflector",
@@ -601,12 +601,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ivaynberg/select2.git",
-                "reference": "c5e13d3aa8fd9c524393d2f08e035f5a964ac37a"
+                "reference": "c3592c3f87f1eddc24c94e8d011e6f08a198590e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ivaynberg/select2/zipball/c5e13d3aa8fd9c524393d2f08e035f5a964ac37a",
-                "reference": "c5e13d3aa8fd9c524393d2f08e035f5a964ac37a",
+                "url": "https://api.github.com/repos/ivaynberg/select2/zipball/c3592c3f87f1eddc24c94e8d011e6f08a198590e",
+                "reference": "c3592c3f87f1eddc24c94e8d011e6f08a198590e",
                 "shasum": ""
             },
             "require": {
@@ -636,7 +636,7 @@
             ],
             "description": "Select2 is a jQuery based replacement for select boxes.",
             "homepage": "http://ivaynberg.github.io/select2/",
-            "time": "2014-02-26 00:39:20"
+            "time": "2014-02-26 16:21:57"
         },
         {
             "name": "jquery/jquery",
