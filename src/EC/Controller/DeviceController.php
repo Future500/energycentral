@@ -10,10 +10,14 @@ class DeviceController
 {
     public function indexAction(Request $request, Application $app)
     {
+        $pagination = $app['pagination']($app['devices.count']($app->user()->getId()), $request->get('p'), 5);
+
         return $app['twig']->render(
             'mydevices/list.twig',
             array(
-                'devices' => $app['devices.list'](true)
+                'devices'       => $app['devices.list'](true, $app->user()->getId(), $pagination->offset(), $pagination->limit()),
+                'current_page'  => $pagination->currentPage(),
+                'pages'         => $pagination->build()
             )
         );
     }

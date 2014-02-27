@@ -46,11 +46,19 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         $app['devices.count'] = $app->protect(
-            function () use ($app) {
+            function ($userId = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
-                    ->select('COUNT(*)')
-                    ->from('device', 'dev');
+                    ->select('COUNT(*)');
+
+                if ($userId != null) {
+                    $queryBuilder
+                        ->from('devaccess', 'dev')
+                        ->where('dev.userid = :userid')
+                        ->setParameter('userid', $userId);
+                } else {
+                    $queryBuilder->from('device', 'dev');
+                }
 
                 $stmt = $queryBuilder->execute();
                 return $stmt->fetchColumn();
@@ -134,7 +142,7 @@ class DeviceServiceProvider implements ServiceProviderInterface
          * List all devices a user has access to, including the zipcode if needed
          */
         $app['devices.list'] = $app->protect(
-            function ($withDetails = false, $userId = null) use ($app) {
+            function ($withDetails = false, $userId = null, $offset = null, $limit = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder();
 
@@ -147,6 +155,12 @@ class DeviceServiceProvider implements ServiceProviderInterface
                     $queryBuilder
                         ->select('deviceid')
                         ->from('devaccess', 'dev');
+                }
+
+                if ($offset != null || $limit != null) {
+                    $queryBuilder
+                        ->setFirstResult($offset)
+                        ->setMaxResults($limit);
                 }
 
                 $queryBuilder
@@ -180,16 +194,16 @@ class DeviceServiceProvider implements ServiceProviderInterface
          * List all devices, including zipcode if needed
          */
         $app['devices.list.all'] = $app->protect(
-            function ($zipcodeOnly = false, $offset = null, $perPage = null) use ($app) {
+            function ($zipcodeOnly = false, $offset = null, $limit = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
                     ->select($zipcodeOnly ? 'zipcode' : '*')
                     ->from('device', 'dev');
 
-                if (!$zipcodeOnly && ($offset != null || $perPage != null)) {
+                if ($offset != null || $limit != null) {
                     $queryBuilder
                         ->setFirstResult($offset)
-                        ->setMaxResults($perPage);
+                        ->setMaxResults($limit);
                 }
 
                 $stmt = $queryBuilder->execute();

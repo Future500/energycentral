@@ -31,16 +31,16 @@ class UserServiceProvider implements ServiceProviderInterface
         );
 
         $app['datalayer.users'] = $app->protect(
-            function ($usernameOnly = false, $offset = null, $perPage = null) use ($app) {
+            function ($usernameOnly = false, $offset = null, $limit = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
                     ->select($usernameOnly ? 'u.username' : '*')
                     ->from('user', 'u');
 
-                if (!$usernameOnly && ($offset != null || $perPage != null)) {
+                if ($offset != null || $limit != null) {
                     $queryBuilder
                         ->setFirstResult($offset)
-                        ->setMaxResults($perPage);
+                        ->setMaxResults($limit);
                 }
 
                 $stmt = $queryBuilder->execute();

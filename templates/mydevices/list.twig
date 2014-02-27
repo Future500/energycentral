@@ -28,6 +28,8 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% include 'pagination.twig' %}
     {% else %}
         {{ 'device.nodevices'|trans }}
     {% endif %}
