@@ -139,7 +139,7 @@ class DeviceServiceProvider implements ServiceProviderInterface
 
                 $queryBuilder
                     ->where('userid = :userid')
-                    ->setParameter('userid', $userId == null ? $app['security']->getToken()->getUser()->getId() : $userId);
+                    ->setParameter('userid', $userId == null ? $app->user()->getId() : $userId);
 
                 $stmt = $queryBuilder->execute();
                 return $stmt->fetchAll();
@@ -189,7 +189,7 @@ class DeviceServiceProvider implements ServiceProviderInterface
                     ->select('ac.deviceid')
                     ->from('devaccess', 'ac')
                     ->where('userid = :userid')
-                    ->setParameter('userid', $userId == null ? $app['security']->getToken()->getUser()->getId() : $userId);
+                    ->setParameter('userid', $userId == null ? $app->user()->getId() : $userId);
 
                 $stmt = $queryBuilder->execute();
                 return in_array($deviceId, $stmt->fetchAll(\PDO::FETCH_COLUMN));
