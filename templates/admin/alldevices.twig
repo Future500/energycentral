@@ -18,6 +18,7 @@
                 <th>{{ 'device.zipcode'|trans }}</th>
                 <th>{{ 'device.housenumber'|trans }}</th>
                 <th>{{ 'device.accesslist'|trans }}</th>
+                <th>{{ 'navigation.options'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
                             </div>
                         </form>
                     </td>
+                    <td><a href="/mydevices/view/{{ device.deviceid }}">{{ 'device.options.viewstats'|trans }}</a></td>
                 </tr>
             {% endfor %}
         </tbody>

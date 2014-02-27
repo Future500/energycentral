@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if device_access or not app.centralmode %}
+    {% if (device_access or not app.centralmode) or is_granted('ROLE_ADMIN') %}
         {% set selectedDay = "now"|date('Y-m-d') %}
         {% set selectedMonth = "now"|date('Y-m') %}
 
@@ -54,7 +54,7 @@
     <script src="{{ app.request.basepath }}/js/date.js"></script>
     <script type="text/javascript" src="{{ app.request.basepath }}/js/bootstrap-datepicker.js" charset="UTF-8"></script>
 
-    {% if device_access or not app.centralmode %}
+    {% if (device_access or not app.centralmode) or is_granted('ROLE_ADMIN') %}
         <script type="text/javascript">
         $(document).ready(function () {
             $("#icon-daily").datepicker({
