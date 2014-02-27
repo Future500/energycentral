@@ -3,10 +3,12 @@
 {% block title %}{{ 'navigation.admin.viewuser'|trans }}{% endblock %}
 
 {% block head %}
-    <link href="{{ app.request.basepath }}/css/profile.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ app.request.basepath }}/css/jquery-ui-1.10.4.custom.min.css">
-    <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap-tagsinput.css" />
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/profile.css"/>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/select2.css"/>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/admin.css"/>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/jquery-ui-1.10.4.custom.min.css"/>
 {% endblock %}
+
 
 {% block content %}
     <div class="page-header">
@@ -20,7 +22,7 @@
             <div class="control-group">
                 <label class="control-label" for="add-device">{{ 'device.label'|trans }}</label>
                 <div class="controls">
-                    <input type="text" name="devices" id="devices" placeholder="{{ 'device.addzipcode'|trans }}"/>
+                    <input type="text" name="devices" class="devices" placeholder="{{ 'device.addzipcode'|trans }}"/>
                 </div>
             </div>
         {% endblock %}
@@ -29,18 +31,19 @@
 
 {% block footer %}
     <script src="{{ app.request.basepath }}/js/jquery-ui-1.10.4.custom.min.js"></script>
-    <script src="{{ app.request.basepath }}/js/bootstrap-tagsinput.min.js"></script>
+    <script src="{{ app.request.basepath }}/js/select2.js"></script>
+
     <script>
         $(document).ready(function() {
-            $('#devices').tagsinput({
-                typeahead: {
-                    source: {{ all_devices|raw }}
-                },
-                freeInput: false
-            });
+            $('.devices').select2({
+                createSearchChoice: function() { return null; }, // Disable adding of non-existent elements
+                tags: {{ all_devices|raw }},
+                width: '210px'
+            })
 
             {% for device in user_devices %}
-                $('#devices').tagsinput('add', '{{ device.zipcode }}');
+                var deviceInput = '.devices';
+                $(deviceInput).select2("val", $(deviceInput).select2("val").concat("{{ device.zipcode }}"));
             {% endfor %}
         });
     </script>

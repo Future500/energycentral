@@ -5,3 +5,12 @@
 .user-tags {
     margin: 0px;
 }
+
+.select2-container {
+    margin-right: 15px;
+}
+
+.select2-container-multi .select2-choices .select2-search-choice {
+    margin-top: 5px;
+    padding: 3px;
+}

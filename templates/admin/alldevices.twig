@@ -2,7 +2,7 @@
 
 {% block title %}{{ 'navigation.admin.devices'|trans }}{% endblock %}
 {% block head %}
-    <link rel="stylesheet" href="{{ app.request.basepath }}/css/bootstrap-tagsinput.css" />
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/select2.css" />
     <link rel="stylesheet" href="{{ app.request.basepath }}/css/admin.css" />
 {% endblock %}
 
@@ -10,7 +10,6 @@
     <div class="page-header">
         <h3>{{ 'navigation.admin.devices'|trans }}</h3>
     </div>
-
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -46,7 +45,8 @@
 
 {% block footer %}
     <script src="{{ app.request.basepath }}/js/jquery-ui-1.10.4.custom.min.js"></script>
-    <script src="{{ app.request.basepath }}/js/bootstrap-tagsinput.min.js"></script>
+    <script src="{{ app.request.basepath }}/js/select2.js"></script>
+
     <script>
         function updateAccess(deviceId)
         {
@@ -71,17 +71,16 @@
         }
 
         $(document).ready(function() {
-            $('.device').tagsinput({
-                typeahead: {
-                    source: {{ users|raw }}
-                },
-                freeInput: false
-            });
+            $('.device').select2({
+                createSearchChoice: function() { return null; }, // Disable adding of non-existent elements
+                tags: {{ users|raw }},
+                width: '210px'
+            })
 
             {% for device in devices %} {# For each device, add the users to the tags #}
                 {% for user in device_getusers(device.deviceid) %}
                     var deviceInput = '#dev{{ device.deviceid }}_users';
-                    $(deviceInput).tagsinput('add', '{{ user }}');
+                    $(deviceInput).select2("val", $(deviceInput).select2("val").concat("{{ user }}"));
                 {% endfor %}
             {% endfor %}
         });
