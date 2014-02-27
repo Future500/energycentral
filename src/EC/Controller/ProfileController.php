@@ -5,6 +5,7 @@ namespace EC\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 class ProfileController
 {
@@ -25,9 +26,8 @@ class ProfileController
             array(
                 'old_password' => array(
                     new Assert\NotBlank(),
-                    new Assert\EqualTo(
+                    new SecurityAssert\UserPassword(
                         array(
-                            'value'    => $app['security']->getToken()->getUser()->getPassword(), // must match old password
                             'message'  => 'The old password you entered does not match!'
                         )
                     )
@@ -61,7 +61,7 @@ class ProfileController
 
         return $app['validator']->validateValue(
             array(
-                'old_password'          => $app['security.encoder.digest']->encodePassword($request->get('old_password'), null),
+                'old_password'          => $request->get('old_password'),
                 'new_password'          => $request->get('new_password'),
                 'new_password_confirm'  => $request->get('new_password_confirm')
             ),
@@ -76,8 +76,8 @@ class ProfileController
 
         if ($validationSuccess) { // Update the profile
             $app['datalayer.updatepassword'](
-                $app['security']->getToken()->getUser()->getId(),
-                $app['security.encoder.digest']->encodePassword($request->get('new_password'), null)
+                $app->user()->getId(),
+                $request->get('new_password')
             );
         }
 

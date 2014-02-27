@@ -118,7 +118,7 @@ class AdminController
             if ($validation['success']) { // Update the profile
                 $app['datalayer.updatepassword'](
                     $request->get('userid'),
-                    $app['security.encoder.digest']->encodePassword($request->get('new_password'), null)
+                    $request->get('new_password')
                 );
             }
         }

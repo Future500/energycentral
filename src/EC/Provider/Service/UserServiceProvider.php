@@ -49,16 +49,32 @@ class UserServiceProvider implements ServiceProviderInterface
             }
         );
 
+        $app['user.generatesalt'] = $app->protect(
+            function ($length = 25) use ($app) {
+                $randGenerator = new SecureRandom();
+                return base64_encode($randGenerator->nextBytes($length));
+            }
+        );
+
         $app['datalayer.updatepassword'] = $app->protect(
             function ($userId, $password) use ($app) {
-                //$randGenerator = new SecureRandom();
+                $salt = $app['user.generatesalt']();
+                $encoder = $app['security.encoder_factory']->getEncoder($app['datalayer.user']($userId));
 
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder();
                 $query = $queryBuilder
                     ->update('user', 'u')
-                    ->set('u.password', $queryBuilder->expr()->literal($password))
-                    // ->set('u.salt', $queryBuilder->expr()->literal(base64_encode($randGenerator->nextBytes(10))))
+                    ->set(
+                        'u.password',
+                        $queryBuilder->expr()->literal(
+                            $encoder->encodePassword($password, $salt)
+                        )
+                    )
+                    ->set(
+                        'u.salt',
+                        $queryBuilder->expr()->literal($salt)
+                    )
                     ->where('u.userid = :userid')
                     ->setParameter(':userid', $userId);
 
