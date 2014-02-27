@@ -51,245 +51,160 @@
 {% block footer %}
     <script src="{{ app.request.basepath }}/js/highcharts/highcharts.js"></script>
     <script src="{{ app.request.basepath }}/js/highcharts/modules/exporting.js"></script>
+    <script src="{{ app.request.basepath }}/js/ec_highcharts.js"></script>
     <script src="{{ app.request.basepath }}/js/date.js"></script>
     <script type="text/javascript" src="{{ app.request.basepath }}/js/bootstrap-datepicker.js" charset="UTF-8"></script>
 
     {% if (device_access or not app.centralmode) or is_granted('ROLE_ADMIN') %}
         <script type="text/javascript">
-        $(document).ready(function () {
-            $("#icon-daily").datepicker({
-                format: "yyyy-mm-dd",
-                viewMode: "days",
-                minViewMode: "days",
-                autoclose: true
-            }).on('changeDate', function (e) {
-                getDay(e.date.toString('yyyy-MM-dd'));
-            });
-
-            $("#icon-monthly").datepicker({
-                format: "yyyy-mm",
-                viewMode: "months",
-                minViewMode: "months",
-                autoclose: true
-            }).on('changeDate', function (e) {
-                getMonth(e.date.toString('yyyy-MM'));
-            });
-
-            // Set minimum and maximum values
-            $.getJSON("/date/min_max{{ device_route }}", function (data) {
-                $('#icon-daily').datepicker('setStartDate', data['days']['min']);
-                $('#icon-daily').datepicker('setEndDate', data['days']['max']);
-                $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
-                $('#icon-monthly').datepicker('setEndDate', data['months']['max']);
-            });
-        });
-
-        $('#daily-chart').highcharts({
-            chart: {
-                type: 'area'
-            },
-            title: {
-                text: "{{ 'chart.title'|trans }}"
-            },
-            subtitle: {
-                text: "{{ 'chart.day.subtitle'|trans }}"
-            },
-            plotOptions: {
-                area: {
-                    shadow: false,
-                    states: {
-                        hover: {
-                            lineWidth: 2
-                        }
-                    },
-                    marker: {
-                        enabled: false,
-                        states: {
-                            hover: {
-                                enabled: true,
-                                radius: 4,
-                                lineWidth: 1
+            $(document).ready(function () {
+                createHighchart(
+                    '#daily-chart', {
+                        chart: {
+                            type: 'area'
+                        },
+                        title: {
+                            text: "{{ 'chart.title'|trans }}"
+                        },
+                        subtitle: {
+                            text: "{{ 'chart.day.subtitle'|trans }}"
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            tickInterval: 3600000
+                        },
+                        series: [
+                            {
+                                name: "{{ 'chart.kwgenerated'|trans }}",
+                                data: {{ dayStats }}
                             }
-                        }
-                    }
-                }
-            },
-            xAxis: {
-                type: 'datetime',
-                tickInterval: 3600000
-            },
-            yAxis: {
-                title: {
-                    text: 'kW'
-                },
-                plotLines: [
-                    {
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }
-                ]
-            },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                valueSuffix: 'kW',
-                snap: 1
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [
-                {
-                    name: "{{ 'chart.kwgenerated'|trans }}",
-                    data: {{ dayStats }}
-                }
-            ]
-        });
+                        ]
+                  }
+                );
 
-        $('#monthly-chart').highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: "{{ 'chart.title'|trans }}"
-            },
-            subtitle: {
-                text: "{{ 'chart.month.subtitle'|trans }}"
-            },
-            plotOptions: {
-                area: {
-                    shadow: false,
-                    states: {
-                        hover: {
-                            lineWidth: 2
-                        }
-                    },
-                    marker: {
-                        enabled: false,
-                        states: {
-                            hover: {
-                                enabled: true,
-                                radius: 4,
-                                lineWidth: 1
+                createHighchart(
+                    '#monthly-chart', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: "{{ 'chart.title'|trans }}"
+                        },
+                        subtitle: {
+                            text: "{{ 'chart.month.subtitle'|trans }}"
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            tickInterval: 24 * 3600 * 1000,
+                            labels: {
+                                rotation: -90,
+                                y: 25
                             }
-                        }
+                        },
+                        series: [
+                            {
+                                name: "{{ 'chart.kwgenerated'|trans }}",
+                                data: {{ monthStats }}
+                            }
+                        ]
                     }
-                }
-            },
-            xAxis: {
-                type: 'datetime',
-                tickInterval: 24 * 3600 * 1000,
-                labels: {
-                    rotation: -90,
-                    y: 25
-                }
-            },
-            yAxis: {
-                title: {
-                    text: 'kW'
-                },
-                plotLines: [
-                    {
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }
-                ]
-            },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                valueSuffix: 'kW',
-                snap: 1
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [
-                {
-                    name: "{{ 'chart.kwgenerated'|trans }}",
-                    data: {{ monthStats }}
-                }
-            ]
-        });
+                );
 
-        function updateFooter(date, emptyData)
-        {
-            var viewingText = (emptyData ? "{{ 'stats.footer.notavailable'|trans }}" : "{{ 'stats.footer.available'|trans }}");
-
-            if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
-                // Get previous and next date
-                $.getJSON("/date/calc/" + date + "/Y-m-d", function (data) {
-                    $("#prev-day").attr("href", "javascript:getDay('" + data['prev'] + "');");
-                    $("#next-day").attr("href", "javascript:getDay('" + data['next'] + "');");
+                $("#icon-daily").datepicker({
+                    format: "yyyy-mm-dd",
+                    viewMode: "days",
+                    minViewMode: "days",
+                    autoclose: true
+                }).on('changeDate', function (e) {
+                    getDay(e.date.toString('yyyy-MM-dd'));
                 });
 
-                // Set viewing text and date
-                $('#daily-text').html(viewingText);
-                $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
-            } else { // we are updating the monthly graph
-                // Get previous and next date
-                $.getJSON("/date/calc/" + date + "/Y-m", function (data) {
-                    $("#prev-month").attr("href", "javascript:getMonth('" + data['prev'] + "');");
-                    $("#next-month").attr("href", "javascript:getMonth('" + data['next'] + "');");
+                $("#icon-monthly").datepicker({
+                    format: "yyyy-mm",
+                    viewMode: "months",
+                    minViewMode: "months",
+                    autoclose: true
+                }).on('changeDate', function (e) {
+                    getMonth(e.date.toString('yyyy-MM'));
                 });
 
-                // Set viewing text and date
-                $('#monthly-text').html(viewingText);
-                $('#month-picker').html(new Date(date).toString('MM-yyyy'));
+                // Set minimum and maximum values
+                $.getJSON("/date/min_max{{ device_route }}", function (data) {
+                    $('#icon-daily').datepicker('setStartDate', data['days']['min']);
+                    $('#icon-daily').datepicker('setEndDate', data['days']['max']);
+                    $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
+                    $('#icon-monthly').datepicker('setEndDate', data['months']['max']);
+                });
+            });
+
+            function updateFooter(date, emptyData)
+            {
+                var viewingText = (emptyData ? "{{ 'stats.footer.notavailable'|trans }}" : "{{ 'stats.footer.available'|trans }}");
+
+                if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
+                    // Get previous and next date
+                    $.getJSON("/date/calc/" + date + "/Y-m-d", function (data) {
+                        $("#prev-day").attr("href", "javascript:getDay('" + data['prev'] + "');");
+                        $("#next-day").attr("href", "javascript:getDay('" + data['next'] + "');");
+                    });
+
+                    // Set viewing text and date
+                    $('#daily-text').html(viewingText);
+                    $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
+                } else { // we are updating the monthly graph
+                    // Get previous and next date
+                    $.getJSON("/date/calc/" + date + "/Y-m", function (data) {
+                        $("#prev-month").attr("href", "javascript:getMonth('" + data['prev'] + "');");
+                        $("#next-month").attr("href", "javascript:getMonth('" + data['next'] + "');");
+                    });
+
+                    // Set viewing text and date
+                    $('#monthly-text').html(viewingText);
+                    $('#month-picker').html(new Date(date).toString('MM-yyyy'));
+                }
             }
-        }
 
-        function getDay(date)
-        {
-            $('#daily-text').html("{{ 'stats.general.fetching'|trans }}");
-            $('#day-picker').empty();
+            function getDay(date)
+            {
+                $('#daily-text').html("{{ 'stats.general.fetching'|trans }}");
+                $('#day-picker').empty();
 
-            $.getJSON("/stats/day/" + date + "{{ device_route }}", function (data) {
-                var chart = $('#daily-chart').highcharts().series[0].setData(data);
-                updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
-            });
-        }
-
-        function getMonth(date)
-        {
-            $('#monthly-text').html("{{ 'stats.general.fetching'|trans }}");
-            $('#month-picker').empty();
-
-            var splitData = date.split('-'); // split into year and month
-            var year = splitData[0];
-            var month = splitData[1];
-
-            if (!Date.validateYear(parseInt(year)) || !Date.validateMonth(parseInt(month))) { // check if valid
-                $('#monthly-text').html("{{ 'stats.general.fetchingfailed'|trans }}");
-            } else {
-                $.getJSON("/stats/month/" + year + '/' + month + "{{ device_route }}", function (data) {
-                    var chart = $('#monthly-chart').highcharts().series[0].setData(data);
-                    updateFooter(year + '-' + month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+                $.getJSON("/stats/day/" + date + "{{ device_route }}", function (data) {
+                    var chart = $('#daily-chart').highcharts().series[0].setData(data);
+                    updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
                 });
             }
-        }
 
-        $(window).resize(function () {
-            var rotation = $(this).width() <= 768 ? -90 : 0;
-            var y = $(this).width() <= 768 ? 25 : 15;
+            function getMonth(date)
+            {
+                $('#monthly-text').html("{{ 'stats.general.fetching'|trans }}");
+                $('#month-picker').empty();
 
-            $('#daily-chart').highcharts().xAxis[0].update({
-                labels: {
-                    rotation: rotation,
-                    y: y
+                var splitData = date.split('-'); // split into year and month
+                var year = splitData[0];
+                var month = splitData[1];
+
+                if (!Date.validateYear(parseInt(year)) || !Date.validateMonth(parseInt(month))) { // check if valid
+                    $('#monthly-text').html("{{ 'stats.general.fetchingfailed'|trans }}");
+                } else {
+                    $.getJSON("/stats/month/" + year + '/' + month + "{{ device_route }}", function (data) {
+                        var chart = $('#monthly-chart').highcharts().series[0].setData(data);
+                        updateFooter(year + '-' + month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+                    });
                 }
+            }
+
+            $(window).resize(function () {
+                var rotation = $(this).width() <= 768 ? -90 : 0;
+                var y = $(this).width() <= 768 ? 25 : 15;
+
+                $('#daily-chart').highcharts().xAxis[0].update({
+                    labels: {
+                        rotation: rotation,
+                        y: y
+                    }
+                });
             });
-        });
         </script>
     {% endif %}
 {% endblock %}
