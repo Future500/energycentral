@@ -5,6 +5,7 @@ namespace EC;
 use EC\Provider\Service\DeviceServiceProvider;
 use EC\Provider\Service\StatsServiceProvider;
 use EC\Provider\Service\UserServiceProvider;
+use Kilte\Silex\Pagination\PaginationServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\FormServiceProvider;
@@ -25,7 +26,7 @@ $app->register(new FormServiceProvider());
 $app->register(new StatsServiceProvider());
 $app->register(new UserServiceProvider());
 $app->register(new DeviceServiceProvider());
-$app->register(new \Kilte\Silex\Pagination\PaginationServiceProvider());
+$app->register(new PaginationServiceProvider());
 
 $app->register(
     new SessionServiceProvider(),

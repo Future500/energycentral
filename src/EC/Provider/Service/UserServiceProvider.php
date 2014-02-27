@@ -18,12 +18,30 @@ class UserServiceProvider implements ServiceProviderInterface
             }
         );
 
+        $app['user.count'] = $app->protect(
+            function () use ($app) {
+                /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                $queryBuilder = $app['db']->createQueryBuilder()
+                    ->select('COUNT(*)')
+                    ->from('user', 'u');
+
+                $stmt = $queryBuilder->execute();
+                return $stmt->fetchColumn();
+            }
+        );
+
         $app['datalayer.users'] = $app->protect(
-            function ($usernameOnly = false) use ($app) {
+            function ($usernameOnly = false, $offset = null, $perPage = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
                     ->select($usernameOnly ? 'u.username' : '*')
                     ->from('user', 'u');
+
+                if (!$usernameOnly && ($offset != null || $perPage != null)) {
+                    $queryBuilder
+                        ->setFirstResult($offset)
+                        ->setMaxResults($perPage);
+                }
 
                 $stmt = $queryBuilder->execute();
                 return $stmt->fetchAll($usernameOnly ? \PDO::FETCH_COLUMN : \PDO::FETCH_ASSOC);

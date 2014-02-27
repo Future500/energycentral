@@ -12,21 +12,29 @@ class AdminController
 {
     public function usersAction(Request $request, Application $app)
     {
+        $pagination = $app['pagination']($app['user.count'](), $request->get('p'), 5);
+
         return $app['twig']->render(
             'admin/users.twig',
             array(
-                'users' => $app['datalayer.users']()
+                'users'         => $app['datalayer.users'](false, $pagination->offset(), $pagination->limit()),
+                'current_page'  => $pagination->currentPage(),
+                'pages'         => $pagination->build()
             )
         );
     }
 
     public function devicesAction(Request $request, Application $app)
     {
+        $pagination = $app['pagination']($app['devices.count'](), $request->get('p'), 5);
+
         return $app['twig']->render(
             'admin/alldevices.twig',
             array(
-                'devices'   => $app['devices.list.all'](),
-                'users'     => json_encode($app['datalayer.users'](true))
+                'devices'       => $app['devices.list.all'](false, $pagination->offset(), $pagination->limit()),
+                'users'         => json_encode($app['datalayer.users'](true)),
+                'current_page'  => $pagination->currentPage(),
+                'pages'         => $pagination->build()
             )
         );
     }
