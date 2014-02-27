@@ -1,15 +1,32 @@
 {% block pagination %}
     <div class="pagination pagination-centered">
         <ul>
-            {% for page in pages %}
-                {% if page is same as(false) %}
-                    <li class="active"><a href="#">{{ current_page }}</a></li>
-                {% elseif page starts with '...' %}
-                    <span>...</span>
+            {% if pages|length > 1 %}
+                {# Previous button #}
+                {% if current_page == 1 %}
+                    <li class="disabled"><a href="#">&laquo;</a></li>
                 {% else %}
-                    <li><a href="?p={{ page }}">{{ page }}</a></li>
+                    <li><a href="?p={{ current_page-1 }}">&laquo;</a></li>
                 {% endif %}
-            {% endfor %}
+
+                {# Page buttons #}
+                {% for page in pages %}
+                    {% if page is same as(false) %}
+                        <li class="active"><a href="#">{{ current_page }}</a></li>
+                    {% elseif page starts with '...' %}
+                        <span>...</span>
+                    {% else %}
+                        <li><a href="?p={{ page }}">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {# Next button #}
+                {% if current_page == pages|length %}
+                    <li class="disabled"><a href="#">&raquo;</a></li>
+                {% else %}
+                    <li><a href="?p={{ current_page+1 }}">&raquo;</a></li>
+                {% endif %}
+            {% endif %}
         </ul>
     </div>
 {% endblock %}
