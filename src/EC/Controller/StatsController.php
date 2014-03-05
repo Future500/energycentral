@@ -9,11 +9,11 @@ class StatsController
 {
     public function dayAction(Application $app, $deviceId = null, $date = null)
     {
-        return $app['stats']->fetchDayHighcharts($app, $deviceId, $date);
+        return $app['stats.day']($deviceId, $date)->getEncodedData();
     }
 
     public function monthAction(Application $app, $deviceId = null, $year = null, $month = null)
     {
-        return $app['stats']->fetchMonthHighcharts($app, $deviceId, $month, $year);
+        return $app['stats.month']($deviceId, $month, $year)->getEncodedData();
     }
 }

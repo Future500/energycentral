@@ -3,6 +3,9 @@
 namespace EC\Provider\Service;
 
 use EC;
+use EC\Stats\Month;
+use EC\Stats\Day;
+
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -10,9 +13,19 @@ class StatsServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['stats'] = $app->share(
-            function () {
-                return new EC\Stats();
+        $app['stats.day'] = $app->protect(
+            function ($deviceId = null, $date = null) use ($app) {
+                $dayData = new Day($app);
+                $dayData->fetch($deviceId, $date);
+                return $dayData;
+            }
+        );
+
+        $app['stats.month'] = $app->protect(
+            function ($deviceId = null, $month = null, $year = null) use ($app) {
+                $monthData = new Month($app);
+                $monthData->fetch($deviceId, $month, $year);
+                return $monthData;
             }
         );
 

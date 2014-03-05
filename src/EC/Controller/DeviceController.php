@@ -30,8 +30,8 @@ class DeviceController
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
-                'dayStats'      => $app['stats']->fetchDayHighcharts($app, null, $deviceId),
-                'monthStats'    => $app['stats']->fetchMonthHighcharts($app, null, $deviceId),
+                'dayStats'      => $app['stats.day']($deviceId)->getEncodedData(),
+                'monthStats'    => $app['stats.month']($deviceId)->getEncodedData(),
                 'device_route'   => $deviceRoute,
                 'device_access' => $app['devices.hasaccess']($deviceId)
             )
