@@ -57,6 +57,8 @@
 
     {% if (device_access or not app.centralmode) or is_granted('ROLE_ADMIN') %}
         <script type="text/javascript">
+            var minMax = null; // holds the minimum and maximum value for the dates
+
             $(document).ready(function () {
                 createHighchart(
                     '#daily-chart', {
@@ -130,10 +132,12 @@
 
                 // Set minimum and maximum values
                 $.getJSON("/date/min_max{{ device_route }}", function (data) {
-                    $('#icon-daily').datepicker('setStartDate', data['days']['min']);
-                    $('#icon-daily').datepicker('setEndDate', data['days']['max']);
-                    $('#icon-monthly').datepicker('setStartDate', data['months']['min']);
-                    $('#icon-monthly').datepicker('setEndDate', data['months']['max']);
+                    minMax = data; // save min / max dates
+
+                    $('#icon-daily').datepicker('setStartDate', minMax['days']['min']);
+                    $('#icon-daily').datepicker('setEndDate', minMax['days']['max']);
+                    $('#icon-monthly').datepicker('setStartDate', minMax['months']['min']);
+                    $('#icon-monthly').datepicker('setEndDate', minMax['months']['max']);
                 });
             });
 
@@ -144,8 +148,11 @@
                 if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
                     // Get previous and next date
                     $.getJSON("/date/calc/" + date + "/Y-m-d", function (data) {
-                        $("#prev-day").attr("href", "javascript:getDay('" + data['prev'] + "');");
-                        $("#next-day").attr("href", "javascript:getDay('" + data['next'] + "');");
+                        var prevLink = (data['prev'] < minMax['days']['min'] ? '#' : "javascript:getDay('" + data['prev'] + "');"); // Only allow the previous if not below the minimum date
+                        var nextLink = (data['next'] > minMax['days']['max'] ? '#' : "javascript:getDay('" + data['next'] + "');"); // Only allow the next if not above the maximum date
+
+                        $("#prev-day").attr("href", prevLink);
+                        $("#next-day").attr("href", nextLink);
                     });
 
                     // Set viewing text and date
