@@ -32,4 +32,3 @@ class Stats
         return $readings;
     }
 }
-s
