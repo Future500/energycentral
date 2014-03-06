@@ -31,8 +31,8 @@
                                     <input type="radio" name="accepted" value="No" {% if not device.accepted %}checked{% endif %}/> {{ 'general.no'|trans }}
                                     <input type="submit" id="dev1_save_accepted" value="Opslaan" class="btn btn-success"/>
                                 </div>
-                    </div>
-                    </form>
+                            </div>
+                        </form>
                     </td>
                     <td>
                         <form action="javascript:updateAccess({{ device.deviceid }});" method="POST" class="user-tags">
