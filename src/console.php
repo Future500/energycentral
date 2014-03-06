@@ -13,6 +13,8 @@ $console
     ->setDescription('Run the cronjob for data retrieval from SMA')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
         $output->writeln('<comment>Not implemented yet</comment>');
+        // sudo -u www-data bin/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq
+        // scp /../data/*.sql username@host:/home/<..>/enerycentral
     })
 ;
 
@@ -55,26 +57,44 @@ $console
             foreach ($files as $filename) {
                 $output->write('Start processing: ' . $filename . ' ');
 
-                if (preg_match('/ec-[\d]{8}.csv/',$filename)) {
+                if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{8}.csv/',$filename)) {
                     $table = 'daydata';
-                } elseif(preg_match('/ec-[\d]{6}.csv/',$filename)) {
+                } else if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{6}.csv/',$filename)) {
                     $table = 'monthdata';
                 } else {
                     $output->writeln('<error>Skipped</error>');
                     continue;
                 }
 
+                $identifier = substr($filename, 3, strpos($filename, '-', 3) - 3); // device identifier
+                $output->write('(' . $identifier . ')');
+
                 if ($input->getOption('dryrun')) {
                     $output->writeln(' ... dryrun');
                     continue;
                 }
 
+                $deviceName = $app['db']->executeQuery("SELECT deviceid FROM device WHERE name = '" . $identifier . "'")
+                    ->fetch();
+
+                if (!$deviceName) {
+                    $output->writeln(' ... invalid device (no id)');
+                    continue;
+                }
+
+                if (($handle = fopen($folder.'/'.$filename, "r")) !== false) {
+                    while (($data = fgetcsv($handle, 1000, ";")) !== false) {
+                     //   var_dump($data);
+                    }
+                    fclose($handle);
+                }
+
                 $output->write(' ... performing query');
-                $query = "LOAD DATA LOCAL INFILE '" . $folder.'/'.$filename . "'
+                $query = "LOAD DATA INFILE '" . $folder.'/'.$filename . "'
                             REPLACE
                             INTO TABLE " . $table . "
-                            FIELDS
-                                TERMINATED BY ';'";
+                            FIELDS TERMINATED BY ';'";
+
                 $result = $app['db']->executeQuery($query);
 
                 if (!$input->getOption('keepfiles')) {
