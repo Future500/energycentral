@@ -7,7 +7,8 @@ use Igorw\Silex\JsonConfigDriver;
 use Igorw\Silex\YamlConfigDriver;
 use EC\Provider\Security\UserProvider;
 
-$env = getenv('APPLICATION_ENV') ?: 'prod';
+$env = getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'prod';
+
 $configFile = __DIR__."/".$env.".json";
 $configDefaults = array('root_dir' => dirname(__DIR__));
 
