@@ -24,20 +24,15 @@
                 <tr>
                     <td>{{ device.name }}</td>
                     <td>
-                        {% if device.accepted %}
-                            {{ 'general.yes'|trans }}
-                        {% else %}
-                            {{ 'general.no'|trans }}
-
-                            <form action="javascript:updateAccepted({{ device.deviceid }});" method="POST">
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <input type="submit" value="{{ 'device.options.accept'|trans }}" class="btn btn-success"/>
-                                        <input type="submit" value="{{ 'device.options.decline'|trans }}" class="btn btn-danger"/>
-                                    </div>
+                        <form action="javascript:updateAccepted({{ device.deviceid }});" method="POST" class="user-tags">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <input type="radio" name="accepted" value="Yes" {% if device.accepted %}checked{% endif %}/> {{ 'general.yes'|trans }}
+                                    <input type="radio" name="accepted" value="No" {% if not device.accepted %}checked{% endif %}/> {{ 'general.no'|trans }}
+                                    <input type="submit" id="dev1_save_accepted" value="Opslaan" class="btn btn-success"/>
                                 </div>
-                            </form>
-                        {% endif %}
+                    </div>
+                    </form>
                     </td>
                     <td>
                         <form action="javascript:updateAccess({{ device.deviceid }});" method="POST" class="user-tags">
