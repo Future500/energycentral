@@ -43,7 +43,7 @@
 
             {% for device in user_devices %}
                 var deviceInput = '.devices';
-                $(deviceInput).select2("val", $(deviceInput).select2("val").concat("{{ device.zipcode }}"));
+                $(deviceInput).select2("val", $(deviceInput).select2("val").concat("{{ device.name }}"));
             {% endfor %}
         });
     </script>

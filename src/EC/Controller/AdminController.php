@@ -132,9 +132,9 @@ class AdminController
         }
 
         $devices = array(
-            'user'      => $app['devices.getzipcodes']($app['devices.list'](true, $request->get('userid'))), // user devices (zipcodes)
-            'all'       => $app['devices.list.all'](true), // all devices (zipcodes)
-            'form'      => $request->get('devices') ? explode(',', $request->get('devices')) : array(), // submitted devices by form (zipcodes)
+            'user'      => $app['devices.getnames']($app['devices.list'](true, $request->get('userid'))), // user devices (names)
+            'all'       => $app['devices.list.all'](true), // all devices (names)
+            'form'      => $request->get('devices') ? explode(',', $request->get('devices')) : array(), // submitted devices by form (names)
             'added'     => null,
             'removed'   => null,
         );

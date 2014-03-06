@@ -102,14 +102,14 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         /*
-         * Extracts the zipcode from a device array
+         * Extracts the name from a device array
          */
-        $app['devices.getzipcodes'] = $app->protect(
+        $app['devices.getnames'] = $app->protect(
             function (array $devices) {
                 array_walk(
                     $devices,
                     function (&$item) {
-                        $item = $item['zipcode'];
+                        $item = $item['name'];
                     }
                 );
                 return $devices;
@@ -128,8 +128,8 @@ class DeviceServiceProvider implements ServiceProviderInterface
                     $queryBuilder = $app['db']->createQueryBuilder()
                         ->select('deviceid')
                         ->from('device', 'dev')
-                        ->where('zipcode = :zipcode')
-                        ->setParameter('zipcode', $device);
+                        ->where('name = :name')
+                        ->setParameter('name', $device);
 
                     $stmt = $queryBuilder->execute();
                     $deviceIds[$device] = $stmt->fetchColumn();
@@ -139,14 +139,14 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         /*
-         * List all devices a user has access to, including the zipcode if needed
+         * List all devices a user has access to, including the name if needed
          */
         $app['devices.list'] = $app->protect(
             function ($withDetails = false, $userId = null, $offset = null, $limit = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder();
 
-                if ($withDetails) { // include zipcode and house number?
+                if ($withDetails) { // include name and house number?
                     $queryBuilder
                         ->select('dev.*')
                         ->from('devaccess', 'ac')
@@ -191,13 +191,13 @@ class DeviceServiceProvider implements ServiceProviderInterface
         );
 
         /*
-         * List all devices, including zipcode if needed
+         * List all devices, including name if needed
          */
         $app['devices.list.all'] = $app->protect(
-            function ($zipcodeOnly = false, $offset = null, $limit = null) use ($app) {
+            function ($nameOnly = false, $offset = null, $limit = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
-                    ->select($zipcodeOnly ? 'zipcode' : '*')
+                    ->select($nameOnly ? 'name' : '*')
                     ->from('device', 'dev');
 
                 if ($offset != null || $limit != null) {
@@ -207,7 +207,7 @@ class DeviceServiceProvider implements ServiceProviderInterface
                 }
 
                 $stmt = $queryBuilder->execute();
-                return $stmt->fetchAll($zipcodeOnly ? \PDO::FETCH_COLUMN : \PDO::FETCH_ASSOC);
+                return $stmt->fetchAll($nameOnly ? \PDO::FETCH_COLUMN : \PDO::FETCH_ASSOC);
             }
         );
 

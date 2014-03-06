@@ -1,3 +1,7 @@
+general:
+    yes: Yes
+    no: No
+
 navigation:
     home: Homepage
     about: About
@@ -32,8 +36,8 @@ admin:
 device:
     label: Devices
     devicenumber: Device number
-    housenumber: House number
-    zipcode: Zipcode
+    name: Identifier
+    accepted: Accepted
     accesslist: Users with access
     addzipcode: Add zipcode
     adduser: Add user
@@ -44,6 +48,8 @@ device:
         adduser: Add user
         cancel: Cancel
         viewstats: View statistics
+        accept: Accept
+        decline: Decline
 
 profile:
     oldpassword: Current password

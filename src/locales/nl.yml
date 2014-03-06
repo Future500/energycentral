@@ -1,3 +1,7 @@
+general:
+    yes: Ja
+    no: Nee
+
 navigation:
     home: Homepagina
     about: Over ons
@@ -32,8 +36,8 @@ admin:
 device:
     label: Apparaten
     devicenumber: Apparaat nummer
-    housenumber: Huisnummer
-    zipcode: Postcode
+    name: Identifier
+    accepted: Geaccepteerd
     accesslist: Gebruikers met toegang
     addzipcode: Postcode toevoegen
     adduser: Gebruiker toevoegen
@@ -44,6 +48,8 @@ device:
         adduser: Gebruiker toevoegen
         cancel: Annuleren
         viewstats: Bekijk statistieken
+        accept: Accepteren
+        decline: Weigeren
 
 profile:
     oldpassword: Huidige wachtwoord
