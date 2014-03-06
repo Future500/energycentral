@@ -32,5 +32,3 @@ $app->get('/date/min_max/{deviceId}',                   'EC\\Controller\\DateCon
     ->value('deviceId', null);
 $app->get('/date/calc/{date}/{format}',                 'EC\\Controller\\DateController::calcAction');
 $app->post('/conf/lang/{lang}',                         'EC\\Controller\\ConfigController::languageAction');
-
-
