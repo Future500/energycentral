@@ -13,9 +13,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>{{ 'device.devicenumber'|trans }}</th>
-                <th>{{ 'device.zipcode'|trans }}</th>
-                <th>{{ 'device.housenumber'|trans }}</th>
+                <th>{{ 'device.name'|trans }}</th>
+                <th>{{ 'device.accepted'|trans }}</th>
                 <th>{{ 'device.accesslist'|trans }}</th>
                 <th>{{ 'navigation.options'|trans }}</th>
             </tr>
@@ -23,9 +22,23 @@
         <tbody>
             {% for device in devices %} {# Show all devices #}
                 <tr>
-                    <td>{{ device.deviceid }}</td>
-                    <td>{{ device.zipcode }}</td>
-                    <td>{{ device.housenumber }}</td>
+                    <td>{{ device.name }}</td>
+                    <td>
+                        {% if device.accepted %}
+                            {{ 'general.yes'|trans }}
+                        {% else %}
+                            {{ 'general.no'|trans }}
+
+                            <form action="javascript:updateAccepted({{ device.deviceid }});" method="POST">
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <input type="submit" value="{{ 'device.options.accept'|trans }}" class="btn btn-success"/>
+                                        <input type="submit" value="{{ 'device.options.decline'|trans }}" class="btn btn-danger"/>
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </td>
                     <td>
                         <form action="javascript:updateAccess({{ device.deviceid }});" method="POST" class="user-tags">
                             <div class="control-group">
@@ -53,9 +66,9 @@
         function updateAccess(deviceId)
         {
             var userData = $('#dev' + deviceId + '_users');
-            var button = $('#dev' + deviceId + '_save').get();
+            var tags = '.select2-container-multi .select2-choices';
 
-            $('#dev' + deviceId + '_save').replaceWith("<img src='{{ app.request.basepath }}/img/select2-spinner.gif' id='dev" + deviceId + "_save'/>");
+            $(tags).addClass('spinner'); // add spinning icon
 
             $.post(
                 "/admin/devices",
@@ -67,7 +80,7 @@
                         if (!data) {
                             alert("Failed to update device access list!");
                         }
-                        $('#dev' + deviceId + '_save').replaceWith(button); // restore button
+                        $(tags).removeClass('spinner'); // add spinning icon
                     }
             );
         }
@@ -76,8 +89,8 @@
             $('.device').select2({
                 createSearchChoice: function() { return null; }, // Disable adding of non-existent elements
                 tags: {{ users|raw }},
-                width: '210px'
-            })
+                width: '80%'
+            });
 
             {% for device in devices %} {# For each device, add the users to the tags #}
                 {% for user in device_getusers(device.deviceid) %}
