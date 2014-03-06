@@ -45,6 +45,20 @@ class DeviceServiceProvider implements ServiceProviderInterface
             }
         );
 
+        $app['devices.update_accepted'] = $app->protect(
+            function ($deviceId, $accepted = false) use ($app) {
+                /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+                $queryBuilder = $app['db']->createQueryBuilder();
+                $queryBuilder
+                    ->update('device', 'dev')
+                    ->set('accepted', $accepted)
+                    ->where('deviceid = :deviceid')
+                    ->setParameter('deviceid', $deviceId);
+
+                return $queryBuilder->execute();
+            }
+        );
+
         $app['devices.count'] = $app->protect(
             function ($userId = null) use ($app) {
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */

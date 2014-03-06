@@ -73,6 +73,11 @@ class AdminController
 
     public function changeDevicesAction(Request $request, Application $app)
     {
+        if ($request->get('deviceid') && $request->get('accepted')) { // update accepted status
+            $app['devices.update_accepted']($request->get('deviceid'), $request->get('accepted')); // update accepted status
+            return true;
+        }
+
         $validation = array(
             'errors' => new ConstraintViolationList(),
             'success' => true
