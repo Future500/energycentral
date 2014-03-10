@@ -12,11 +12,22 @@ $console
     ->register('cron:run')
     ->setDescription('Run the cronjob for data retrieval from SMA')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
-        $output->writeln('<comment>Not implemented yet</comment>');
-        // sudo -u www-data bin/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq
-        // scp /../data/*.sql username@host:/home/<..>/enerycentral
+        $shellResult = shell_exec("sudo -u www-data bin/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq");
+        $output->writeln($shellResult);
     })
 ;
+
+$console
+    ->register('copy:run')
+    ->setDescription('Copy all retrieved data files to central server')
+    ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+        $shellResult = shell_exec("sshpass -p 'vagrant' scp ./data/*.csv vagrant@192.168.30.49:/home/EnergyCentral/");
+        $output->writeln($shellResult);
+    })
+;
+
+
+// APPLICATION_ENV="devel-robbin" ./console import:run --keepfiles 2014
 
 $console
     ->register('import:run')
@@ -59,8 +70,10 @@ $console
 
                 if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{8}.csv/',$filename)) {
                     $table = 'daydata';
+                    $column = 'datetime';
                 } else if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{6}.csv/',$filename)) {
                     $table = 'monthdata';
+                    $column = 'date';
                 } else {
                     $output->writeln('<error>Skipped</error>');
                     continue;
@@ -69,33 +82,40 @@ $console
                 $identifier = substr($filename, 3, strpos($filename, '-', 3) - 3); // device identifier
                 $output->write('(' . $identifier . ')');
 
+                $device = $app['db']->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
+                    ->fetch(PDO::FETCH_ASSOC);
+
+                if (!$device['deviceid']) {
+                    $output->writeln(' ... adding new device (no id)');
+                    $device['accepted'] = $app['centralmode'] ? 0 : 1; // if we are running in local mode the device does not have to be accepted
+                    $app['db']->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
+                    $device['deviceid'] = $app['db']->lastInsertId();
+                }
+
+                if (!$device['accepted']) {
+                    $output->writeln(' ... not accepted');
+                    continue;
+                }
+
                 if ($input->getOption('dryrun')) {
                     $output->writeln(' ... dryrun');
                     continue;
                 }
 
-                $deviceName = $app['db']->executeQuery("SELECT deviceid FROM device WHERE name = '" . $identifier . "'")
-                    ->fetch();
-
-                if (!$deviceName) {
-                    $output->writeln(' ... invalid device (no id)');
-                    continue;
-                }
-
                 if (($handle = fopen($folder.'/'.$filename, "r")) !== false) {
-                    while (($data = fgetcsv($handle, 1000, ";")) !== false) {
-                     //   var_dump($data);
+                    while (($data = fgetcsv($handle, 250, ";")) !== false) {
+                        $dataSlices = array(
+                            'start' => array_slice($data, 0, 1),
+                            'end'   => array_slice($data, 1, 2)
+                        );
+
+                        $query = "INSERT IGNORE INTO " . $table . "(" . $column . ", deviceid, kWh, kW)
+                            VALUES('" . $dataSlices['start'][0] . "'," . $device['deviceid'] . ',' . $dataSlices['end'][0] . ',' . $dataSlices['end'][1] . ")"; // insert row of data
+
+                        $app['db']->executeQuery($query);
                     }
                     fclose($handle);
                 }
-
-                $output->write(' ... performing query');
-                $query = "LOAD DATA INFILE '" . $folder.'/'.$filename . "'
-                            REPLACE
-                            INTO TABLE " . $table . "
-                            FIELDS TERMINATED BY ';'";
-
-                $result = $app['db']->executeQuery($query);
 
                 if (!$input->getOption('keepfiles')) {
                     $output->write(' ... removing input file');
