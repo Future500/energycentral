@@ -9,10 +9,6 @@
             "user":     "robin",
             "password": "**********",
             "charset":  "utf8",
-            "driverOptions": {
-                "1001": true
-            }
-
         },
         "monolog.logfile": "%root_dir%/silex.log",
         "profiler.cache_dir": "%root_dir%/cache/profiler"
