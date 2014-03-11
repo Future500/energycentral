@@ -230,6 +230,9 @@ class DeviceServiceProvider implements ServiceProviderInterface
          */
         $app['devices.hasaccess'] = $app->protect(
             function ($deviceId, $userId = null) use ($app) {
+                if (!$app['centralmode']) { // not needed when running in local mode
+                    return true;
+                }
                 /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
                 $queryBuilder = $app['db']->createQueryBuilder()
                     ->select('ac.deviceid')
