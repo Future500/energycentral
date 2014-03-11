@@ -2,13 +2,12 @@
 
 namespace EC\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportCommand extends Command
+class ImportCommand extends BaseCommand
 {
     protected function configure()
     {
@@ -37,7 +36,7 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $year = (int)$input->getArgument('year');
-        $folder = __DIR__ . '/../data/' . $year;
+        $folder = __DIR__ . '/../../../data/' . $year;
 
         if (is_dir($folder)) {
             $files = array_filter(scandir($folder), function ($filename) {
@@ -68,18 +67,18 @@ class ImportCommand extends Command
             $identifier = substr($filename, 3, strpos($filename, '-', 3) - 3); // device identifier
             $output->write('(' . $identifier . ')');
 
-            $device = $app['db']->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
-                ->fetch(PDO::FETCH_ASSOC);
+            $device = $this->app['db']->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
+                ->fetch(\PDO::FETCH_ASSOC);
 
             if (!$device['deviceid']) {
                 $output->writeln(' ... adding new device (no id)');
-                $device['accepted'] = $app['centralmode'] ? 0 : 1; // if we are running in local mode the device does not have to be accepted
-                $app['db']->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
-                $device['deviceid'] = $app['db']->lastInsertId();
+                $device['accepted'] = $this->app['centralmode'] ? 0 : 1; // if we are running in local mode the device does not have to be accepted
+                $this->app['db']->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
+                $device['deviceid'] = $this->app['db']->lastInsertId();
             }
 
             if (!$device['accepted']) {
-                $output->writeln(' ... not accepted');
+                $output->writeln(' <error>... not accepted</error>');
                 continue;
             }
 
@@ -98,7 +97,7 @@ class ImportCommand extends Command
                     $query = "INSERT IGNORE INTO " . $table . "(" . $column . ", deviceid, kWh, kW)
                             VALUES('" . $dataSlices['start'][0] . "'," . $device['deviceid'] . ',' . $dataSlices['end'][0] . ',' . $dataSlices['end'][1] . ")"; // insert row of data
 
-                    $app['db']->executeQuery($query);
+                    $this->app['db']->executeQuery($query);
                 }
                 fclose($handle);
             }

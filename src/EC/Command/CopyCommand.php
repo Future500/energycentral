@@ -6,7 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CopyCommand extends Command
+class CopyCommand extends BaseCommand
 {
     protected function configure()
     {
@@ -17,7 +17,7 @@ class CopyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $shellResult = shell_exec("scp -o StrictHostKeyChecking=no ./data/*.csv vagrant@192.168.30.50:/home/EnergyCentral/");
+        $shellResult = shell_exec("scp -o StrictHostKeyChecking=no ./data/*.csv vagrant@192.168.30.51:/home/EnergyCentral/");
         $output->writeln($shellResult);
     }
 }
