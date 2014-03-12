@@ -17,7 +17,7 @@
         <div id='footer-daily'>
             <a href="javascript:getDay('{{ selectedDay|date_modify("-1 day")|date("Y-m-d") }}');" id='prev-day'>{{ 'stats.footer.previous'|trans }}</a>
             <span id='daily-text'>
-                {% if (dayStats|raw|length != 2) %}
+                {% if (day.stats|raw|length != 2) %}
                     {{ 'stats.footer.available'|trans }}
                 {% else %}
                     {{ 'stats.footer.notavailable'|trans }}
@@ -33,7 +33,7 @@
         <div id='footer-monthly'>
             <a href="javascript:getMonth('{{ selectedMonth|date("Y") }}-{{ selectedMonth|date_modify("-1 month")|date("m") }}');" id='prev-month'>{{ 'stats.footer.previous'|trans }}</a>
             <span id='monthly-text'>
-                {% if (monthStats|raw|length != 2) %}
+                {% if (month.stats|raw|length != 2) %}
                     {{ 'stats.footer.available'|trans }}
                 {% else %}
                     {{ 'stats.footer.notavailable'|trans }}
@@ -57,8 +57,6 @@
 
     {% if (device_access or not app.centralmode) or is_granted('ROLE_ADMIN') %}
         <script type="text/javascript">
-            var minMax = null; // holds the minimum and maximum value for the dates
-
             $(document).ready(function () {
                 createHighchart(
                     '#daily-chart', {
@@ -78,7 +76,7 @@
                         series: [
                             {
                                 name: "{{ 'chart.kwgenerated'|trans }}",
-                                data: {{ dayStats }}
+                                data: {{ day.stats }}
                             }
                         ]
                   }
@@ -106,7 +104,7 @@
                         series: [
                             {
                                 name: "{{ 'chart.kwgenerated'|trans }}",
-                                data: {{ monthStats }}
+                                data: {{ month.stats }}
                             }
                         ]
                     }
@@ -131,14 +129,10 @@
                 });
 
                 // Set minimum and maximum values
-                $.getJSON("/date/min_max{{ device_route }}", function (data) {
-                    minMax = data; // save min / max dates
-
-                    $('#icon-daily').datepicker('setStartDate', minMax['days']['min']);
-                    $('#icon-daily').datepicker('setEndDate', minMax['days']['max']);
-                    $('#icon-monthly').datepicker('setStartDate', minMax['months']['min']);
-                    $('#icon-monthly').datepicker('setEndDate', minMax['months']['max']);
-                });
+                $('#icon-daily').datepicker('setStartDate', '{{ day.min }}');
+                $('#icon-daily').datepicker('setEndDate', '{{ day.max }}');
+                $('#icon-monthly').datepicker('setStartDate', '{{ month.min }}');
+                $('#icon-monthly').datepicker('setEndDate', '{{ month.max }}');
             });
 
             function updateFooter(date, emptyData)
@@ -146,24 +140,27 @@
                 var viewingText = (emptyData ? "{{ 'stats.footer.notavailable'|trans }}" : "{{ 'stats.footer.available'|trans }}");
 
                 if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
-                    // Get previous and next date
-                    $.getJSON("/date/calc/" + date + "/Y-m-d", function (data) {
-                        var prevLink = (data['prev'] < minMax['days']['min'] ? '#' : "javascript:getDay('" + data['prev'] + "');"); // Only allow the previous if not below the minimum date
-                        var nextLink = (data['next'] > minMax['days']['max'] ? '#' : "javascript:getDay('" + data['next'] + "');"); // Only allow the next if not above the maximum date
+                    // Set previous and next links
+                    var isMinDate   = new Date.parse(date).equals(Date.parse('{{ day.min }}'));
+                    var isMaxDate   = new Date.parse(date).equals(Date.parse('{{ day.max }}'));
+                    var prevDate    = new Date.parse(date).add(-1).days();
+                    var nextDate    = new Date.parse(date).add(1).days();
 
-                        $("#prev-day").attr("href", prevLink);
-                        $("#next-day").attr("href", nextLink);
-                    });
+                    $("#prev-day").attr("href", isMinDate ? '#' : "javascript:getDay('" + prevDate.toString('yyyy-MM-dd') + "')");
+                    $("#next-day").attr("href", isMaxDate ? '#' : "javascript:getDay('" + nextDate.toString('yyyy-MM-dd') + "')");
 
                     // Set viewing text and date
                     $('#daily-text').html(viewingText);
                     $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
                 } else { // we are updating the monthly graph
-                    // Get previous and next date
-                    $.getJSON("/date/calc/" + date + "/Y-m", function (data) {
-                        $("#prev-month").attr("href", "javascript:getMonth('" + data['prev'] + "');");
-                        $("#next-month").attr("href", "javascript:getMonth('" + data['next'] + "');");
-                    });
+                    // Set previous and next links
+                    var isMinDate   = new Date.parse(date).equals(Date.parse('{{ month.min }}'));
+                    var isMaxDate   = new Date.parse(date).equals(Date.parse('{{ month.max }}'));
+                    var prevDate    = new Date.parse(date).add(-1).months();
+                    var nextDate    = new Date.parse(date).add(1).months();
+
+                    $("#prev-month").attr("href", isMinDate ? '#' : "javascript:getMonth('" + prevDate.toString('yyyy-MM') + "')");
+                    $("#next-month").attr("href", isMaxDate ? '#' : "javascript:getMonth('" + nextDate.toString('yyyy-MM') + "')");
 
                     // Set viewing text and date
                     $('#monthly-text').html(viewingText);
