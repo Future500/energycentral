@@ -28,7 +28,4 @@ $app->get('/stats/month/{year}/{month}/{deviceId}',     'EC\\Controller\\StatsCo
     ->value('deviceId', null);
 $app->get('/stats/day/{date}/{deviceId}',               'EC\\Controller\\StatsController::dayAction')
     ->value('deviceId', null);
-$app->get('/date/min_max/{deviceId}',                   'EC\\Controller\\DateController::minMaxAction')
-    ->value('deviceId', null);
-$app->get('/date/calc/{date}/{format}',                 'EC\\Controller\\DateController::calcAction');
 $app->post('/conf/lang/{lang}',                         'EC\\Controller\\ConfigController::languageAction');
