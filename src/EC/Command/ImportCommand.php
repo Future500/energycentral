@@ -78,7 +78,7 @@ class ImportCommand extends BaseCommand
             }
 
             if (!$device['accepted']) {
-                $output->writeln(' <error>... not accepted</error>');
+                $output->writeln(' ... not accepted');
                 continue;
             }
 
