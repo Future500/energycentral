@@ -24,16 +24,26 @@ class DeviceController
 
     public function viewAction(Request $request, Application $app, $deviceId = null)
     {
-        $deviceId = $request->get('deviceId');
-        $deviceRoute = ($deviceId == null ? '' : '/' . $deviceId);
+        $deviceId       = $request->get('deviceId');
+        $deviceRoute    = ($deviceId == null ? '' : '/' . $deviceId);
+        $daysMinMax     = $app['datalayer.minmax']('days', $deviceId); // get minimum and maximum day
+        $monthsMinMax   = $app['datalayer.minmax']('months', $deviceId); // get minimum and maximum month
 
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
-                'dayStats'      => $app['stats.day']($deviceId)->getEncodedData(),
-                'monthStats'    => $app['stats.month']($deviceId)->getEncodedData(),
                 'device_route'   => $deviceRoute,
-                'device_access' => $app['devices.hasaccess']($deviceId)
+                'device_access' => $app['devices.hasaccess']($deviceId),
+                'day' => array(
+                    'stats' => $app['stats.day']($deviceId)->getEncodedData(),
+                    'min'   => date('Y-m-d', strtotime($daysMinMax['minimum'])),
+                    'max'   => date('Y-m-d', strtotime($daysMinMax['maximum']))
+                ),
+                'month' => array(
+                    'stats' => $app['stats.month']($deviceId)->getEncodedData(),
+                    'min'   => date('Y-m', strtotime($monthsMinMax['minimum'])),
+                    'max'   => date('Y-m', strtotime($monthsMinMax['maximum']))
+                )
             )
         );
     }
