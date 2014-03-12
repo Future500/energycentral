@@ -133,12 +133,27 @@
                 $('#icon-daily').datepicker('setEndDate', '{{ day.max }}');
                 $('#icon-monthly').datepicker('setStartDate', '{{ month.min }}');
                 $('#icon-monthly').datepicker('setEndDate', '{{ month.max }}');
+
+                // Update footer links
+                updateFooterLinks({{ "now"|date('Y-m-d') }});
+                updateFooterLinks({{ "now"|date('m-d') }});
             });
 
-            function updateFooter(date, emptyData)
+            function updateFooterText(date, emptyData)
             {
                 var viewingText = (emptyData ? "{{ 'stats.footer.notavailable'|trans }}" : "{{ 'stats.footer.available'|trans }}");
 
+                if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
+                    $('#daily-text').html(viewingText);
+                    $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
+                } else {
+                    $('#monthly-text').html(viewingText);
+                    $('#month-picker').html(new Date(date).toString('MM-yyyy'));
+                }
+            }
+
+            function updateFooterLinks(date)
+            {
                 if (Date.parseExact(date, "yyyy-MM-dd")) { // we are updating the daily graph
                     // Set previous and next links
                     var isMinDate   = new Date.parse(date).equals(Date.parse('{{ day.min }}'));
@@ -148,10 +163,6 @@
 
                     $("#prev-day").attr("href", isMinDate ? '#' : "javascript:getDay('" + prevDate.toString('yyyy-MM-dd') + "')");
                     $("#next-day").attr("href", isMaxDate ? '#' : "javascript:getDay('" + nextDate.toString('yyyy-MM-dd') + "')");
-
-                    // Set viewing text and date
-                    $('#daily-text').html(viewingText);
-                    $('#day-picker').html(new Date(date).toString('dd-MM-yyyy'));
                 } else { // we are updating the monthly graph
                     // Set previous and next links
                     var isMinDate   = new Date.parse(date).equals(Date.parse('{{ month.min }}'));
@@ -161,10 +172,6 @@
 
                     $("#prev-month").attr("href", isMinDate ? '#' : "javascript:getMonth('" + prevDate.toString('yyyy-MM') + "')");
                     $("#next-month").attr("href", isMaxDate ? '#' : "javascript:getMonth('" + nextDate.toString('yyyy-MM') + "')");
-
-                    // Set viewing text and date
-                    $('#monthly-text').html(viewingText);
-                    $('#month-picker').html(new Date(date).toString('MM-yyyy'));
                 }
             }
 
@@ -175,7 +182,8 @@
 
                 $.getJSON("/stats/day/" + date + "{{ device_route }}", function (data) {
                     var chart = $('#daily-chart').highcharts().series[0].setData(data);
-                    updateFooter(date, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+                    updateFooterLinks(date);
+                    updateFooterText(date, data.length <= 2); // update the footer text
                 });
             }
 
@@ -193,7 +201,8 @@
                 } else {
                     $.getJSON("/stats/month/" + year + '/' + month + "{{ device_route }}", function (data) {
                         var chart = $('#monthly-chart').highcharts().series[0].setData(data);
-                        updateFooter(year + '-' + month, data.length <= 2); // update the footer, second argument is to check if data is empty or not
+                        updateFooterLinks(year + '-' + month);
+                        updateFooterText(year + '-' + month, data.length <= 2); // update the footer text
                     });
                 }
             }
