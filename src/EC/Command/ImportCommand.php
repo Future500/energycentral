@@ -16,7 +16,7 @@ class ImportCommand extends BaseCommand
             ->setDescription('Import all available data files')
             ->addArgument(
                 'year',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'What year do you want to import?'
             )
             ->addOption(
@@ -35,7 +35,7 @@ class ImportCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $year = (int)$input->getArgument('year');
+        $year = $input->getArgument('year') ? (int)$input->getArgument('year') : date('Y');
         $folder = __DIR__ . '/../../../data/' . $year;
 
         if (is_dir($folder)) {
