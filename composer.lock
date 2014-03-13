@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e4f1a64cd74e3d2af1e953ac5d1abe05",
+    "hash": "b548deff6d2bf141d78d62b9326cf7c9",
     "packages": [
         {
             "name": "behat/mink",
@@ -1111,10 +1111,10 @@
         },
         {
             "name": "highcharts",
-            "version": "3.0.2",
+            "version": "3.0.10",
             "dist": {
                 "type": "zip",
-                "url": "http://www.highcharts.com/downloads/zips/Highcharts-3.0.2.zip",
+                "url": "http://code.highcharts.com/zips/Highcharts-3.0.10.zip",
                 "reference": null,
                 "shasum": null
             },

@@ -36,10 +36,10 @@
         {
             "type": "package",
             "package": {
-                "version": "3.0.2",
+                "version": "3.0.10",
                 "name": "highcharts",
                 "dist": {
-                    "url": "http://www.highcharts.com/downloads/zips/Highcharts-3.0.2.zip",
+                    "url": "http://code.highcharts.com/zips/Highcharts-3.0.10.zip",
                     "type": "zip"
                 }
             }
