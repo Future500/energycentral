@@ -2,7 +2,6 @@
 
 namespace EC\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -11,8 +10,8 @@ class CronCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('copy:run')
-            ->setDescription('Copy all retrieved data files to central server');
+            ->setName('cron:run')
+            ->setDescription('Run the cronjob for data retrieval from SMA');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
