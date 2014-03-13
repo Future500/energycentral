@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "34c7a783cce6111e5dd042a2daec77a4",
+    "hash": "53a5e1a00b6be98373ac86c0996b70ac",
     "packages": [
         {
             "name": "behat/mink",
@@ -3782,6 +3782,17 @@
             "time": "2014-01-07 13:28:54"
         },
         {
+            "name": "twbs/bootstrap-zip",
+            "version": "2.3.2",
+            "dist": {
+                "type": "zip",
+                "url": "http://getbootstrap.com/2.3.2/assets/bootstrap.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.15.1",
             "source": {
@@ -3837,17 +3848,6 @@
                 "templating"
             ],
             "time": "2014-02-13 10:19:29"
-        },
-        {
-            "name": "twitter/bootstrap-zip",
-            "version": "2.3.2",
-            "dist": {
-                "type": "zip",
-                "url": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
         }
     ],
     "packages-dev": [

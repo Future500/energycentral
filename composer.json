@@ -15,7 +15,7 @@
             "type": "package",
             "package": {
                 "version": "2.3.2",
-                "name": "twitter/bootstrap-zip",
+                "name": "twbs/bootstrap-zip",
                 "dist": {
                     "url": "http://getbootstrap.com/2.3.2/assets/bootstrap.zip",
                     "type": "zip"
@@ -72,7 +72,7 @@
         "ivaynberg/select2": "dev-master",
         "jquery/jquery": "*",
         "highcharts": "*",
-        "twitter/bootstrap-zip": "*",
+        "twbs/bootstrap-zip": "*",
         "sma-spot": "*"
     },
 
