@@ -67,13 +67,16 @@
         "symfony/validator": "~2.2",
         "symfony/yaml": "~2.2",
         "kilte/silex-pagination": "~1.0",
-        "codeception/codeception": "*",
         "doctrine/dbal": "~2.5.0@dev",
         "ivaynberg/select2": "dev-master",
         "jquery/jquery": "*",
         "highcharts": "*",
         "twbs/bootstrap-zip": "*",
         "sma-spot": "*"
+    },
+
+    "require-dev": {
+        "codeception/codeception": "*"
     },
 
     "scripts": {
