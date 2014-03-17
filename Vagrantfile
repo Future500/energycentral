@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		 vb.customize ["modifyvm", :id, "--memory", "768"]
 	  end
 	end
-	
+
 =begin	
 		config.vm.define "prod", primary: false do |config_prod|
 		  config_prod.vm.box = "debian64"
@@ -25,19 +25,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 		  config_prod.vm.provider :virtualbox do |vb|
 			 vb.name = "energycentral_prod"
-			 vb.customize ["modifyvm", :id, "--memory", "768"]
-		  end
-		end
-
-		config.vm.define "prod_central", primary: false do |config_prod_central|
-		  config_prod_central.vm.box = "debian64"
-		  config_prod_central.vm.box_url = "http://vagrantboxes.future500.nl/vagrant-debian64.box"
-		  config_prod_central.vm.provision :shell, :path => "provisioning/provision_prod_central.sh"
-		  config_prod_central.vm.network :private_network, ip: "192.168.30.51"
-		  config_prod_central.vm.synced_folder ".", "/vagrant", type: "rsync"
-
-		  config_prod_central.vm.provider :virtualbox do |vb|
-			 vb.name = "energycentral_prod_central"
 			 vb.customize ["modifyvm", :id, "--memory", "768"]
 		  end
 		end
