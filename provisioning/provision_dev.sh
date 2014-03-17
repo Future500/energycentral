@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
-export DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
-apt-get -y update
-apt-get -y install nginx mysql-server mysql-client phpmyadmin php5-fpm php5-cli php5-gd php5-mcrypt php5-mysql php-apc
+# Install ansible
+sudo apt-get update
+sudo apt-get install -y python-pip python-dev git libmysqlclient-dev
+sudo pip install PyYAML MySQL-python jinja2 paramiko
+git clone https://github.com/ansible/ansible.git
+cd ansible
+sudo make install
+sudo mkdir /etc/ansible
 
-# Set MySQL root password
-mysqladmin -u root password U7KOekqJOMvf3Uu
+# Copy ansible hosts
+sudo cp /vagrant/provisioning/ansible/hosts /etc/ansible
+sudo chmod 644 /etc/ansible/hosts
 
-# Create and import database
-mysqladmin -u root -p"U7KOekqJOMvf3Uu" CREATE future500
-mysql -u root -p"U7KOekqJOMvf3Uu" future500 < "/vagrant/provisioning/sql/db.sql"
-
-# Configure and restart nginx
-sudo -s cp /vagrant/provisioning/conf/nginx_dev.conf /etc/nginx/sites-available/default
-sudo -s cp /vagrant/provisioning/conf/nginx/nginx.conf /etc/nginx/nginx.conf
-sudo -s cp /vagrant/provisioning/conf/php5-fpm/www.conf /etc/php5/fpm/pool.d/www.conf
-sudo -s /etc/init.d/nginx reload
-sudo -s /etc/init.d/nginx restart
+# Run playbook
+ansible-playbook /vagrant/provisioning/ansible/provision_dev.yml
