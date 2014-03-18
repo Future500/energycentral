@@ -35,7 +35,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
          ansible.inventory_path = "provisioning/ansible/hosts"
          ansible.playbook       = "provisioning/ansible/provision_prod_client.yml"
          ansible.limit          = "prod"
-         ansible.verbose        = "vvv"
       end
 	end
 
