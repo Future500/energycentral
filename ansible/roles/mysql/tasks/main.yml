@@ -1,0 +1,10 @@
+---
+
+- name: Install MySQL server and client
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - mysql-server
+    - mysql-client
+
+- name: Set new MySQL root password
+  mysql_user: user=root password={{ db_password }} host=localhost

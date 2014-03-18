@@ -1,0 +1,35 @@
+# provision_dev.yml
+- hosts: 192.168.30.49
+  sudo: yes
+  vars:
+    db_password: U7KOekqJOMvf3Uu
+    db_name: future500
+    default_home: ~
+    ansible_dir: /var/lib
+    ansible_version: ansible-1.5
+
+  pre_tasks:
+    - name: Install CURL, Git and PhpMyAdmin
+      apt: pkg={{ item }} state=installed update_cache=yes
+      with_items:
+        - curl
+        - git
+        - phpmyadmin
+
+  roles:
+    - php
+    - nginx
+    - composer
+    - mysql
+
+  post_tasks:
+    - name: Check if Energy Central database exists and create if nessecary
+      mysql_db: name={{ db_name }} state=present login_user=root login_password={{ db_password }}
+
+    - name: Copy SQL file
+      copy: src=db.sql dest={{ default_home }}/db.sql force=no
+      notify: Import database
+
+  handlers:
+    - name: Import database
+      mysql_db: db={{ db_name }} state=import target={{ default_home }}/db.sql login_user=root login_password={{ db_password }}

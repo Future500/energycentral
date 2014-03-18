@@ -1,0 +1,22 @@
+---
+
+- name: Install Ansible dependencies
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - python-yaml
+    - python-jinja2
+    - python-apt
+    - python-mysqldb
+    - python-paramiko
+    - python-httplib2
+
+- name: Copy Ansible archive to remote
+  unarchive: src={{ ansible_version }}.tar.gz dest={{ ansible_dir }} creates={{ ansible_dir }}/{{ ansible_version }}
+  
+- name: Perform "make" for Ansible
+  shell: make chdir={{ ansible_dir }}/{{ ansible_version }}
+         creates={{ ansible_dir }}/{{ ansible_version }}/build
+
+- name: Perform "make install" for Ansible
+  shell: make install chdir={{ ansible_dir }}/{{ ansible_version }}
+         creates=/usr/share/ansible
