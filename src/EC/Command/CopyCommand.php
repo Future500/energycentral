@@ -27,7 +27,7 @@ class CopyCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $shellResult = shell_exec("scp -o StrictHostKeyChecking=no ./data/*.csv " . $input->getArgument('user') . "@" . $input->getArgument('ip') . ":/home/EnergyCentral/");
+        $shellResult = shell_exec("scp -o StrictHostKeyChecking=no ./data/*.csv " . $input->getArgument('user') . "@" . $input->getArgument('ip') . ":current/data");
         $output->writeln($shellResult);
     }
 }
