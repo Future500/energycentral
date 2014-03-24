@@ -1,0 +1,16 @@
+{
+    "debug": false,
+    "centralmode": false,
+    "config": {
+        "db.options": {
+            "driver":   "pdo_mysql",
+            "host":     "localhost",
+            "dbname":   "{{ ecclient_db_name }}",
+            "user":     "{{ ecclient_db_user }}",
+            "password": "{{ ecclient_db_password }}",
+            "charset":  "utf8",
+        },
+        "monolog.logfile": "%root_dir%/cache/silex.log",
+        "profiler.cache_dir": "%root_dir1%/cache/profiler"
+    }
+}
