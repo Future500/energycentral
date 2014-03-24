@@ -19,12 +19,6 @@ class ImportCommand extends BaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If set, only the filenames will be output'
-            )
-            ->addOption(
-                'keepfiles',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, data files are not deleted after import'
             );
     }
 
@@ -94,11 +88,6 @@ class ImportCommand extends BaseCommand
                     $this->app['db']->executeQuery($query);
                 }
                 fclose($handle);
-            }
-
-            if (!$input->getOption('keepfiles')) {
-                $output->write(' ... removing input file');
-                unlink($folder . '/' . $filename);
             }
 
             $output->writeln(' ... done');
