@@ -40,7 +40,7 @@
 
     - name: Add cronjob for ansible-pull
       cron: name="Automatic updating for Energy Central" minute=10
-            job="ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/rtroost2012/energycentral-deploy.git"
+            job="ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/f500/energycentral-deploy.git deploy_prod.yml"
             user=energycentral state=present
 
   handlers:
