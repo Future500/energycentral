@@ -23,7 +23,7 @@
     - mysql
 
   post_tasks:
-    - name: Check if Energy Central database exists and create if nessecary
+    - name: Check if Energy Central database exists and create if necessary
       mysql_db: name={{ db_name }} state=present login_user=root login_password={{ db_password }}
 
     - name: Copy SQL file
