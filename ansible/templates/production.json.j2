@@ -1,16 +1,16 @@
 {
     "debug": false,
-    "centralmode": false,
+    "centralmode": true,
     "config": {
         "db.options": {
             "driver":   "pdo_mysql",
             "host":     "localhost",
-            "dbname":   "energycentral",
-            "user":     "robin",
-            "password": "**********",
+            "dbname":   "{{ ecserver_db_name }}",
+            "user":     "{{ ecserver_db_user }}",
+            "password": "{{ ecserver_db_password }}",
             "charset":  "utf8"
         },
-        "monolog.logfile": "%root_dir%/silex.log",
+        "monolog.logfile": "%root_dir%/cache/silex.log",
         "profiler.cache_dir": "%root_dir%/cache/profiler"
     }
 }

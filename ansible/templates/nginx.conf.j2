@@ -1,0 +1,16 @@
+server {
+    root {{ ecserver_project_root }}/web;
+    index index.php;
+    server_name  {{ ecserver_server_name }};
+
+   location / {
+       try_files $uri $uri/ /index.php?$args;
+   }
+
+   location ~ \.php$ {
+       fastcgi_pass unix:/var/run/php5-fpm.sock;
+       include fastcgi_params;
+       fastcgi_param  SCRIPT_FILENAME $document_root/index.php;
+       fastcgi_param APPLICATION_ENV {{ ecserver_application_env }};
+   }
+}

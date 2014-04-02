@@ -1,0 +1,30 @@
+---
+- name: Deploy EC Server on prod01.future500.nl
+  hosts: "prod01.future500.*"
+  remote_user: energycentral
+  sudo: no
+
+  vars_prompt:
+    - name: ecserver_project_version
+      prompt: "What is the git ref (branch, tag, commit hash) you want to deploy?"
+      private: no
+      default: master
+
+  tasks:
+    - name: Retrieve the latest version of Energy Central from the repository
+      git: repo=https://github.com/ramondelafuente/energycentral.git dest={{ ecserver_project_root }} version={{ ecserver_project_version }}
+      register: git_output
+
+    - name: Run a composer install for Energy Central
+      command: composer install --no-dev --prefer-source chdir={{ ecserver_project_root }}
+      register: composer_output
+      changed_when: "'Nothing to install or update' not in composer_output.stdout"
+
+    - name: Copy website config
+      template: src=templates/production.json.j2 dest={{ ecserver_project_root }}/config/production.json mode=0644
+
+    - name: Make cache folder writable
+      file: path={{ ecserver_project_root }}/cache mode=0777 state=directory
+
+    - name: Add cronjob for data import
+      cron: name="data_import" user={{ ecserver_system_user }} job="/home/energycentral/current/console import:run --keepfiles" state=present

@@ -1,0 +1,38 @@
+---
+- name: Provision EC Server on prod01.future500.nl
+  hosts: "prod01.future500.*"
+  remote_user: ramon
+  sudo: yes
+
+  tasks:
+    - name: create system user
+      user: name={{ ecserver_system_user }} password="nonexisstant" state=present
+
+    - name: add authorized key to system user
+      authorized_key: user={{ ecserver_system_user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: add project database
+      mysql_db: name=energycentral state=present
+      notify: initial db import
+
+    - name: copy project database
+      copy: src=files/db.sql dest=/root/db.sql mode=600 owner=root group=root
+
+    - name: create database user
+      mysql_user: name={{ ecserver_db_user }} password={{ ecserver_db_password }} priv={{ ecserver_db_name }}.*:ALL state=present
+
+    - name: Add nginx configuration
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/{{ ecserver_server_name }}.conf mode=0644 owner=root group=root
+      notify: restart nginx
+
+    - name: Enable nginx configuration
+      file: src=/etc/nginx/sites-available/{{ ecserver_server_name }}.conf dest=/etc/nginx/sites-enabled/{{ ecserver_server_name }}.conf state=link
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+      register: restarted_nginx
+
+    - name: initial db import
+      mysql_db: name=energycentral state=import target=/root/db.sql

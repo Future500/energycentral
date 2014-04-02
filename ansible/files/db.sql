@@ -91,6 +91,10 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`userid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
+
+INSERT INTO `user` (`userid`, `username`, `password`, `salt`, `roles`) VALUES
+  (1, 'future500', 'ao78rDM1T3k9ton+ByZUuJekp5lepF4xeY1P746NC2IARSDDVKgV8mf8QUscgCN/zRjpJgjw88I6W2yyw/OxMw==', 'Za0i95SzMo9BcaTiHzBKJjTR/QqO1gmX8A==', 'ROLE_ADMIN');
+
 --
 -- Beperkingen voor gedumpte tabellen
 --

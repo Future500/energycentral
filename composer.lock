@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4b42829ad869f75a09cbcf7689890cb1",
+    "hash": "70e50089c98c64d9c8aca7be56fc6ada",
     "packages": [
         {
             "name": "components/jquery",
@@ -57,12 +57,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "40db0c96985aab2822edbc4848b3bd2429e02670"
+                "reference": "v1.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/40db0c96985aab2822edbc4848b3bd2429e02670",
-                "reference": "40db0c96985aab2822edbc4848b3bd2429e02670",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/v1.1.2",
+                "reference": "v1.1.2",
                 "shasum": ""
             },
             "require": {
@@ -91,8 +91,7 @@
                 {
                     "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/",
-                    "role": "Creator"
+                    "homepage": "http://www.jwage.com/"
                 },
                 {
                     "name": "Guilherme Blanco",
@@ -928,13 +927,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+                "url": "https://github.com/php-fig/log",
+                "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "url": "https://github.com/php-fig/log/archive/1.0.0.zip",
+                "reference": "1.0.0",
                 "shasum": ""
             },
             "type": "library",
@@ -3131,6 +3130,72 @@
             "time": "2014-02-13 04:34:58"
         },
         {
+            "name": "f500/ansible-provisioning",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Future500BV/ansible-provisioning.git",
+                "reference": "4b38dbb3df52bfc8030a0c2505d81dbbe3ab0582"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Future500BV/ansible-provisioning/zipball/4b38dbb3df52bfc8030a0c2505d81dbbe3ab0582",
+                "reference": "4b38dbb3df52bfc8030a0c2505d81dbbe3ab0582",
+                "shasum": ""
+            },
+            "type": "library",
+            "license": [
+                "LGPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Jasper N. Brouwer",
+                    "email": "jasper@future500.nl"
+                },
+                {
+                    "name": "Ramon de la Fuente",
+                    "email": "ramon@future500.nl"
+                }
+            ],
+            "description": "Reusable library and roles for provisioning with Ansible.",
+            "support": {
+                "source": "https://github.com/Future500BV/ansible-provisioning/tree/master",
+                "issues": "https://github.com/Future500BV/ansible-provisioning/issues"
+            },
+            "time": "2014-02-21 19:14:27"
+        },
+        {
+            "name": "f500/vps-provisioning",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Future500BV/vps-provisioning.git",
+                "reference": "168ae66c62ce8e2a5faf3c7d6387493787cac4d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Future500BV/vps-provisioning/zipball/168ae66c62ce8e2a5faf3c7d6387493787cac4d1",
+                "reference": "168ae66c62ce8e2a5faf3c7d6387493787cac4d1",
+                "shasum": ""
+            },
+            "require": {
+                "f500/ansible-provisioning": "dev-master"
+            },
+            "type": "library",
+            "authors": [
+                {
+                    "name": "Ramon de la Fuente",
+                    "email": "ramon@future500.nl"
+                }
+            ],
+            "description": "Future500 VPS installation playbooks",
+            "support": {
+                "source": "https://github.com/Future500BV/vps-provisioning/tree/master",
+                "issues": "https://github.com/Future500BV/vps-provisioning/issues"
+            },
+            "time": "2014-03-17 22:46:34"
+        },
+        {
             "name": "fabpot/goutte",
             "version": "v1.0.5",
             "source": {
@@ -3858,7 +3923,9 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "doctrine/dbal": 20,
-        "ivaynberg/select2": 20
+        "ivaynberg/select2": 20,
+        "f500/vps-provisioning": 20,
+        "f500/ansible-provisioning": 20
     },
     "platform": {
         "php": ">=5.3.3"
