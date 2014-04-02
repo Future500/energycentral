@@ -14,29 +14,17 @@ class ImportCommand extends BaseCommand
         $this
             ->setName('import:run')
             ->setDescription('Import all available data files')
-            ->addArgument(
-                'year',
-                InputArgument::OPTIONAL,
-                'What year do you want to import?'
-            )
             ->addOption(
                 'dryrun',
                 null,
                 InputOption::VALUE_NONE,
                 'If set, only the filenames will be output'
-            )
-            ->addOption(
-                'keepfiles',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, data files are not deleted after import'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $year = $input->getArgument('year') ? (int)$input->getArgument('year') : date('Y');
-        $folder = __DIR__ . '/../../../data/' . $year;
+        $folder = __DIR__ . '/../../../data/';
 
         if (is_dir($folder)) {
             $files = array_filter(scandir($folder), function ($filename) {
@@ -100,11 +88,6 @@ class ImportCommand extends BaseCommand
                     $this->app['db']->executeQuery($query);
                 }
                 fclose($handle);
-            }
-
-            if (!$input->getOption('keepfiles')) {
-                $output->write(' ... removing input file');
-                unlink($folder . '/' . $filename);
             }
 
             $output->writeln(' ... done');

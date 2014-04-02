@@ -1,10 +1,4 @@
 ---
 
 - name: Install Nginx
-  apt: pkg=nginx state=installed update_cache=yes
-
-- name: Copy new sites-available config (nginx)
-  copy: src=default_prod dest=/etc/nginx/sites-available/default
-
-- name: Restart nginx
-  service: name=nginx state=restarted
+  apt: pkg=nginx state=installed

@@ -1,16 +1,20 @@
 server {
-    root {{ ecserver_project_root }}/web;
-    index index.php;
-    server_name  {{ ecserver_server_name }};
+	root {{ ecclient_install_dir }}/web;
+	index index.php index.html index.htm;
+	server_name _;
 
-   location / {
-       try_files $uri $uri/ /index.php?$args;
-   }
+    location = / {
+        try_files @site @site;
+    }
 
-   location ~ \.php$ {
-       fastcgi_pass unix:/var/run/php5-fpm.sock;
-       include fastcgi_params;
-       fastcgi_param  SCRIPT_FILENAME $document_root/index.php;
-       fastcgi_param APPLICATION_ENV {{ ecserver_application_env }};
-   }
+    location / {
+        try_files $uri $uri/ @site;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+		fastcgi_param APPLICATION_ENV {{ ecclient_env }};
+    }
 }
