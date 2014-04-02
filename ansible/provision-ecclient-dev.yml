@@ -1,0 +1,45 @@
+# provision.yml
+- hosts: development
+  sudo: yes
+
+  pre_tasks:
+    - name: Install CURL and Git
+      apt: pkg={{ item }} state=installed update_cache=yes
+      with_items:
+        - curl
+        - git
+
+  roles:
+    - ansible-install
+    - php
+    - nginx
+    - composer
+    - mysql
+
+  post_tasks:
+    - name: Copy new sites-available config
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/default owner=root mode=0644
+      notify: restart nginx
+
+    - name: Check if Energy Central database exists and create if necessary
+      mysql_db: name={{ ecclient_db_name }} state=present
+
+    - name: Check if Energy Central database user exists
+      mysql_user: name={{ ecclient_db_user }} password={{ ecclient_db_password }} priv={{ ecclient_db_name }}.*:ALL state=present
+
+    - name: Copy website config
+      template: src=templates/siteconfig.json.j2 dest={{ ecclient_install_dir }}/current/config/{{ ecclient_env }}.json owner=energycentral mode=0644
+      remote_user: energycentral
+
+    - name: Copy SQL file
+      copy: src=files/db.sql dest=~/db.sql
+      notify: import database
+
+#    - name: Add cronjob for ansible-pull
+#      cron: name="Automatic updating for Energy Central" minute=10
+#            job="ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/f500/energycentral-deploy.git deploy_prod.yml"
+#            user=energycentral state=present
+
+  handlers:
+    - name: import database
+      mysql_db: db={{ ecclient_db_name }} state=import target=~/db.sql login_user=root login_password={{ ecclient_db_password }}

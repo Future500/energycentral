@@ -1,13 +1,13 @@
 {
     "debug": false,
-    "centralmode": true,
+    "centralmode": {{ ec_central_mode }},
     "config": {
         "db.options": {
             "driver":   "pdo_mysql",
             "host":     "localhost",
-            "dbname":   "{{ ecserver_db_name }}",
-            "user":     "{{ ecserver_db_user }}",
-            "password": "{{ ecserver_db_password }}",
+            "dbname":   "{{ ec_db_name }}",
+            "user":     "{{ ec_db_user }}",
+            "password": "{{ ec_db_password }}",
             "charset":  "utf8"
         },
         "monolog.logfile": "%root_dir%/cache/silex.log",

@@ -1,10 +1,7 @@
-# provision_prod.yml
-- hosts: prod
+# setup_local_production_server.yml
+- hosts: production-test
   sudo: yes
-  vars:
-    ansible_dir: /var/lib
-    ansible_version: ansible-1.5
-  
+
   pre_tasks:
     - name: Install CURL and Git
       apt: pkg={{ item }} state=installed update_cache=yes
@@ -22,7 +19,7 @@
   post_tasks:
     - name: Copy new sites-available config
       template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/default owner=root mode=0644
-      notify: Restart nginx
+      notify: restart nginx
 
     - name: Check if Energy Central database exists and create if necessary
       mysql_db: name={{ ecclient_db_name }} state=present
@@ -31,12 +28,12 @@
       mysql_user: name={{ ecclient_db_user }} password={{ ecclient_db_password }} priv={{ ecclient_db_name }}.*:ALL state=present
 
     - name: Copy website config
-      template: src=templates/production.json.j2 dest={{ ecclient_install_dir }}/current/config/production.json owner=energycentral mode=0644
+      template: src=templates/siteconfig.json.j2 dest={{ ecclient_install_dir }}/current/config/{{ ecclient_env }}.json owner=energycentral mode=0644
       remote_user: energycentral
 
     - name: Copy SQL file
       copy: src=files/db.sql dest=~/db.sql
-      notify: Import database
+      notify: import database
 
     - name: Add cronjob for ansible-pull
       cron: name="Automatic updating for Energy Central" minute=10
@@ -44,8 +41,5 @@
             user=energycentral state=present
 
   handlers:
-    - name: Import database
+    - name: import database
       mysql_db: db={{ ecclient_db_name }} state=import target=~/db.sql login_user=root login_password={{ ecclient_db_password }}
-
-    - name: Restart nginx
-      service: name=nginx state=restarted
