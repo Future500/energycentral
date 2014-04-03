@@ -1,0 +1,6 @@
+---
+
+ec_db_name: future500
+ec_db_user: energycentral
+ec_system_user: energycentral
+ec_install_dir: "/home/{{ ec_system_user }}/current"
