@@ -1,0 +1,22 @@
+---
+
+- name: create system user
+  user: name={{ ec_system_user }} password="nonexisstant" state=present
+
+- name: add authorized key to system user
+  authorized_key: user={{ ec_system_user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: copy project database
+  copy: src=files/db.sql dest=/root/db.sql mode=600 owner=root group=root
+
+- name: add project database
+  mysql_db: name={{ ec_db_name }} state=present
+  notify: import database
+
+- name: create database user
+  mysql_user: name={{ ec_db_user }} password={{ ec_db_password }} priv={{ ec_db_name }}.*:ALL state=present
+  when: ec_db_password is defined
+
+- name: copy new sites-available config
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/default owner=root mode=0644
+  notify: restart nginx

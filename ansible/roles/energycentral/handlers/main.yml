@@ -1,0 +1,13 @@
+---
+
+- name: import database
+  mysql_db: db={{ ec_db_name }} state=import target=/root/db.sql login_user={{ ec_db_user }} login_password={{ ec_db_password }}
+  notify: copy mysql password to remote
+
+- name: copy mysql password to remote
+  copy: src=/tmp/passwordfile_ec dest=/home/{{ ec_system_user }}/passwordfile mode=0600 owner={{ ec_system_user }} group={{ ec_system_user }}
+  notify: remove local mysql password file
+
+- name: remove local mysql password file
+  local_action: file path=/tmp/passwordfile_ec state=absent
+  sudo: no
