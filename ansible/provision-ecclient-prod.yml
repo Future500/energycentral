@@ -1,6 +1,7 @@
 # provision-ecclient-simulate-prod.yml
 - hosts: client-production
   sudo: yes
+  remote_user: "{{ production_ssh_user }}"
 
   roles:
     - init
