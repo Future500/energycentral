@@ -1,7 +1,7 @@
-# provision-ecclient-simulate-prod.yml
+# provision-ecclient-prod.yml
 - hosts: client-production
+#  remote_user: "{{ production_ssh_user }}"
   sudo: yes
-  remote_user: "{{ production_ssh_user }}"
 
   roles:
     - init
@@ -17,4 +17,10 @@
       cron: name="Automatic updating for Energy Central" minute="*"
             job="HOME=/home/{{ ec_system_user }} PATH=/usr/local/bin:/usr/bin:/bin
             /usr/local/bin/ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/f500/energycentral-deploy.git deploy_prod.yml"
+            user=energycentral state=present
+
+    - name: Add cronjob for SMA spot data retrieval
+      cron: name="Retrieve data from SMA" minute="*/5"
+            job="HOME=/home/{{ ec_system_user }} PATH=/usr/local/bin:/usr/bin:/bin
+            sudo -u www-data {{ ec_install_dir }}/bin/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq"
             user=energycentral state=present
