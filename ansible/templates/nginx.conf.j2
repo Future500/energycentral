@@ -1,20 +1,12 @@
 server {
-	root {{ ecclient_install_dir }}/web;
+	root {{ ec_install_dir }}/web;
 	index index.php index.html index.htm;
 	server_name _;
-
-    location = / {
-        try_files @site @site;
-    }
-
-    location / {
-        try_files $uri $uri/ @site;
-    }
 
     location ~ \.php$ {
         fastcgi_pass unix:/var/run/php5-fpm.sock;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root/index.php;
-		fastcgi_param APPLICATION_ENV {{ ecclient_env }};
+		fastcgi_param APPLICATION_ENV {{ ec_env }};
     }
 }
