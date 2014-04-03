@@ -14,9 +14,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	  end
 
       config_client_dev.vm.provision :ansible do |ansible|
-         ansible.inventory_path = "ansible/hosts"
+         ansible.inventory_path = "ansible/hosts_client"
          ansible.playbook       = "ansible/provision-ecclient-dev.yml"
-         ansible.limit          = "development"
+         ansible.limit          = "client-development"
       end
 	end
 
@@ -31,9 +31,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	  end
 
       config_client_simulate_prod.vm.provision :ansible do |ansible|
-         ansible.inventory_path = "ansible/hosts"
+         ansible.inventory_path = "ansible/hosts_client"
          ansible.playbook       = "ansible/provision-ecclient-simulate-prod.yml"
-         ansible.limit          = "production"
+         ansible.limit          = "client-production"
       end
 	end
 
