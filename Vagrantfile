@@ -6,7 +6,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	  config_client_dev.vm.box     = "debian64"
 	  config_client_dev.vm.box_url = "http://vagrantboxes.future500.nl/vagrant-debian64.box"
 	  config_client_dev.vm.network :private_network, ip: "192.168.30.49"
-	  config_client_dev.vm.synced_folder ".", "/vagrant", type: "rsync"
+	  config_client_dev.vm.synced_folder ".", "/home/energycentral/current", type: "rsync"
 
 	  config_client_dev.vm.provider :virtualbox do |vb|
 		 vb.name = "ec_client_dev"
