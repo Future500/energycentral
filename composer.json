@@ -32,14 +32,6 @@
                     "type": "zip"
                 }
             }
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:Future500BV/vps-provisioning"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:Future500BV/ansible-provisioning"
         }
     ],
 
@@ -68,13 +60,11 @@
         "ivaynberg/select2": "dev-master",
         "jquery/jquery": "*",
         "highcharts": "*",
-        "twbs/bootstrap-zip": "*",
+        "twbs/bootstrap-zip": "*"
     },
 
     "require-dev": {
-        "codeception/codeception": "*",
-        "f500/vps-provisioning": "dev-master@dev",
-        "f500/ansible-provisioning": "dev-master@dev"
+        "codeception/codeception": "*"
     },
 
     "scripts": {
