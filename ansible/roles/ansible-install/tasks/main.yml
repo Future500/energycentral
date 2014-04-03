@@ -10,8 +10,8 @@
     - python-paramiko
     - python-httplib2
 
-- name: Copy Ansible archive to remote
-  unarchive: src={{ ansible_version }}.tar.gz dest={{ ansible_dir }} creates={{ ansible_dir }}/{{ ansible_version }}
+- name: Copy and unarchive Ansible to remote
+  unarchive: src={{ ansible_version }}.tar.gz dest={{ ansible_dir }}
   
 - name: Perform "make" for Ansible
   shell: make chdir={{ ansible_dir }}/{{ ansible_version }}
