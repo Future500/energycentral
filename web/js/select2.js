@@ -736,6 +736,9 @@ the specific language governing permissions and limitations under the Apache Lic
 
             installFilteredMouseMove(this.results);
             this.dropdown.on("mousemove-filtered touchstart touchmove touchend", resultsSelector, this.bind(this.highlightUnderEvent));
+            this.dropdown.on("touchend", resultsSelector, this.bind(this.selectHighlighted));
+            this.dropdown.on("touchmove", resultsSelector, this.bind(this.touchMoved));
+            this.dropdown.on("touchstart touchend", resultsSelector, this.bind(this.clearTouchMoved));
 
             installDebouncedScroll(80, this.results);
             this.dropdown.on("scroll-debounced", resultsSelector, this.bind(this.loadMoreIfNeeded));
@@ -773,7 +776,8 @@ the specific language governing permissions and limitations under the Apache Lic
             // trap all mouse events from leaving the dropdown. sometimes there may be a modal that is listening
             // for mouse events outside of itself so it can close itself. since the dropdown is now outside the select2's
             // dom it will trigger the popup close, which is not what we want
-            this.dropdown.on("click mouseup mousedown", function (e) { e.stopPropagation(); });
+            // focusin can cause focus wars between modals and select2 since the dropdown is outside the modal.
+            this.dropdown.on("click mouseup mousedown focusin", function (e) { e.stopPropagation(); });
 
             this.nextSearchTerm = undefined;
 
@@ -1178,7 +1182,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 dropTop = offset.top + height,
                 dropLeft = offset.left,
                 enoughRoomBelow = dropTop + dropHeight <= viewportBottom,
-                enoughRoomAbove = (offset.top - dropHeight) >= this.body().scrollTop(),
+                enoughRoomAbove = (offset.top - dropHeight) >= $window.scrollTop(),
                 dropWidth = $dropdown.outerWidth(false),
                 enoughRoomOnRight = dropLeft + dropWidth <= viewPortRight,
                 aboveNow = $dropdown.hasClass("select2-drop-above"),
@@ -1522,6 +1526,14 @@ the specific language governing permissions and limitations under the Apache Lic
             this.results.find(".select2-highlighted").removeClass("select2-highlighted");
         },
 
+        touchMoved: function() {
+            this._touchMoved = true;
+        },
+
+        clearTouchMoved: function() {
+          this._touchMoved = false;
+        },
+
         // abstract
         countSelectableResults: function() {
             return this.findHighlightableChoices().length;
@@ -1760,6 +1772,10 @@ the specific language governing permissions and limitations under the Apache Lic
 
         // abstract
         selectHighlighted: function (options) {
+            if (this._touchMoved) {
+              this.clearTouchMoved();
+              return;
+            }
             var index=this.highlight(),
                 highlighted=this.results.find(".select2-highlighted"),
                 data = highlighted.closest('.select2-result').data("select2-data");
@@ -1790,7 +1806,7 @@ the specific language governing permissions and limitations under the Apache Lic
                     //Determine the placeholder option based on the specified placeholderOption setting
                     return (this.opts.placeholderOption === "first" && firstOption) ||
                            (typeof this.opts.placeholderOption === "function" && this.opts.placeholderOption(this.select));
-                } else if (firstOption.text() === "" && firstOption.val() === "") {
+                } else if ($.trim(firstOption.text()) === "" && firstOption.val() === "") {
                     //No explicit placeholder option specified, use the first if it's blank
                     return firstOption;
                 }
@@ -2277,14 +2293,13 @@ the specific language governing permissions and limitations under the Apache Lic
 
         // single
         postprocessResults: function (data, initial, noHighlightUpdate) {
-            var selected = 0, selectedElm = null, self = this, showSearchInput = true;
+            var selected = 0, self = this, showSearchInput = true;
 
             // find the selected element in the result list
 
             this.findHighlightableChoices().each2(function (i, elm) {
                 if (equal(self.id(elm.data("select2-data")), self.opts.element.val())) {
                     selected = i;
-                    selectedElm = elm;
                     return false;
                 }
             });
@@ -2292,14 +2307,7 @@ the specific language governing permissions and limitations under the Apache Lic
             // and highlight it
             if (noHighlightUpdate !== false) {
                 if (initial === true && selected >= 0) {
-                    // By default, the selected item is displayed inside the result list from a single select
-                    // User can provide an implementation for 'hideSelectionFromResult' and hide it
-                    if(selectedElm !== null) {
-                        if(this.opts.hideSelectionFromResult(selectedElm))
-                            selectedElm.addClass("select2-selected");
-                    }
-                    else
-                        this.highlight(selected);
+                    this.highlight(selected);
                 } else {
                     this.highlight(0);
                 }
@@ -3028,14 +3036,9 @@ the specific language governing permissions and limitations under the Apache Lic
             choices.each2(function (i, choice) {
                 var id = self.id(choice.data("select2-data"));
                 if (indexOf(id, val) >= 0) {
-                    // By default, the selected item is hidden from the result list inside a multi select
-                    // User can provide an implementation for 'hideSelectionFromResult' and allow the same
-                    // element to be selected multiple times.
-                    if(self.opts.hideSelectionFromResult(choice) === undefined || self.opts.hideSelectionFromResult(choice)) {
-                        choice.addClass("select2-selected");
-                        // mark all children of the selected parent as selected
-                        choice.find(".select2-result-selectable").addClass("select2-selected");
-                    }
+                    choice.addClass("select2-selected");
+                    // mark all children of the selected parent as selected
+                    choice.find(".select2-result-selectable").addClass("select2-selected");
                 }
             });
 
@@ -3352,7 +3355,6 @@ the specific language governing permissions and limitations under the Apache Lic
         adaptContainerCssClass: function(c) { return c; },
         adaptDropdownCssClass: function(c) { return null; },
         nextSearchTerm: function(selectedObject, currentSearchTerm) { return undefined; },
-        hideSelectionFromResult: function(selectedObject) { return undefined; },
         searchInputPlaceholder: '',
         createSearchChoicePosition: 'top',
         shouldFocusInput: function (instance) {
