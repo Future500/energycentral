@@ -1,0 +1,4 @@
+---
+
+ansible_dir: /var/lib
+ansible_version: ansible-1.5
