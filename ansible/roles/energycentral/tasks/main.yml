@@ -11,11 +11,12 @@
 
 - name: add project database
   mysql_db: name={{ ec_db_name }} state=present
+  register: add_db_output
   notify: import database
 
 - name: create database user
   mysql_user: name={{ ec_db_user }} password={{ ec_db_password }} priv={{ ec_db_name }}.*:ALL state=present
-  when: ec_db_password is defined
+  when: add_db_output|changed
 
 - name: copy new sites-available config
   template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/default owner=root mode=0644
