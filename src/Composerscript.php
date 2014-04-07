@@ -30,6 +30,7 @@ class Composerscript
         `cp vendor/jquery/jquery/* web/js/`;
         `cp vendor/ivaynberg/select2/select2.js web/js/`;
         `cp -r vendor/highcharts/Highcharts-3.0.10/js/* web/js/highcharts/`;
+        `cp -r vendor/highcharts/js/* web/js/highcharts/`;
     }
 
 }
