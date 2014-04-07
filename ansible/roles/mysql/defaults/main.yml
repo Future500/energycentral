@@ -1,0 +1,3 @@
+---
+
+mysql_root_password: "{{ lookup('password', '/tmp/passwordfile_ec_root length=15') }}"
