@@ -34,7 +34,7 @@ class CopyCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $folder = './data';
+        $folder = __DIR__ . '/../../../data';
 
         if (is_dir($folder)) {
             $files = array_filter(scandir($folder), function ($filename) {
@@ -60,12 +60,13 @@ class CopyCommand extends BaseCommand
             );
 
             if ($exitCode != 0) { // error occurred
+                $output->writeln("SCP exited with code " . $exitCode . ", aborting copy!");
                 exit();
             }
-        }
 
-        if (!$input->getOption('keepfiles')) {
-            unlink($folder . '/' . $filename);
+            if (!$input->getOption('keepfiles')) {
+                unlink($folder . '/' . $filename);
+            }
         }
     }
 }
