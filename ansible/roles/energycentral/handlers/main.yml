@@ -11,3 +11,8 @@
 - name: remove local mysql password file
   local_action: file path=/tmp/passwordfile_ec state=absent
   sudo: no
+
+- name: show public key
+  debug: var=ec_public_key.stdout
+  changed_when: False
+  when: user_output|changed

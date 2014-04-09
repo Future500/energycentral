@@ -1,7 +1,15 @@
 ---
 
 - name: create system user
-  user: name={{ ec_system_user }} password="nonexisstant" state=present
+  user: name={{ ec_system_user }} password="nonexisstant" generate_ssh_key=yes state=present
+  register: user_output
+
+- name: retrieve public key for ec system user
+  command: cat /home/{{ ec_system_user }}/.ssh/id_rsa.pub
+  changed_when: False
+  when: user_output|changed
+  register: ec_public_key
+  notify: show public key
 
 - name: add authorized key to system user
   authorized_key: user={{ ec_system_user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
