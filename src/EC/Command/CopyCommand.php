@@ -34,39 +34,31 @@ class CopyCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $folder = __DIR__ . '/../../../data';
+        $dataFolder = __DIR__ . '/../../../data';
+        $batchFile  = __DIR__ . '/../../../csv_batch.txt';
 
-        if (is_dir($folder)) {
-            $files = array_filter(scandir($folder), function ($filename) {
-                if (strstr($filename, '.csv')) {
-                    return true;
-                }
-                return false;
-            });
-        } else {
-            $output->writeln('<error>' . $folder . ' could not be found</error>');
+        if (!is_dir($dataFolder)) {
+            $output->writeln('<error>' . $dataFolder . ' could not be found</error>');
             exit();
         }
 
         $commandOutput = array();
         $exitCode = null;
 
-        // Copy each file, quit on failure
-        foreach ($files as $filename) {
-            exec(
-                "scp -o StrictHostKeyChecking=no " . $folder . '/' . $filename . " " . $input->getArgument('user') . "@" . $input->getArgument('ip') . ":current/data",
-                $commandOutput,
-                $exitCode
-            );
+        // Copy CSVs
+        exec(
+            'sftp -o StrictHostKeyChecking=no -b ' . $batchFile . ' ' . $input->getArgument('user') . "@" . $input->getArgument('ip'),
+            $commandOutput,
+            $exitCode
+        );
 
-            if ($exitCode != 0) { // error occurred
-                $output->writeln("SCP exited with code " . $exitCode . ", aborting copy!");
-                exit();
-            }
+        if ($exitCode != 0) { // error occurred
+            $output->writeln("[CopyCommand] SFTP exited with code " . $exitCode . ", copy failed!");
+            exit();
+        }
 
-            if (!$input->getOption('keepfiles')) {
-                unlink($folder . '/' . $filename);
-            }
+        if (!$input->getOption('keepfiles')) {
+            unlink($dataFolder . '/*.csv');
         }
     }
 }
