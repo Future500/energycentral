@@ -16,7 +16,9 @@ class CronCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $shellResult = shell_exec("sudo -u www-data bin/SMAspot -cfgconfig/SMAspot.cfg -ad90 -am60 -finq");
+        $cmd = "/home/energycentral/current/bin/SMAspot -cfg/home/energycentral/current/config/SMAspot.cfg -ad90 -am60 -finq";
+
+        $shellResult = shell_exec($cmd . " > /home/energycentral/cron_smaspot.log 2>&1");
         $output->writeln($shellResult);
     }
 }
