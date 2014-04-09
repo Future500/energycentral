@@ -1,5 +1,21 @@
 ---
 
+#- name: update apt cache
+#  raw: apt-get update
+#  changed_when: False
+
+- name: check if python modules are installed
+  command: dpkg -s python-apt python-mysqldb
+  changed_when: False
+  ignore_errors: true
+  register: dpkg_output
+
+- name: update apt cache and make sure python is installed
+  raw: apt-get update && apt-get -y install python-apt python-mysqldb
+  when: "dpkg_output.rc != 0"
+  register: apt_output
+  changed_when: "'additional disk space will be used' in apt_output.stdout"
+
 - name: Install extra system packages
   apt: pkg={{ item }} state=latest update_cache=yes
   with_items:
