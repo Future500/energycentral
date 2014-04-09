@@ -6,7 +6,6 @@
 
 - name: retrieve public key for ec system user
   command: cat /home/{{ ec_system_user }}/.ssh/id_rsa.pub
-  changed_when: False
   when: user_output|changed
   register: ec_public_key
   notify: show public key

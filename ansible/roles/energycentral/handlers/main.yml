@@ -15,4 +15,3 @@
 - name: show public key
   debug: var=ec_public_key.stdout
   changed_when: False
-  when: user_output|changed
