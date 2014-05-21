@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `devaccess` (
   `userid` int(4) NOT NULL,
   PRIMARY KEY (`deviceid`,`userid`),
   KEY `userid_idx` (`userid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `device` (
   `name` varchar(25) NOT NULL,
   `accepted` tinyint(1) NOT NULL,
   PRIMARY KEY (`deviceid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `salt` varchar(255) NOT NULL,
   `roles` varchar(20) NOT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;
 
 
 INSERT INTO `user` (`userid`, `username`, `password`, `salt`, `roles`) VALUES
