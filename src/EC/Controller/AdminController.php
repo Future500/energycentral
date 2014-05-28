@@ -155,7 +155,7 @@ class AdminController
                         new ConstraintViolation('Device does not exist: ' . $device, null, array(), null, null, null)
                     ); // Add error to list
                 }
-        }
+            }
 
             if ($validation['success']) {
                 $app['devices.update']( // update device list for user, will add or remove any devices if needed

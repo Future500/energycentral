@@ -32,7 +32,7 @@ class DeviceController
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
-                'device_route'   => $deviceRoute,
+                'device_route'  => $deviceRoute,
                 'device_access' => $app['devices.hasaccess']($deviceId),
                 'day' => array(
                     'stats' => $app['stats.day']($deviceId)->getEncodedData(),

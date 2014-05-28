@@ -15,6 +15,7 @@ class ConfigController
             $app['translator']->setLocale($lang);
             $app['session']->set('locale', $lang);
         }
+
         return true;
     }
 }

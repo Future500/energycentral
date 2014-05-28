@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 class ProfileController
 {
-    public function indexAction(Request $request, Application $app)
+    public function indexAction(Application $app)
     {
         return $app['twig']->render(
             'profile.twig',
@@ -71,8 +71,8 @@ class ProfileController
 
     public function changeProfileAction(Request $request, Application $app)
     {
-        $errors = $this->validateDetails($request, $app);
-        $validationSuccess = ($errors->count() == null);
+        $errors            = $this->validateDetails($request, $app);
+        $validationSuccess = empty($errors);
 
         if ($validationSuccess) { // Update the profile
             $app['datalayer.updatepassword'](
@@ -84,7 +84,7 @@ class ProfileController
         return $app['twig']->render(
             'profile.twig',
             array(
-                'errors' => $errors,
+                'errors'         => $errors,
                 'profileupdated' => $validationSuccess
             )
         );
