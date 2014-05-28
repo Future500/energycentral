@@ -2,12 +2,12 @@
 
 namespace EC\Provider\Security;
 
+use EC\Entity\User;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use EC\User;
-use Doctrine\DBAL\Connection;
 
 class UserProvider implements UserProviderInterface
 {

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AboutController
 {
-    public function indexAction(Request $request, Application $app)
+    public function indexAction(Application $app)
     {
         return $app['twig']->render('about.twig');
     }

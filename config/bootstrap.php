@@ -9,17 +9,20 @@ use EC\Provider\Security\UserProvider;
 
 $env = getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production';
 
-$configFile = __DIR__."/".$env.".json";
-$configDefaults = array('root_dir' => dirname(__DIR__));
+$configFile         = __DIR__ . "/" . $env . ".json";
+$configDefaults     = array('root_dir' => dirname(__DIR__));
 
 $app->register(new Igorw\Silex\ConfigServiceProvider($configFile, $configDefaults, new JsonConfigDriver()));
 $app->register(new Silex\Provider\DoctrineServiceProvider(), $app['config']);
 $app->register(new MonologServiceProvider(), $app['config']);
 
-$securityFile = $app['centralmode'] ? 'security_central.yml' : 'security_noncentral.yml';
+$globalSecurityFile = 'security.yml';
+$securityFile       = $app['centralmode'] ? 'security_central.yml' : 'security_noncentral.yml';
+
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/' . $globalSecurityFile, $configDefaults, new YamlConfigDriver()));
 $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/' . $securityFile, $configDefaults, new YamlConfigDriver()));
 
-$firewalls = $app['security']['firewalls'];
+$firewalls                  = $app['security']['firewalls'];
 $firewalls['main']['users'] = $app->share(
     function ($app) {
         return new UserProvider($app['db']);

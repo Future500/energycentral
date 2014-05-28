@@ -1,6 +1,6 @@
 <?php
 
-namespace EC;
+namespace EC\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -77,6 +77,5 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
-        // ...
     }
 }

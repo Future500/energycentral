@@ -4,7 +4,7 @@ namespace EC\Stats;
 
 use Silex;
 
-class Stats implements StatsInterface
+class Stats
 {
     protected $app;
 
