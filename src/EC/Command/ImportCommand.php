@@ -2,7 +2,6 @@
 
 namespace EC\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,10 +41,10 @@ class ImportCommand extends BaseCommand
             $output->write('Start processing: ' . $filename . ' ');
 
             if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{8}.csv/', $filename)) {
-                $table = 'daydata';
+                $table  = 'daydata';
                 $column = 'datetime';
             } else if (preg_match('/ec-[a-zA-Z0-9]{4,25}-[\d]{6}.csv/', $filename)) {
-                $table = 'monthdata';
+                $table  = 'monthdata';
                 $column = 'date';
             } else {
                 $output->writeln('<error>Skipped</error>');
@@ -55,14 +54,17 @@ class ImportCommand extends BaseCommand
             $identifier = substr($filename, 3, strpos($filename, '-', 3) - 3); // device identifier
             $output->write('(' . $identifier . ')');
 
-            $device = $this->app['db']->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
+            $device = $this->db->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
                 ->fetch(\PDO::FETCH_ASSOC);
 
             if (!$device['deviceid']) {
                 $output->writeln(' ... adding new device (no id)');
-                $device['accepted'] = $this->app['centralmode'] ? 0 : 1; // if we are running in local mode the device does not have to be accepted
-                $this->app['db']->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
-                $device['deviceid'] = $this->app['db']->lastInsertId();
+
+                $device['accepted'] = $this->centralMode ? 0 : 1; // if we are running in local mode the device does not have to be accepted
+
+                $this->db->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
+
+                $device['deviceid'] = $this->db->lastInsertId();
             }
 
             if (!$device['accepted']) {
@@ -79,14 +81,15 @@ class ImportCommand extends BaseCommand
                 while (($data = fgetcsv($handle, 250, ";")) !== false) {
                     $dataSlices = array(
                         'start' => array_slice($data, 0, 1),
-                        'end' => array_slice($data, 1, 2)
+                        'end'   => array_slice($data, 1, 2)
                     );
 
                     $query = "INSERT IGNORE INTO " . $table . "(" . $column . ", deviceid, kWh, kW)
                             VALUES('" . $dataSlices['start'][0] . "'," . $device['deviceid'] . ',' . $dataSlices['end'][0] . ',' . $dataSlices['end'][1] . ")"; // insert row of data
 
-                    $this->app['db']->executeQuery($query);
+                    $this->db->executeQuery($query);
                 }
+
                 fclose($handle);
             }
 
