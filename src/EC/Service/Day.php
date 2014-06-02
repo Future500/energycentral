@@ -2,33 +2,21 @@
 
 namespace EC\Service;
 
-use EC\Stats\StatsInterface;
+use Doctrine\DBAL\Connection;
 
 class Day
 {
     /**
-     * @var StatsInterface
+     * @var \Doctrine\DBAL\Connection
      */
-    protected $day;
+    protected $db;
 
     /**
-     * @param StatsInterface $day
+     * @param Connection $db
      */
-    public function __construct(StatsInterface $day)
+    public function __construct(Connection $db)
     {
-        $this->day = $day;
-    }
-
-    /**
-     * @param null $deviceId
-     * @param null $date
-     * @return array
-     */
-    public function getDay($deviceId = null, $date = null)
-    {
-        $dayData = $this->day->fetch($deviceId, $date);
-
-        return $dayData;
+        $this->db = $db;
     }
 
     /**
@@ -41,7 +29,7 @@ class Day
     public function getData($date, $deviceId = null)
     {
         /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
-        $queryBuilder = $app['db']->createQueryBuilder()
+        $queryBuilder = $this->db->createQueryBuilder()
             ->select('*')
             ->from('daydata', 'd')
             ->where("DATE(datetime) = :date AND NOT kW='0.000'");
@@ -55,6 +43,36 @@ class Day
         $queryBuilder->setParameter('date', $date);
 
         $stmt = $queryBuilder->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * @param $start
+     * @param $end
+     * @param null $deviceId
+     * @return mixed
+     */
+    public function getAllData($start, $end, $deviceId = null)
+    {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $this->db->createQueryBuilder()
+            ->select('*')
+            ->from('daydata', 'd')
+            ->where('datetime BETWEEN :first AND :last');
+
+        if ($deviceId != null) {
+            $queryBuilder
+                ->andWhere("d.deviceid = :devid")
+                ->setParameter('devid', $deviceId);
+        }
+
+        $queryBuilder
+            ->setParameter('first', $start)
+            ->setParameter('last', $end);
+
+        $stmt = $queryBuilder->execute();
+
         return $stmt->fetchAll();
     }
 } 

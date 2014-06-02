@@ -2,34 +2,21 @@
 
 namespace EC\Service;
 
-use EC\Stats\StatsInterface;
+use Doctrine\DBAL\Connection;
 
 class Month
 {
     /**
-     * @var StatsInterface
+     * @var \Doctrine\DBAL\Connection
      */
-    protected $month;
+    protected $db;
 
     /**
-     * @param StatsInterface $month
+     * @param Connection $db
      */
-    public function __construct(StatsInterface $month)
+    public function __construct(Connection $db)
     {
-        $this->month = $month;
-    }
-
-    /**
-     * @param null $deviceId
-     * @param null $month
-     * @param null $year
-     * @return array
-     */
-    public function getMonth($deviceId = null, $month = null, $year = null)
-    {
-        $monthData = $this->month->fetch($deviceId, $month, $year);
-
-        return $monthData;
+        $this->db = $db;
     }
 
     /**
@@ -41,7 +28,7 @@ class Month
     public function getData($month, $year, $deviceId = null)
     {
         /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
-        $queryBuilder = $app['db']->createQueryBuilder()
+        $queryBuilder = $this->db->createQueryBuilder()
             ->select('date', 'kW')
             ->from('monthdata', 'm')
             ->where('MONTH(date) = :month AND YEAR(date) = :year');

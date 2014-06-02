@@ -3,6 +3,8 @@
 namespace EC\Service;
 
 use Doctrine\DBAL\Connection;
+use EC\Entity\User as UserEntity;
+use Symfony\Component\Security\Core\Util\SecureRandom;
 
 class User
 {
@@ -18,7 +20,38 @@ class User
     {
         $this->db = $db;  
     }
-    
+
+    /**
+     * Sets a new password for a user
+     *
+     * @param $userId
+     * @param $encodedPassword
+     * @param $salt
+     * @return bool
+     */
+    public function setNewPassword($userId, $encodedPassword, $salt)
+    {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $this->db->createQueryBuilder();
+        $query = $queryBuilder
+            ->update('user', 'u')
+            ->set(
+                'u.password',
+                $queryBuilder->expr()->literal(
+                    $encodedPassword
+                )
+            )
+            ->set(
+                'u.salt',
+                $queryBuilder->expr()->literal($salt)
+            )
+            ->where('u.userid = :userid')
+            ->setParameter(':userid', $userId);
+
+        $stmt = $query->execute();
+        return ($stmt == 1);
+    }
+
     /**
      * Returns the amount of users in the user table
      *
