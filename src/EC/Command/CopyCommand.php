@@ -39,11 +39,11 @@ class CopyCommand extends BaseCommand
 
         if (!is_dir($dataFolder)) {
             $output->writeln('<error>' . $dataFolder . ' could not be found</error>');
-            exit();
+            exit;
         }
 
         $commandOutput = array();
-        $exitCode = null;
+        $exitCode      = null;
 
         // Copy CSVs
         exec(
@@ -54,7 +54,7 @@ class CopyCommand extends BaseCommand
 
         if ($exitCode != 0) { // error occurred
             $output->writeln("[CopyCommand] SFTP exited with code " . $exitCode . ", copy failed!");
-            exit();
+            exit;
         }
 
         if (!$input->getOption('keepfiles')) {

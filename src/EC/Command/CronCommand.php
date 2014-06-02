@@ -19,6 +19,7 @@ class CronCommand extends BaseCommand
         $cmd = "/home/energycentral/current/bin/SMAspot -cfg/home/energycentral/current/config/SMAspot.cfg -ad90 -am60 -finq";
 
         $shellResult = shell_exec($cmd . " > /home/energycentral/cron_smaspot.log 2>&1");
+
         $output->writeln($shellResult);
     }
 }

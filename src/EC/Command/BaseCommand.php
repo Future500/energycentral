@@ -2,16 +2,30 @@
 
 namespace EC\Command;
 
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
-use EC\Application;
 
 class BaseCommand extends Command
 {
-    protected $app;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $db;
 
-    public function __construct(Application $app)
+    /**
+     * @var bool
+     */
+    protected $centralMode;
+
+    /**
+     * @param Connection $db
+     * @param bool $centralMode
+     */
+    public function __construct(Connection $db, $centralMode = false)
     {
         parent::__construct();
-        $this->app = $app;
+
+        $this->db          = $db;
+        $this->centralMode = $centralMode;
     }
-} 
+}
