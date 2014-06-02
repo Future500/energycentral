@@ -51,7 +51,7 @@ $app['twig'] = $app->share(
                 new \Twig_SimpleFunction(
                     'device_getusers',
                     function ($deviceId) use ($app) {
-                        return $app['devices.list_users']($deviceId);
+                        return $app['device']->getUsers($deviceId);
                     }
                 )
             );
@@ -70,7 +70,7 @@ $app->register(
 $app['translator'] = $app->share(
     $app->extend(
         'translator',
-        function ($translator, $app) {
+        function ($translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
             $translator->addResource('yaml', __DIR__.'/locales/en.yml', 'en');
