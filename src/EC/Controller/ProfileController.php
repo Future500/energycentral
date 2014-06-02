@@ -72,12 +72,19 @@ class ProfileController
     public function changeProfileAction(Request $request, Application $app)
     {
         $errors            = $this->validateDetails($request, $app);
-        $validationSuccess = empty($errors);
+        $validationSuccess = !$errors->count();
 
         if ($validationSuccess) { // Update the profile
-            $app['datalayer.updatepassword'](
-                $app->user()->getId(),
-                $request->get('new_password')
+            $userId      = $app->user()->getId();
+            $user        = $app['user.load']($userId);
+            $newPassword = $request->get('new_password');
+
+            $encodedPassword = $app['user.encode_password']($user, $newPassword);
+
+            $app['user']->setNewPassword(
+                $userId,
+                $encodedPassword['password'],
+                $encodedPassword['salt']
             );
         }
 

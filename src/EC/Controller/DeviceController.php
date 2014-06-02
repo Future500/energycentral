@@ -2,45 +2,54 @@
 
 namespace EC\Controller;
 
+use EC\Stats\Day;
+use EC\Stats\Month;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DeviceController
 {
     public function indexAction(Request $request, Application $app)
     {
-        $pagination = $app['pagination']($app['devices.count']($app->user()->getId()), $request->get('p'), 5);
+        $userId             = $app->user()->getId();
+        $amountOfDevices    = $app['device']->count($userId);
+        $pagination         = $app['pagination']($amountOfDevices, $request->get('p'), 5);
+        $devicesToShow      = $app['user']->getDevices($userId, true, $pagination->offset(), $pagination->limit());
 
         return $app['twig']->render(
             'mydevices/list.twig',
             array(
-                'devices'       => $app['devices.list'](true, $app->user()->getId(), $pagination->offset(), $pagination->limit()),
+                'devices'       => $devicesToShow,
                 'current_page'  => $pagination->currentPage(),
                 'pages'         => $pagination->build()
             )
         );
     }
 
-    public function viewAction(Request $request, Application $app, $deviceId = null)
+    public function viewAction(Application $app, $deviceId = null)
     {
-        $deviceId       = $request->get('deviceId');
         $deviceRoute    = ($deviceId == null ? '' : '/' . $deviceId);
-        $daysMinMax     = $app['datalayer.minmax']('days', $deviceId); // get minimum and maximum day
-        $monthsMinMax   = $app['datalayer.minmax']('months', $deviceId); // get minimum and maximum month
+
+        $daysMinMax     = $app['stats']->minMax('days', $deviceId); // get minimum and maximum day
+        $monthsMinMax   = $app['stats']->minMax('months', $deviceId); // get minimum and maximum month
+
+        $hasAccess      = $app['device']->hasAccess($deviceId, $app->user()->getId());
+
+        $dayData    = $app['stats.day.fetch']($deviceId);
+        $monthData  = $app['stats.month.fetch']($deviceId);
 
         return $app['twig']->render(
             'mydevices/viewdevice.twig',
             array(
                 'device_route'  => $deviceRoute,
-                'device_access' => $app['devices.hasaccess']($deviceId),
+                'device_access' => $hasAccess,
                 'day' => array(
-                    'stats' => $app['stats.day']($deviceId)->getEncodedData(),
+                    'stats' => $dayData,
                     'min'   => date('Y-m-d', strtotime($daysMinMax['minimum'])),
                     'max'   => date('Y-m-d', strtotime($daysMinMax['maximum']))
                 ),
                 'month' => array(
-                    'stats' => $app['stats.month']($deviceId)->getEncodedData(),
+                    'stats' => $monthData,
                     'min'   => date('Y-m', strtotime($monthsMinMax['minimum'])),
                     'max'   => date('Y-m', strtotime($monthsMinMax['maximum']))
                 )

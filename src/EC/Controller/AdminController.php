@@ -135,7 +135,7 @@ class AdminController
 
         if ($request->get('new_password') != null || $request->get('new_password_confirm') != null) { // Password does not always need to update when saving profile
             $validation['errors'] = $this->validatePassword($request, $app);
-            $validation['success'] = ($validation['errors']->count() == null);
+            $validation['success'] = !$validation['errors']->count();
 
             if ($validation['success']) { // Update the profile
                 $userId      = $request->get('userid');

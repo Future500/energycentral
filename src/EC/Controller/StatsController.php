@@ -6,13 +6,13 @@ use Silex\Application;
 
 class StatsController
 {
-    public function dayAction(Application $app, $deviceId = null, $date = null)
+    public function dayAction(Application $app, $deviceId, $date = null)
     {
-        return $app['stats.day']($deviceId, $date)->getEncodedData();
+        return $app['stats.day.fetch']($deviceId, $date);
     }
 
-    public function monthAction(Application $app, $deviceId = null, $year = null, $month = null)
+    public function monthAction(Application $app, $deviceId, $year = null, $month = null)
     {
-        return $app['stats.month']($deviceId, $month, $year)->getEncodedData();
+        return $app['stats.month.fetch']($deviceId, $month, $year);
     }
 }
