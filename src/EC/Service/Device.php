@@ -154,7 +154,7 @@ class Device
      * @param $deviceId
      * @return mixed
      */
-    public function listUsers($deviceId)
+    public function getUsers($deviceId)
     {
         /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
         $queryBuilder = $this->db->createQueryBuilder()
