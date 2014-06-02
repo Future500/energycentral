@@ -12,12 +12,14 @@ class AdminController
 {
     public function usersAction(Request $request, Application $app)
     {
-        $pagination = $app['pagination']($app['user.count'](), $request->get('p'), 5);
+        $amountOfUsers  = $app['user']->count();
+        $pagination     = $app['pagination']($amountOfUsers, $request->get('p'), 5);
+        $usersToShow    = $app['user']->getUsers(false, $pagination->offset(), $pagination->limit());
 
         return $app['twig']->render(
             'admin/users.twig',
             array(
-                'users'         => $app['datalayer.users'](false, $pagination->offset(), $pagination->limit()),
+                'users'         => $usersToShow,
                 'current_page'  => $pagination->currentPage(),
                 'pages'         => $pagination->build()
             )
@@ -26,13 +28,16 @@ class AdminController
 
     public function devicesAction(Request $request, Application $app)
     {
-        $pagination = $app['pagination']($app['devices.count'](), $request->get('p'), 5);
+        $amountOfDevices = $app['device']->count();
+        $pagination      = $app['pagination']($amountOfDevices, $request->get('p'), 5);
+        $devicesToShow   = $app['device']->listAll(false, $pagination->offset(), $pagination->limit());
+        $userList        = $app['user']->getUsers(true); // Only retrieve all users their name
 
         return $app['twig']->render(
             'admin/alldevices.twig',
             array(
-                'devices'       => $app['devices.list.all'](false, $pagination->offset(), $pagination->limit()),
-                'users'         => json_encode($app['datalayer.users'](true)),
+                'devices'       => $devicesToShow,
+                'users'         => json_encode($userList),
                 'current_page'  => $pagination->currentPage(),
                 'pages'         => $pagination->build()
             )
@@ -74,7 +79,10 @@ class AdminController
     public function changeDevicesAction(Request $request, Application $app)
     {
         if ($request->get('deviceid') && $request->get('accepted')) { // update accepted status
-            return $app['devices.update_accepted']($request->get('deviceid'), $request->get('accepted')); // update accepted status
+            $deviceId       = $request->get('deviceid');
+            $acceptedStatus = $request->get('accepted');
+
+            return $app['device']->setAcceptedStatus($deviceId, $acceptedStatus);
         }
 
         $validation = array(
@@ -83,14 +91,14 @@ class AdminController
         );
 
         $users = array(
-            'all'       => $app['datalayer.users'](true), // all usernames
-            'current'   => $app['devices.list_users']($request->get('deviceid')),
+            'all'       => $app['user']->getUsers(true), // all usernames
+            'current'   => $app['device']->getUsers($request->get('deviceid')),
             'form'      => $request->get('users') ? explode(',', $request->get('users')) : array(), // submitted usernames by form
             'added'     => null,
-            'removed'   => null,
+            'removed'   => null
         );
 
-        $users['added'] = array_diff($users['form'], $users['current']); // devices that should be added
+        $users['added']   = array_diff($users['form'], $users['current']); // devices that should be added
         $users['removed'] = array_diff($users['current'], $users['form']); // devices that should be removed
 
         if ($request->get('users') != null || ($users['current'] != null && $request->get('users') == null)) { // Update when new users are added, deleted OR when the last user is deleted
@@ -105,14 +113,16 @@ class AdminController
             }
 
             if ($validation['success']) {
-                $app['devices.update_users']( // update device list for user, will add or remove any devices if needed
+                // update device list for user, will add or remove any devices if needed
+                $app['device']->updateDeviceUsers(
                     $request->get('deviceid'),
-                    $app['user.getids']($users['added']),
-                    $app['user.getids']($users['removed'])
+                    $app['user']->getIds($users['added']),
+                    $app['user']->getIds($users['removed'])
                 );
                 return true;
             }
         }
+
         return $validation['success'];
     }
 
@@ -128,16 +138,27 @@ class AdminController
             $validation['success'] = ($validation['errors']->count() == null);
 
             if ($validation['success']) { // Update the profile
-                $app['datalayer.updatepassword'](
-                    $request->get('userid'),
-                    $request->get('new_password')
+                $userId      = $request->get('userid');
+                $user        = $app['user.load']($userId);
+                $newPassword = $request->get('new_password');
+
+                $encodedPassword = $app['user.encode_password']($user, $newPassword);
+
+                $app['user']->setNewPassword(
+                    $userId,
+                    $encodedPassword['password'],
+                    $encodedPassword['salt']
                 );
             }
         }
 
+        $userDevices     = $app['user']->getDevices($request->get('userid'), true);
+        $userDeviceNames = $app['device']->getNames($userDevices); // user devices (names)
+        $allDevices      = $app['device']->listAll(true); // all devices (names)
+
         $devices = array(
-            'user'      => $app['devices.getnames']($app['devices.list'](true, $request->get('userid'))), // user devices (names)
-            'all'       => $app['devices.list.all'](true), // all devices (names)
+            'user'      => $userDeviceNames, // user devices (names)
+            'all'       => $allDevices, // all devices (names)
             'form'      => $request->get('devices') ? explode(',', $request->get('devices')) : array(), // submitted devices by form (names)
             'added'     => null,
             'removed'   => null,
@@ -158,25 +179,30 @@ class AdminController
             }
 
             if ($validation['success']) {
-                $app['devices.update']( // update device list for user, will add or remove any devices if needed
+                // update device list for user, will add or remove any devices if needed
+                $app['device']->updateUserDevices(
                     $request->get('userid'),
-                    $app['devices.getids']($devices['added']),
-                    $app['devices.getids']($devices['removed'])
+                    $app['device']->getIds($devices['added']),
+                    $app['device']->getIds($devices['removed'])
                 );
             }
         }
 
-        return $this->viewUserAction($request, $app, $validation['errors'], $validation['success']); // re-render the page and show if the profile was updated
+        return $this->viewUserAction($request, $app, $validation['errors'], $validation['success']); // re-render the page and show if the profile was updated*/
     }
 
     public function viewUserAction(Request $request, Application $app, $errors = null, $profileUpdated = null)
     {
+        $user        = $app['user.load']($request->get('userid'));
+        $userDevices = $app['user']->getDevices($app->user()->getId(), true);
+        $allDevices  = $app['device']->listAll(true); // used in the view for tagging list
+
         return $app['twig']->render(
             'admin/viewuser.twig',
             array(
-                'user'           => $app['datalayer.user']($request->get('userid')),
-                'user_devices'   => $app['devices.list'](true, $request->get('userid')),
-                'all_devices'    => json_encode($app['devices.list.all'](true)),
+                'user'           => $user,
+                'user_devices'   => $userDevices,
+                'all_devices'    => json_encode($allDevices),
                 'errors'         => $errors,
                 'profileupdated' => $profileUpdated
             )
