@@ -2,9 +2,10 @@
 
 namespace EC\Stats;
 
-use Silex;
-
 interface StatsInterface
 {
+    /**
+     * @return string
+     */
     public function getEncodedData();
 }

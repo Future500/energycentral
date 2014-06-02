@@ -2,27 +2,44 @@
 
 namespace EC\Stats;
 
-use Silex;
+use EC\Service\Month as MonthService;
 
-class Month extends Stats implements StatsInterface
+class Month extends Stats
 {
+    /**
+     * @var array
+     */
     protected $data = array();
 
+    /**
+     * @var \EC\Service\MonthService
+     */
+    protected $monthService;
+
+    /**
+     * @param MonthService $monthService
+     */
+    public function __construct(MonthService $monthService)
+    {
+        $this->monthService = $monthService;
+    }
+
+    /**
+     * @return string
+     */
     public function getEncodedData()
     {
         $encodedData = array();
 
-        if (count($this->data)) { // any data?
+        if (!empty($this->data)) { // any data?
             $readings = $this->getReadings($this->data, true);
 
             foreach ($this->data as $row) {
-                array_push(
-                    $encodedData,
-                    array(
-                        $this->getJsTimestamp($row['date']),
-                        floatval($row['kW'])
-                    )
-                ); // Save time and energy production to array
+                // Save time and energy production to array
+                $encodedData[] = array(
+                    $this->getJsTimestamp($row['date']),
+                    floatval($row['kW'])
+                );
             }
 
             $lastIndex  = count($this->data) - 1;
@@ -31,22 +48,35 @@ class Month extends Stats implements StatsInterface
 
             for ($i = 0; $i < $dayDiff; $i++) { // add days until the month is complete
                 $readings['last'] += (24 * 3600 * 1000); // add one day
-                array_push($encodedData, array($readings['last'], 0.0));
+
+                $encodedData[] = array(
+                    $readings['last'],
+                    0.0
+                );
             }
         }
+
         return json_encode($encodedData); // encode for jquery
     }
 
+    /**
+     * @param null $deviceId
+     * @param null $month
+     * @param null $year
+     * @return $this
+     * @throws \Exception
+     */
     public function fetch($deviceId = null, $month = null, $year = null)
     {
         $year   = ($year == null ? date('Y') : $year);
         $month  = ($month == null ? date('m') : $month);
 
-        if ($month <= 0 || $month > 12) {
+        if ($month > 0 && $month <= 12) {
+            $this->data = $this->monthService->getData($month, $year, $deviceId);
+        } else {
             throw new \Exception('Invalid month to fetch!');
         }
 
-        $this->data = $this->app['datalayer.getalldata.month']($month, $year, $deviceId);
-        return $this->data;
+        return $this;
     }
 }
