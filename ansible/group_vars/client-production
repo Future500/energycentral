@@ -3,4 +3,4 @@
 ec_env: production
 ec_db_password: "{{ lookup('password', '/tmp/passwordfile_ec length=15') }}"
 ec_central_mode: false
-production_ssh_user: pi
+production_ssh_user: robbin
