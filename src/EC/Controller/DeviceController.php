@@ -33,7 +33,14 @@ class DeviceController
         $daysMinMax     = $app['stats']->minMax('days', $deviceId); // get minimum and maximum day
         $monthsMinMax   = $app['stats']->minMax('months', $deviceId); // get minimum and maximum month
 
-        $hasAccess      = $app['device']->hasAccess($deviceId, $app->user()->getId());
+        // Check if central mode is enabled
+        if ($app['centralmode']) {
+            // Check whether the user has access to the selected device
+            $hasAccess = $app['device']->hasAccess($deviceId, $app->user()->getId());
+        } else {
+            // For a local device you always have access
+            $hasAccess = true;
+        }
 
         $dayData    = $app['stats.day.fetch']($deviceId);
         $monthData  = $app['stats.month.fetch']($deviceId);

@@ -12,18 +12,11 @@ class Device
     protected $db;
 
     /**
-     * @var boolean
-     */
-    protected $centralMode;
-
-    /**
      * @param Connection $db
-     * @param bool $centralMode
      */
-    public function __construct(Connection $db, $centralMode = false)
+    public function __construct(Connection $db)
     {
-        $this->db          = $db;
-        $this->centralMode = $centralMode;
+        $this->db = $db;
     }
 
     /**
@@ -74,10 +67,6 @@ class Device
      */
     public function hasAccess($deviceId, $userId)
     {
-        if (!$this->centralMode) { // not needed when running in local mode
-            return true;
-        }
-
         /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
         $queryBuilder = $this->db->createQueryBuilder()
             ->select('ac.deviceid')
