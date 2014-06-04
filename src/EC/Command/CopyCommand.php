@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class CopyCommand extends BaseCommand
 {
@@ -42,20 +43,17 @@ class CopyCommand extends BaseCommand
             exit;
         }
 
-        $commandOutput = array();
-        $exitCode      = null;
+        $command = 'sftp -o StrictHostKeyChecking=no -b ' . $batchFile . ' ' . $input->getArgument('user') . "@" . $input->getArgument('ip');
 
-        // Copy CSVs
-        exec(
-            'sftp -o StrictHostKeyChecking=no -b ' . $batchFile . ' ' . $input->getArgument('user') . "@" . $input->getArgument('ip'),
-            $commandOutput,
-            $exitCode
-        );
+        $process = new Process($command);
+        $process->run();
 
-        if ($exitCode != 0) { // error occurred
-            $output->writeln("[CopyCommand] SFTP exited with code " . $exitCode . ", copy failed!");
+        if (!$process->isSuccessful()) { // error occurred
+            throw new \RuntimeException($process->getErrorOutput());
             exit;
         }
+
+        echo $process->getOutput();
 
         if (!$input->getOption('keepfiles')) {
             unlink($dataFolder . '/*.csv');
