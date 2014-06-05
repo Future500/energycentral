@@ -35,6 +35,12 @@ class ImportCommand extends BaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If set, only the filenames will be output'
+            )
+            ->addOption(
+                'removefiles',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, data files are not kept after import'
             );
     }
 
@@ -53,6 +59,8 @@ class ImportCommand extends BaseCommand
             $output->writeln('<error>' . $folder . ' could not be found</error>');
             exit();
         }
+
+        echo "Importing data ...\n";
 
         foreach ($files as $filename) {
             $output->write('Start processing: ' . $filename . ' ');
@@ -110,7 +118,14 @@ class ImportCommand extends BaseCommand
                 fclose($handle);
             }
 
+            if ($input->getOption('removefiles')) {
+                echo "Removing files from import folder ...\n";
+                unlink($folder . '*.csv');
+            }
+
             $output->writeln(' ... done');
         }
+
+        echo "Import complete.\n";
     }
 }
