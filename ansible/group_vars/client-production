@@ -1,6 +1,7 @@
 ---
 
-ec_env: production
-ec_db_password: "{{ lookup('password', '/tmp/passwordfile_ec length=15') }}"
 ec_central_mode: false
+ec_db_password: "{{ lookup('password', '/tmp/passwordfile_ec length=15') }}"
+ec_env: production
+
 production_ssh_user: robbin
