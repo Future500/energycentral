@@ -12,7 +12,7 @@
       authorized_key: user={{ ecserver_system_user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
     - name: add project database
-      mysql_db: name=energycentral state=present
+      mysql_db: name={{ ecserver_db_name }} state=present
       notify: initial db import
 
     - name: copy project database
@@ -35,4 +35,4 @@
       register: restarted_nginx
 
     - name: initial db import
-      mysql_db: name=energycentral state=import target=/root/db.sql
+      mysql_db: name={{ ecserver_db_name }} state=import target=/root/db.sql
