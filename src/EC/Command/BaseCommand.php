@@ -19,13 +19,11 @@ class BaseCommand extends Command
 
     /**
      * @param Connection $db
-     * @param bool $centralMode
      */
-    public function __construct(Connection $db, $centralMode = false)
+    public function __construct(Connection $db)
     {
         parent::__construct();
 
-        $this->db          = $db;
-        $this->centralMode = $centralMode;
+        $this->db = $db;
     }
 }

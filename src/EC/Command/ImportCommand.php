@@ -2,12 +2,29 @@
 
 namespace EC\Command;
 
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ImportCommand extends BaseCommand
 {
+    /**
+     * @var bool
+     */
+    protected $centralMode;
+
+    /**
+     * @param Connection $db
+     * @param bool $centralMode
+     */
+    public function __construct(Connection $db, $centralMode = false)
+    {
+        parent::__construct($db);
+
+        $this->centralMode = $centralMode;
+    }
+
     protected function configure()
     {
         $this
