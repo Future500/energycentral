@@ -6,6 +6,7 @@
 
 - name: retrieve public key for ec system user
   command: cat /home/{{ ec_system_user }}/.ssh/id_rsa.pub
+  changed_when: false
   when: user_output|changed
   register: ec_public_key
   notify: show public key
@@ -22,9 +23,13 @@
   notify: import database
 
 - name: create database user
-  mysql_user: name={{ ec_db_user }} password={{ ec_db_password }} priv={{ ec_db_name }}.*:ALL state=present
+  mysql_user: name={{ ec_db_user }} password={{ ec_db_password }} priv={{ ec_db_name }}.*:CREATE,INSERT,SELECT,UPDATE,DELETE state=present
   when: add_db_output|changed
 
-- name: copy new sites-available config
-  template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/default owner=root mode=0644
-  notify: restart nginx
+- name: copy nginx site config
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/energycentral.conf owner=root group=root mode=0644
+  notify: reload nginx
+
+- name: activate nginx site config
+  file: src=/etc/nginx/sites-available/energycentral.conf dest=/etc/nginx/sites-enabled/energycentral.conf state=link
+  notify: reload nginx
