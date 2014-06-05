@@ -23,5 +23,5 @@
 
     - name: Add cronjob for SMA spot data retrieval
       cron: name="Retrieve data from SMA" minute="*/5"
-            job="{{ ec_install_dir }}/console cron:run /home/{{ ec_system_user}}"
+            job="{{ ec_install_dir }}/console cron:run /home/{{ ec_system_user }} --logpath=/home/{{ ec_system_user }}/cron_smaspot.log"
             user={{ ec_system_user }} state=present
