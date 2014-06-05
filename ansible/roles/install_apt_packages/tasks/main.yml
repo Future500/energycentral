@@ -1,0 +1,7 @@
+---
+
+- name: Install extra system packages
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - curl
+    - git

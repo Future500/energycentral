@@ -13,5 +13,5 @@
   sudo: no
 
 - name: show public key
-  debug: var=ec_public_key.stdout
-  changed_when: False
+  debug: msg=ec_public_key.stdout
+  changed_when: false

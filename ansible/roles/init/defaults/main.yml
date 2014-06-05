@@ -1,0 +1,6 @@
+---
+
+apt_packages: []
+dpkg_packages:
+  - python-apt
+  - python-mysqldb

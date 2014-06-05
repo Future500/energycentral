@@ -4,6 +4,7 @@
 
   roles:
     - init
+    - install_apt_packages
     - ansible-install
     - php
     - nginx
