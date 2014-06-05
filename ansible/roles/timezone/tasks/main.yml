@@ -1,0 +1,13 @@
+---
+
+- name: Set /etc/localtime
+  copy: src=/usr/share/zoneinfo/{{ system_timezone }}
+        dest=/etc/localtime
+        owner=root
+        group=root
+        mode=0644
+        backup=yes
+
+- name: Set /etc/timezone to {{ system_timezone }}
+  template: dest=/etc/timezone src=timezone.j2
+  notify: update tzdata

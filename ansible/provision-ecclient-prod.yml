@@ -4,23 +4,24 @@
   sudo: yes
 
   roles:
-    - init
-    - install_apt_packages
-    - ansible-install
-    - php
-    - nginx
-    - composer
-    - mysql
-    - energycentral
+#    - init
+#    - install_apt_packages
+#    - ansible-install
+#    - php
+#    - nginx
+#    - composer
+#    - mysql
+#    - energycentral
+    - timezone
 
-  tasks:
-    - name: Add cronjob for ansible-pull (initial-setup)
-      cron: name="Automatic updating for Energy Central" minute="*"
-            job="HOME=/home/{{ ec_system_user }} PATH=/usr/local/bin:/usr/bin:/bin
-            /usr/local/bin/ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/f500/energycentral-deploy.git deploy_prod.yml > /home/{{ ec_system_user }}/deploy.log 2>&1"
-            user={{ ec_system_user }} state=present
-
-    - name: Add cronjob for SMA spot data retrieval
-      cron: name="Retrieve data from SMA" minute="*/5"
-            job="{{ ec_install_dir }}/console cron:run /home/{{ ec_system_user}}"
-            user={{ ec_system_user }} state=present
+#  tasks:
+#    - name: Add cronjob for ansible-pull (initial-setup)
+#      cron: name="Automatic updating for Energy Central" minute="*"
+#            job="HOME=/home/{{ ec_system_user }} PATH=/usr/local/bin:/usr/bin:/bin
+#            /usr/local/bin/ansible-pull --purge -d /tmp/deploy -i 'localhost,' -U https://github.com/f500/energycentral-deploy.git deploy_prod.yml > /home/{{ ec_system_user }}/deploy.log 2>&1"
+#            user={{ ec_system_user }} state=present
+#
+#    - name: Add cronjob for SMA spot data retrieval
+#      cron: name="Retrieve data from SMA" minute="*/5"
+#            job="{{ ec_install_dir }}/console cron:run /home/{{ ec_system_user}}"
+#            user={{ ec_system_user }} state=present
