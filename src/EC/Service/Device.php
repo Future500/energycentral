@@ -20,6 +20,36 @@ class Device
     }
 
     /**
+     * Adds a new device
+     *
+     * @param $identifier
+     * @param bool $accepted
+     * @return string
+     */
+    public function addNew($identifier, $accepted = false)
+    {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $this->db->createQueryBuilder();
+        $queryBuilder
+            ->insert('device', 'dev')
+            ->values(
+                array(
+                    'name'     => ':name',
+                    'accepted' => ':accepted'
+                )
+            )
+            ->setParameters(
+                array(
+                    'name'     => $identifier,
+                    'accepted' => $accepted
+                )
+            )
+            ->execute();
+
+        return $this->db->lastInsertId();
+    }
+
+    /**
      * @param $userId
      * @param $deviceId
      */
@@ -52,7 +82,7 @@ class Device
             ->setParameters(
                 array(
                     'deviceid' => $deviceId,
-                    'userid' => $userId
+                    'userid'   => $userId
                 )
             )
             ->execute();
@@ -135,6 +165,24 @@ class Device
             ->setParameter('deviceid', $deviceId);
 
         return $queryBuilder->execute();
+    }
+
+    /**
+     * Returns the accepted status for a specific device name
+     *
+     * @param $deviceName
+     * @return bool
+     */
+    public function getAcceptedStatus($deviceName)
+    {
+        $queryBuilder = $this->db->createQueryBuilder()
+            ->select('accepted')
+            ->from('device', 't')
+            ->where('t.name = :identifier')
+            ->setParameter(':identifier', $deviceName)
+            ->execute();
+
+        return $queryBuilder->fetchColumn();
     }
 
     /**
@@ -247,6 +295,27 @@ class Device
             $stmt = $queryBuilder->execute();
             $deviceIds[$device] = $stmt->fetchColumn();
         }
+
         return $deviceIds;
+    }
+
+    /**
+     * Returns the id for a single device
+     *
+     * @param $deviceName
+     * @return string
+     */
+    public function getSingleId($deviceName)
+    {
+        /** @var \Doctrine\DBAL\Query\QueryBuilder $queryBuilder */
+        $queryBuilder = $this->db->createQueryBuilder()
+            ->select('deviceid')
+            ->from('device', 'dev')
+            ->where('name = :name')
+            ->setParameter('name', $deviceName);
+
+        $stmt = $queryBuilder->execute();
+
+        return $stmt->fetchColumn();
     }
 }
