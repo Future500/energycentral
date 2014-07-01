@@ -4,6 +4,12 @@ use Symfony\Component\ClassLoader\DebugClassLoader;
 use Symfony\Component\HttpKernel\Debug\ErrorHandler;
 use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 
+$autoloadFile = __DIR__.'/../vendor/autoload.php';
+
+if (!file_exists($autoloadFile)) {
+    die('The autoload file could not be located.');
+}
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 ini_set('display_errors', 1);
