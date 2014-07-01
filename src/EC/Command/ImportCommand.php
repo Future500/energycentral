@@ -3,12 +3,24 @@
 namespace EC\Command;
 
 use Doctrine\DBAL\Connection;
+use EC\Service\Device;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportCommand extends BaseCommand
+class ImportCommand extends Command
 {
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $db;
+
+    /**
+     * @var \EC\Service\Device
+     */
+    protected $deviceService;
+
     /**
      * @var bool
      */
@@ -16,13 +28,16 @@ class ImportCommand extends BaseCommand
 
     /**
      * @param Connection $db
+     * @param Device $deviceService
      * @param bool $centralMode
      */
-    public function __construct(Connection $db, $centralMode = false)
+    public function __construct(Connection $db, Device $deviceService, $centralMode = false)
     {
-        parent::__construct($db);
+        parent::__construct();
 
-        $this->centralMode = $centralMode;
+        $this->db               = $db;
+        $this->deviceService    = $deviceService;
+        $this->centralMode      = $centralMode;
     }
 
     protected function configure()
@@ -79,20 +94,25 @@ class ImportCommand extends BaseCommand
             $identifier = substr($filename, 3, strpos($filename, '-', 3) - 3); // device identifier
             $output->write('(' . $identifier . ')');
 
-            $device = $this->db->executeQuery("SELECT deviceid, accepted FROM device WHERE name = '" . $identifier . "'") // get device id and accepted status
-                ->fetch(\PDO::FETCH_ASSOC);
+            // Get the accepted status
+            $deviceAccepted = $this->deviceService->getAcceptedStatus($identifier);
 
-            if (!$device['deviceid']) {
-                $output->writeln(' ... adding new device (no id)');
+            if ($deviceAccepted === false) {
+                $output->writeln(' ... adding new device (no accepted status)');
 
-                $device['accepted'] = $this->centralMode ? 0 : 1; // if we are running in local mode the device does not have to be accepted
+                // In local mode the device does not have to be accepted for the import to run
+                if (!$this->centralMode) {
+                    $deviceAccepted = true;
+                }
 
-                $this->db->executeQuery("INSERT INTO device(name, accepted) VALUES('" . $identifier . "', " . $device['accepted'] . ")");
-
-                $device['deviceid'] = $this->db->lastInsertId();
+                // Add the new device and save the device id for import
+                $deviceId = $this->deviceService->addNew($identifier, $deviceAccepted);
+            } else {
+                // Retrieve the device ID of the existing device by using the device name
+                $deviceId = $this->deviceService->getSingleId($identifier);
             }
 
-            if (!$device['accepted']) {
+            if ($this->centralMode && !$deviceAccepted) {
                 $output->writeln(' ... not accepted');
                 continue;
             }
@@ -109,8 +129,14 @@ class ImportCommand extends BaseCommand
                         'end'   => array_slice($data, 1, 2)
                     );
 
-                    $query = "INSERT IGNORE INTO " . $table . "(" . $column . ", deviceid, kWh, kW)
-                            VALUES('" . $dataSlices['start'][0] . "'," . $device['deviceid'] . ',' . $dataSlices['end'][0] . ',' . $dataSlices['end'][1] . ")"; // insert row of data
+                    $query = "INSERT IGNORE INTO " .
+                                $table . "(" . $column . ", deviceid, kWh, kW)" .
+                             "VALUES('" .
+                                $dataSlices['start'][0] . "'," .
+                                $deviceId . ',' .
+                                $dataSlices['end'][0] . ',' .
+                                $dataSlices['end'][1] .
+                             ")"; // insert row of data
 
                     $this->db->executeQuery($query);
                 }

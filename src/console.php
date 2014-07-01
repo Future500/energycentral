@@ -3,9 +3,9 @@
 use Symfony\Component\Console\Application;
 
 $console = new Application('EnergyCentral', 'n/a');
-$console->add(new EC\Command\CronCommand($app['db']));
-$console->add(new EC\Command\CopyCommand($app['db']));
-$console->add(new EC\Command\ImportCommand($app['db'], $app['centralmode'])); // APPLICATION_ENV="devel-robbin" ./console import:run --keepfiles 2013
+$console->add(new EC\Command\CronCommand());
+$console->add(new EC\Command\CopyCommand());
+$console->add(new EC\Command\ImportCommand($app['db'], $app['device'], $app['centralmode'])); // APPLICATION_ENV="devel-robbin" ./console import:run
 $console->run();
 
 return $console;
