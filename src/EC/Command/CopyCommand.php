@@ -2,13 +2,14 @@
 
 namespace EC\Command;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class CopyCommand extends BaseCommand
+class CopyCommand extends Command
 {
     protected function configure()
     {
@@ -50,13 +51,13 @@ class CopyCommand extends BaseCommand
 
         if (!$process->isSuccessful()) { // error occurred
             throw new \RuntimeException($process->getErrorOutput());
-            exit;
+        }
+
+        if (!$input->getOption('keepfiles')) {
+            echo "Removing CSV files ...\n";
+            unlink($dataFolder . '/*.csv');
         }
 
         echo $process->getOutput();
-
-        if (!$input->getOption('keepfiles')) {
-            unlink($dataFolder . '/*.csv');
-        }
     }
 }
