@@ -10,7 +10,7 @@ if (!file_exists($autoloadFile)) {
     die('The autoload file could not be located.');
 }
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once $autoloadFile;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
